@@ -1,0 +1,35 @@
+# Django web framework
+Django>=3.2,<4.0
+
+# Django REST framework for building APIs
+djangorestframework>=3.12,<4.0
+
+# For JWT authentication
+djangorestframework-simplejwt>=4.7.2,<5.0
+
+# For image processing
+Pillow>=8.2.0,<9.0
+
+# For managing CORS headers
+django-cors-headers>=3.7.0,<4.0
+
+# For PostgreSQL database
+psycopg2-binary>=2.9.1,<3.0
+
+# For environment variable management
+python-decouple>=3.5,<4.0
+
+# For handling timezones
+pytz>=2021.1
+
+# For django-environ
+django-environ>=0.8.1,<1.0
+
+# For better password hashing
+bcrypt>=3.2.0
+
+# For static file management in production
+whitenoise>=5.3.0
+
+# For testing
+pytest-django>=4.4.0
