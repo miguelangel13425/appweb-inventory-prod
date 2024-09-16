@@ -28,7 +28,7 @@ class LocationModel(BaseModel):
         return self.name
     
 class CategoryModel(BaseModel):
-    code = models.CharField(max_length=64, unique=True)
+    code = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=64, unique=True)
     description = models.TextField(max_length=128, null=True, blank=True)
 
@@ -48,6 +48,7 @@ class ProductModel(BaseModel):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+        ordering = ['created_at']
 
     def __str__(self):
         return self.name

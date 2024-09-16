@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.utils import timezone
 
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
@@ -10,3 +11,10 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            self.deleted_at = None
+        else:
+            self.deleted_at = timezone.now()
+        super().save(*args, **kwargs)
