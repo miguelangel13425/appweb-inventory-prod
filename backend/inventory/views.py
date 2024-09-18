@@ -27,15 +27,22 @@ class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
         return WarehouseModel.objects.filter(is_active=True)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        page = self.paginate_queryset(queryset)
-        serializer = WarehouseListSerializer(page, many=True)
-        return self.custom_paginated_response(
-            data=serializer.data, 
-            message='Fetched warehouses successfully!',
-            paginator=self.paginator,
-            status_code=status.HTTP_200_OK
-        )
+        try:
+            queryset = self.get_queryset()
+            page = self.paginate_queryset(queryset)
+            serializer = WarehouseListSerializer(page, many=True)
+            return self.custom_paginated_response(
+                data=serializer.data, 
+                message='Fetched warehouses successfully!',
+                paginator=self.paginator,
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return self.custom_error(
+                message='An unexpected error occurred. Please contact support.',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=str(e)
+            )
     
     def create(self, request, *args, **kwargs):
         serializer = WarehouseDetailSerializer(data=request.data)
@@ -77,7 +84,7 @@ class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPI
             )
         except Http404:
             return self.custom_error(
-                message='Warehouse not found. Please check the UUID.',
+                message='Warehouse not found.',
                 status_code=status.HTTP_404_NOT_FOUND
             )
         except ValidationError as ve:
@@ -118,8 +125,9 @@ class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPI
             )
 
     def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        get_object_or_404(WarehouseModel, pk=instance.pk)
         try: 
-            instance = self.get_object()
             instance.is_active = False
             instance.save()
             return self.custom_response(

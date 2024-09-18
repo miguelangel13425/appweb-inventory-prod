@@ -1,6 +1,7 @@
 from django.db import models
 from .choices import UnitChoices, MovementChoices
 from core.models import BaseModel
+from accounts.models import PersonModel
 
 # Create your models here.
 
@@ -11,6 +12,7 @@ class WarehouseModel(BaseModel):
     class Meta:
         verbose_name = 'Warehouse'
         verbose_name_plural = 'Warehouses'
+        ordering = ['created_at']
 
     def __str__(self):
         return self.name
@@ -23,6 +25,7 @@ class LocationModel(BaseModel):
     class Meta:
         verbose_name = 'Location'
         verbose_name_plural = 'Locations'
+        ordering = ['created_at']
 
     def __str__(self):
         return self.name
@@ -35,6 +38,7 @@ class CategoryModel(BaseModel):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+        ordering = ['created_at']
 
     def __str__(self):
         return f'{self.code} - {self.name}'
@@ -56,7 +60,6 @@ class ProductModel(BaseModel):
 class InventoryModel(BaseModel):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='inventories')
     location = models.ForeignKey(LocationModel, on_delete=models.CASCADE, related_name='inventories')
-    quantity = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = 'Inventory'
@@ -64,31 +67,31 @@ class InventoryModel(BaseModel):
         unique_together = ('product', 'location')
 
     def __str__(self):
-        return f"{self.product.name} - {self.location.name}: {self.quantity}"
+        return f"{self.product.name} - {self.location.name}"
+
+    @property
+    def quantity(self):
+        movements_in = self.inventory_movements.filter(movement=MovementChoices.IN).aggregate(total=models.Sum('quantity'))['total'] or 0
+        movements_out = self.inventory_movements.filter(movement=MovementChoices.OUT).aggregate(total=models.Sum('quantity'))['total'] or 0
+        return movements_in - movements_out
+
 
 class InventoryTransactionModel(BaseModel):
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='inventory_transactions')
-    location = models.ForeignKey(LocationModel, on_delete=models.CASCADE, related_name='inventory_transactions')
+    inventory = models.ForeignKey(InventoryModel, on_delete=models.CASCADE, related_name='inventory_movements')
+    person = models.ForeignKey(PersonModel, null=True, blank=True, on_delete=models.CASCADE, related_name='inventory_movements')
     quantity = models.PositiveIntegerField(default=0)
     movement = models.CharField(max_length=8, choices=MovementChoices.choices, default=MovementChoices.IN)
 
     class Meta:
         verbose_name = 'Inventory Transaction'
         verbose_name_plural = 'Inventory Transactions'
+        ordering = ['created_at']
 
     def __str__(self):
-        return f"{self.movement} - {self.product.name} - {self.location.name}: {self.quantity}"
+        return f"{self.movement} - {self.inventory.product.name} - {self.inventory.location.name}: {self.quantity}"
 
     def save(self, *args, **kwargs):
+        if self.movement == MovementChoices.OUT:
+            if self.inventory.quantity < self.quantity:
+                raise ValueError("Insufficient inventory")
         super().save(*args, **kwargs)
-        self.update_inventory()
-
-    def update_inventory(self):
-        inventory, created = InventoryModel.objects.get_or_create(product=self.product, location=self.location)
-        if self.movement == MovementChoices.IN:
-            inventory.quantity += self.quantity
-        elif self.movement == MovementChoices.OUT:
-            inventory.quantity -= self.quantity
-            if inventory.quantity < 0:
-                inventory.quantity = 0
-        inventory.save()

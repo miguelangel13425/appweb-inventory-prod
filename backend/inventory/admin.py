@@ -41,19 +41,17 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(ProductModel, ProductAdmin)
 
 class InventoryAdmin(admin.ModelAdmin):
-    list_display = ('product', 'location', 'quantity', 'created_at')
+    list_display = ('product', 'location', 'quantity')
     search_fields = ('product__name', 'location__name')
-    list_filter = ('location', 'created_at')
-    readonly_fields = ('created_at', 'updated_at')
-    ordering = ('-created_at',)
+    list_filter = ('product', 'location')
+    readonly_fields = ('quantity',)
 
 admin.site.register(InventoryModel, InventoryAdmin)
 
 class InventoryTransactionAdmin(admin.ModelAdmin):
-    list_display = ('product', 'location', 'quantity', 'movement', 'created_at')
-    search_fields = ('product__name', 'location__name')
+    list_display = ('inventory', 'person', 'quantity', 'movement', 'created_at')
+    search_fields = ('inventory__product__name', 'inventory__location__name', 'person__email')
     list_filter = ('movement', 'created_at')
     readonly_fields = ('created_at', 'updated_at')
-    ordering = ('-created_at',)
 
 admin.site.register(InventoryTransactionModel, InventoryTransactionAdmin)

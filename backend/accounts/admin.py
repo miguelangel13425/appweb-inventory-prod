@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import UserModel, ProfileModel, RoleModel
+from .models import (
+    UserModel, ProfileModel, RoleModel,
+    ProviderModel, StudentModel
+)
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -68,3 +71,20 @@ class ProfileAdmin(admin.ModelAdmin):
     get_age.short_description = 'Age'
 
 admin.site.register(ProfileModel, ProfileAdmin)
+
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('get_full_name', 'control_number', 'degree', 'email', 'phone_number')
+    search_fields = ('first_name', 'last_name', 'control_number', 'email')
+    list_filter = ('degree',)
+    readonly_fields = ('created_at', 'updated_at')
+    ordering = ('-created_at',)
+
+admin.site.register(StudentModel, StudentAdmin)
+
+class ProviderAdmin(admin.ModelAdmin):
+    list_display = ('get_full_name', 'RFC', 'NSS', 'email', 'phone_number')
+    search_fields = ('first_name', 'last_name', 'RFC', 'NSS', 'email')
+    readonly_fields = ('created_at', 'updated_at')
+    ordering = ('-created_at',)
+
+admin.site.register(ProviderModel, ProviderAdmin)

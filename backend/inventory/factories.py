@@ -1,24 +1,24 @@
 import factory
-from factory import django, SubFactory, post_generation
-from faker import Faker  # Asegúrate de importar Faker del paquete faker
+from factory import django, SubFactory
+from faker import Faker
 from .models import WarehouseModel, LocationModel, CategoryModel, ProductModel, InventoryModel, InventoryTransactionModel
+from accounts.factories import PersonFactory
 from .choices import UnitChoices, MovementChoices
 
-# Inicializa Faker una vez
 fake = Faker()
 
 class WarehouseFactory(django.DjangoModelFactory):
     class Meta:
         model = WarehouseModel
 
-    name = factory.LazyAttribute(lambda _: fake.company())
+    name = factory.LazyAttribute(lambda _: fake.unique.company())
     description = factory.LazyAttribute(lambda _: fake.text(max_nb_chars=128))
 
 class LocationFactory(django.DjangoModelFactory):
     class Meta:
         model = LocationModel
 
-    name = factory.LazyAttribute(lambda _: fake.city())
+    name = factory.LazyAttribute(lambda _: fake.unique.city())
     description = factory.LazyAttribute(lambda _: fake.text(max_nb_chars=128))
     warehouse = SubFactory(WarehouseFactory)
 
@@ -34,7 +34,7 @@ class ProductFactory(django.DjangoModelFactory):
     class Meta:
         model = ProductModel
 
-    name = factory.LazyAttribute(lambda _: fake.unique.word())  # Asegura nombres únicos
+    name = factory.LazyAttribute(lambda _: fake.unique.word())
     description = factory.LazyAttribute(lambda _: fake.text(max_nb_chars=128))
     unit = factory.LazyAttribute(lambda _: fake.random_element(elements=[choice[0] for choice in UnitChoices.choices]))
     category = SubFactory(CategoryFactory)
@@ -45,18 +45,12 @@ class InventoryFactory(django.DjangoModelFactory):
 
     product = SubFactory(ProductFactory)
     location = SubFactory(LocationFactory)
-    quantity = factory.LazyAttribute(lambda _: fake.random_int(min=0, max=100))
 
 class InventoryTransactionFactory(django.DjangoModelFactory):
     class Meta:
         model = InventoryTransactionModel
 
-    product = SubFactory(ProductFactory)
-    location = SubFactory(LocationFactory)
-    quantity = factory.LazyAttribute(lambda _: fake.random_int(min=0, max=100))
-    movement = factory.LazyAttribute(lambda _: fake.random_element(elements=[choice[0] for choice in MovementChoices.choices]))
-
-    @post_generation
-    def update_inventory(self, create, extracted, **kwargs):
-        if create:
-            self.update_inventory()
+    inventory = SubFactory(InventoryFactory)
+    person = SubFactory(PersonFactory)
+    quantity = factory.LazyAttribute(lambda _: fake.random_int(min=1, max=100))
+    movement = factory.LazyAttribute(lambda _: fake.random_element(elements=[MovementChoices.IN, MovementChoices.OUT]))

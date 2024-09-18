@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
-from .choices import GenderChoices
+from .choices import GenderChoices, DegreeChoices
 from core.models import BaseModel
 from datetime import date
 import uuid
@@ -67,3 +67,38 @@ class ProfileModel(BaseModel):
     
     def __str__(self):
         return self.user.email
+    
+class PersonModel(BaseModel):
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=16, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Person'
+        verbose_name_plural = 'People'
+
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def get_short_name(self):
+        return self.first_name
+
+    def __str__(self):
+        return self.email
+
+class StudentModel(PersonModel):
+    control_number = models.CharField(max_length=64, unique=True)
+    degree = models.CharField(max_length=64, choices=DegreeChoices.choices, default=DegreeChoices.CSE)
+
+    class Meta:
+        verbose_name = 'Student'
+        verbose_name_plural = 'Students'
+
+class ProviderModel(PersonModel):
+    RFC = models.CharField(max_length=13, unique=True)
+    NSS = models.CharField(max_length=11, unique=True)
+
+    class Meta:
+        verbose_name = 'Provider'
+        verbose_name_plural = 'Providers'
