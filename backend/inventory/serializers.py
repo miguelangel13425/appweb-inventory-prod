@@ -60,7 +60,7 @@ class ProductDetailSerializer(ProductManager):
 class InventoryListSerializer(InventoryManager):
     class Meta:
         model = InventoryModel
-        fields = ['id', 'product', 'location', 'quantity']
+        fields = ['id', 'product', 'location']
 
 class InventoryDetailSerializer(InventoryManager):
     class Meta:
