@@ -1,5 +1,7 @@
 from django.db import models
-from .choices import UnitChoices, MovementChoices
+from .choices import (
+    UnitChoices, MovementChoices, AvailabilityChoices,
+)
 from core.models import BaseModel
 from accounts.models import PersonModel
 
@@ -48,6 +50,7 @@ class ProductModel(BaseModel):
     description = models.TextField(max_length=128, null=True, blank=True)
     unit = models.CharField(max_length=8, choices=UnitChoices.choices, default=UnitChoices.PIECE)
     category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE, related_name='products')
+    is_single_use = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Product'
@@ -74,6 +77,18 @@ class InventoryModel(BaseModel):
         movements_in = self.inventory_movements.filter(movement=MovementChoices.IN).aggregate(total=models.Sum('quantity'))['total'] or 0
         movements_out = self.inventory_movements.filter(movement=MovementChoices.OUT).aggregate(total=models.Sum('quantity'))['total'] or 0
         return movements_in - movements_out
+    
+    @property
+    def availability(self):
+        quantity = self.quantity
+        if quantity == 0:
+            return AvailabilityChoices.OUT_OF_STOCK
+        elif quantity > 0 and quantity <= 10:
+            return AvailabilityChoices.LOW
+        elif quantity > 10 and quantity <= 50:
+            return AvailabilityChoices.MEDIUM
+        else:
+            return AvailabilityChoices.HIGH
 
 
 class InventoryTransactionModel(BaseModel):

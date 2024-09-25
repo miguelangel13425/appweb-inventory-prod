@@ -32,7 +32,7 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(CategoryModel, CategoryAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'unit', 'description', 'created_at')
+    list_display = ('name', 'category', 'unit', 'description', 'is_single_use', 'created_at')
     search_fields = ('name', 'category__name')
     list_filter = ('category', 'created_at')
     readonly_fields = ('created_at', 'updated_at')
@@ -41,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(ProductModel, ProductAdmin)
 
 class InventoryAdmin(admin.ModelAdmin):
-    list_display = ('product', 'location', 'quantity')
+    list_display = ('product', 'location', 'quantity', 'availability')
     search_fields = ('product__name', 'location__name')
     list_filter = ('product', 'location')
     readonly_fields = ('quantity',)

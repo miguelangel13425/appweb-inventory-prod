@@ -7,6 +7,17 @@ class RoleDetailSerializer(serializers.ModelSerializer):
         model = RoleModel
         fields = ['id', 'name']
 
+class UserCreateSerializer(UserCreateSerializer):
+    role = serializers.SerializerMethodField()
+    
+    class Meta(UserCreateSerializer.Meta):
+        model = UserModel
+        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'password')
+    
+    def get_role(self, obj):
+        roles = obj.role.all()
+        return RoleDetailSerializer(roles, many=True).data
+
 class UserListSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     

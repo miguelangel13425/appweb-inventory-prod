@@ -21,7 +21,7 @@ from django.http import Http404
 
 # Create your views here.
 class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
-    permission_classes = [IsAdmin]
+    #permission_classes = [IsAdmin]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
