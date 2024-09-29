@@ -17,11 +17,12 @@ from .serializers import (
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 
 # Create your views here.
 class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
-    #permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -33,6 +34,7 @@ class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
             page = self.paginate_queryset(queryset)
             serializer = WarehouseListSerializer(page, many=True)
             return self.custom_paginated_response(
+                data_key='warehouses',
                 data=serializer.data, 
                 message='Fetched warehouses successfully!',
                 paginator=self.paginator,
@@ -46,11 +48,12 @@ class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
             )
     
     def create(self, request, *args, **kwargs):
-        serializer = WarehouseDetailSerializer(data=request.data)
         try:
+            serializer = WarehouseListSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
+                data_key='warehouse',
                 data=serializer.data,
                 message='Created warehouse successfully!',
                 status_code=status.HTTP_201_CREATED
@@ -73,15 +76,25 @@ class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPI
 
     def get_queryset(self):
         return WarehouseModel.objects.filter(is_active=True)
+    
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(WarehouseModel, pk=pk)
 
     def retrieve(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
             serializer = WarehouseDetailSerializer(instance)
             return self.custom_response(
+                data_key='warehouse',
                 data=serializer.data,
                 message='Fetched warehouse successfully!',
                 status_code=status.HTTP_200_OK
+            )
+        except PermissionDenied:
+            return self.custom_error(
+                message='You do not have permission to perform this action.',
+                status_code=status.HTTP_403_FORBIDDEN
             )
         except Http404:
             return self.custom_error(
@@ -102,15 +115,22 @@ class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPI
             )
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = WarehouseDetailSerializer(instance, data=request.data, partial=True)
         try:
+            instance = self.get_object()
+            get_object_or_404(WarehouseModel, pk=instance.pk)
+            serializer = WarehouseDetailSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
+                data_key='warehouse',
                 data=serializer.data,
                 message='Updated warehouse successfully!',
                 status_code=status.HTTP_200_OK
+            )
+        except Http404:
+            return self.custom_error(
+                message='Warehouse not found.',
+                status_code=status.HTTP_404_NOT_FOUND
             )
         except ValidationError as ve:
             return self.custom_error(
@@ -126,15 +146,21 @@ class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPI
             )
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        get_object_or_404(WarehouseModel, pk=instance.pk)
         try: 
+            instance = self.get_object()
+            get_object_or_404(WarehouseModel, pk=instance.pk)
             instance.is_active = False
             instance.save()
             return self.custom_response(
+                data_key='warehouse',
                 data=None,
                 message='Deleted warehouse successfully!',
                 status_code=status.HTTP_204_NO_CONTENT
+            )
+        except Http404:
+            return self.custom_error(
+                message='Warehouse not found.',
+                status_code=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
             return self.custom_error(

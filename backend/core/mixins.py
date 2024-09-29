@@ -2,17 +2,17 @@ from rest_framework.response import Response
 from rest_framework import status
 
 class CustomResponseMixin:
-    def custom_response(self, data=None, message='', meta=None, status_code=status.HTTP_200_OK):
+    def custom_response(self, data=None, data_key='data', message='', meta=None, status_code=status.HTTP_200_OK):
         return Response({
             'message': message,
-            'data': data,
+            data_key: data,
             'meta': meta
         }, status=status_code)
     
-    def custom_paginated_response(self, data=None, message='', paginator=None, status_code=status.HTTP_200_OK):
+    def custom_paginated_response(self, data=None, data_key='data', message='', paginator=None, status_code=status.HTTP_200_OK):
         return Response({
             'message': message,
-            'data': data,
+            data_key: data,
             'meta': {
                 'current_page': paginator.page.number,
                 'total_pages': paginator.page.paginator.num_pages,
