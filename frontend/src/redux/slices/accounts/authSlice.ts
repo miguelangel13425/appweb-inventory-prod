@@ -10,15 +10,8 @@ interface AuthState {
   error: any;
 }
 
-const getAccessToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('access');
-  }
-  return null;
-};
-
 const initialState: AuthState = {
-  access: getAccessToken(),
+  access: localStorage.getItem('access'),
   isAuthenticated: false,
   loading: true,
   user: null,

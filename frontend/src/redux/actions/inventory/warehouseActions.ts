@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { getConfig } from "../axiosConfig";
 import { Warehouse } from "../../models/inventory";
 import { AppDispatch } from "../../store";
 import {
@@ -20,15 +20,26 @@ import {
 
 import { INVENTORY_URL } from "@/constants/urls";
 
-export const fetchWarehouses = (page: number) => async (dispatch: AppDispatch) => {
+export const fetchWarehouses = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchWarehousesStart());
     try {
-        const response = await axios.get(`${INVENTORY_URL}/warehouses?page=${page}`);
+        const response = await axios.get(`${INVENTORY_URL}/warehouses/`, { 
+            params: { 
+            page,
+            search: searchTerm 
+            }, 
+        ...getConfig()
+        });
         dispatch(fetchWarehousesSuccess({
             message: response.data.message,
             data: response.data.warehouses,
             status: response.status,
-            pagination: response.data.meta
+            pagination: {
+                currentPage: response.data.meta.current_page,
+                totalPages: response.data.meta.total_pages,
+                totalItems: response.data.meta.total_items,
+                pageSize: response.data.meta.page_size
+            }
         }));
     } catch (error: any) {
         dispatch(fetchWarehousesFailure({
@@ -40,7 +51,7 @@ export const fetchWarehouses = (page: number) => async (dispatch: AppDispatch) =
 
 export const fetchWarehouse = (id: string) => async (dispatch: AppDispatch) => {
     try {
-        const response = await axios.get(`${INVENTORY_URL}/warehouses/${id}`);
+        const response = await axios.get(`${INVENTORY_URL}/warehouses/${id}/`, getConfig());
         dispatch(fetchWarehouseSuccess({
             message: response.data.message,
             data: response.data.warehouse,
@@ -57,7 +68,7 @@ export const fetchWarehouse = (id: string) => async (dispatch: AppDispatch) => {
 export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
     dispatch(createWarehouseStart());
     try {
-        const response = await axios.post(`${INVENTORY_URL}/warehouses`, newWarehouse);
+        const response = await axios.post(`${INVENTORY_URL}/warehouses`, newWarehouse, getConfig());
         dispatch(createWarehouseSuccess({
             message: response.data.message,
             data: response.data.warehouse,
@@ -74,7 +85,7 @@ export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: App
 export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
     dispatch(updateWarehouseStart());
     try {
-        const response = await axios.put(`${INVENTORY_URL}/warehouses/${id}`, updatedWarehouse);
+        const response = await axios.put(`${INVENTORY_URL}/warehouses/${id}`, updatedWarehouse, getConfig());
         dispatch(updateWarehouseSuccess({
             message: response.data.message,
             data: response.data.warehouse,
@@ -91,7 +102,7 @@ export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => asyn
 export const deleteWarehouse = (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteWarehouseStart());
     try {
-        const response = await axios.delete(`${INVENTORY_URL}/warehouses/${id}`);
+        const response = await axios.delete(`${INVENTORY_URL}/warehouses/${id}`, getConfig());
         dispatch(deleteWarehouseSuccess({
             message: response.data.message,
             status: response.status

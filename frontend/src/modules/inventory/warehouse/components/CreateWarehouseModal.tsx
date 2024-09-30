@@ -7,34 +7,60 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { RootState } from "../../../../redux/store";
+import { Button, Input } from "@/components/index";
+import { RootState } from "@/redux/store";
+import { createWarehouse } from "@/redux/actions/inventory/warehouseActions";
 
 const CreateWarehouseModal: React.FC = () => {
-  //const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  //const { loading } = useSelector((state: RootState) => state.warehouseReducer);
+  const dispatch = useDispatch();
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+  });
+
+  const handleCreateWarehouse = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(createWarehouse(form));
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="btn btn-primary">Create Warehouse</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogTitle>Create Warehouse</DialogTitle>
-        <DialogDescription>Create a new Warehouse</DialogDescription>
-        <div className="grid gap-4 py-4">
-          <Input placeholder="Warehouse" />
-          <div className="flex justify-end">
-            <Button className="btn btn-primary">Create</Button>
-            <DialogTrigger asChild>
-              <Button className="btn btn-secondary">Cancel</Button>
-            </DialogTrigger>
+    <div>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="mb-4 bg-vibrantCyan">Crear plantel</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Crear nuevo plantel</DialogTitle>
+          <DialogDescription>
+            Por favor, rellene el formulario para crear un nuevo plantel.
+          </DialogDescription>
+          <div className="mt-4">
+            <Input
+              placeholder="Nombre"
+              onChange={(e: any) => setForm({ ...form, name: e.target.value })}
+              className="mb-4"
+              required
+            />
+            <Input
+              placeholder="Descripción"
+              onChange={(e: any) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              className="mb-4"
+              required
+            />
+            <div className="flex justify-end">
+              <Button onClick={handleCreateWarehouse} className="mr-2">
+                Crear
+              </Button>
+              <DialogTrigger asChild>
+                <Button variant="ghost">Cancelar</Button>
+              </DialogTrigger>
+            </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

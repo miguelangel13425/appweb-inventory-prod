@@ -1,17 +1,86 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { LogOut, User, Menu } from "@geist-ui/icons";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  isAuthenticated: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  sidebarOpen: boolean;
+}
+
+const GuestNavbar: React.FC = () => {
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    navigate("/login");
+  };
   return (
-    <nav className="bg-teal-600 p-4 fixed w-full z-10 top-0 shadow-lg">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white font-bold text-xl">Amco PM</div>
-        <div className="space-x-4">
-          <button className="text-white">Workspaces</button>
-          <button className="text-white">Recent</button>
-          <button className="text-white">Templates</button>
-        </div>
+    <nav className="w-full bg-impactBlue text-white flex flex-col md:flex-row justify-between items-center shadow-lg py-4">
+      <div className="flex items-center space-x-4 ml-4">
+        <span className="font-bold text-lg">Inventario</span>
+      </div>
+      <div className="flex items-center space-x-4 mr-4">
+        <span
+          className="cursor-pointer font-bold text-lg"
+          onClick={handleLogin}
+        ></span>
       </div>
     </nav>
+  );
+};
+
+const AuthenticatedNavbar: React.FC<{
+  setSidebarOpen: (open: boolean) => void;
+  sidebarOpen: boolean;
+}> = ({ setSidebarOpen, sidebarOpen }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate("/logout");
+  };
+  const handleProfile = () => {
+    navigate("/me");
+  };
+  return (
+    <nav className="w-full bg-impactBlue text-white flex flex-col md:flex-row justify-between items-center shadow-lg py-4">
+      <div className="flex items-center space-x-4 ml-4">
+        <span
+          className="cursor-pointer p-2"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          <Menu className="h-6 w-6" />
+        </span>
+        <span className="font-bold text-lg">Inventario</span>
+      </div>
+      <div className="flex items-center space-x-4 mr-4">
+        <span
+          className="p-2 rounded flex items-center cursor-pointer"
+          onClick={handleProfile}
+        >
+          <span className="mr-2">Mi perfil</span> <User className="h-6 w-6" />
+        </span>
+        <span
+          className="p-2 rounded flex items-center cursor-pointer"
+          onClick={handleLogout}
+        >
+          <span className="mr-2">Cerrar sesión</span>{" "}
+          <LogOut className="h-6 w-6" />
+        </span>
+      </div>
+    </nav>
+  );
+};
+
+const Navbar: React.FC<NavbarProps> = ({
+  isAuthenticated,
+  setSidebarOpen,
+  sidebarOpen,
+}) => {
+  return isAuthenticated ? (
+    <AuthenticatedNavbar
+      setSidebarOpen={setSidebarOpen}
+      sidebarOpen={sidebarOpen}
+    />
+  ) : (
+    <GuestNavbar />
   );
 };
 

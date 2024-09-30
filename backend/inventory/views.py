@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
+from django.db.models import Q
 
 # Create your views here.
 class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
@@ -26,7 +27,11 @@ class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        return WarehouseModel.objects.filter(is_active=True)
+        queryset = WarehouseModel.objects.filter(is_active=True)
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(Q(name__icontains=search_term))
+        return queryset
 
     def list(self, request, *args, **kwargs):
         try:
