@@ -1,6 +1,7 @@
 from django.db import models
 from .choices import (
     UnitChoices, MovementChoices, AvailabilityChoices,
+    TypeChoices
 )
 from core.models import BaseModel
 from accounts.models import PersonModel
@@ -89,6 +90,9 @@ class InventoryModel(BaseModel):
             return AvailabilityChoices.MEDIUM
         else:
             return AvailabilityChoices.HIGH
+    
+    def get_availability_display(self):
+        return dict(AvailabilityChoices.choices)[self.availability]
 
 
 class InventoryTransactionModel(BaseModel):
@@ -96,17 +100,23 @@ class InventoryTransactionModel(BaseModel):
     person = models.ForeignKey(PersonModel, null=True, blank=True, on_delete=models.CASCADE, related_name='inventory_movements')
     quantity = models.PositiveIntegerField(default=0)
     movement = models.CharField(max_length=8, choices=MovementChoices.choices, default=MovementChoices.IN)
+    type = models.CharField(max_length=8, choices=TypeChoices.choices, default=TypeChoices.LOAN)
+    description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Inventory Transaction'
         verbose_name_plural = 'Inventory Transactions'
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.movement} - {self.inventory.product.name} - {self.inventory.location.name}: {self.quantity}"
+        return f"{self.movement} - {self.type} - {self.inventory.product.name} - {self.inventory.location.name}: {self.quantity}"
 
     def save(self, *args, **kwargs):
         if self.movement == MovementChoices.OUT:
             if self.inventory.quantity < self.quantity:
                 raise ValueError("Insufficient inventory")
+        if self.movement == MovementChoices.IN and self.type in [TypeChoices.LOST, TypeChoices.DAMAGED]:
+            raise ValueError("El tipo de transacción no puede ser 'Perdido' o 'Dañado' para una entrada")
+        if self.movement == MovementChoices.OUT and self.type == TypeChoices.PURCHASE:
+            raise ValueError("El tipo de transacción no puede ser 'Compra' para una salida")
         super().save(*args, **kwargs)

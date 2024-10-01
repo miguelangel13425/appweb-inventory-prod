@@ -1,5 +1,10 @@
 from django.db import models
 
+class RoleChoices(models.TextChoices):
+    ADMIN = 'ADMIN', 'Administrador'
+    EMPLOYEE = 'EMPLOYEE', 'Empleado'
+    VIEWER = 'VIEWER', 'Vista'
+
 class GenderChoices(models.TextChoices):
     MALE = 'M', 'Hombre'
     FEMALE = 'F', 'Mujer'

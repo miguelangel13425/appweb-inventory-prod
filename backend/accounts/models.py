@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
-from .choices import GenderChoices, DegreeChoices
+from .choices import GenderChoices, DegreeChoices, RoleChoices
 from core.models import BaseModel
 from datetime import date
 import uuid
@@ -9,7 +9,7 @@ import uuid
 # Create your models here.
 
 class RoleModel(BaseModel):
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True, choices=RoleChoices.choices, default=RoleChoices.EMPLOYEE)
     description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:

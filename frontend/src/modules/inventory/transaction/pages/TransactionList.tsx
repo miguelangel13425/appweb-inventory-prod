@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchWarehouses } from "@/redux/actions/inventory/warehouseActions";
+import { fetchTransactions } from "@/redux/actions/inventory/inventoryTransactionActions";
 import {
   Table,
   TableBody,
@@ -20,27 +20,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Spinner, Card, Input } from "@/components/index";
+import { Spinner, Card, Input, Badge } from "@/components/index";
 import { Edit } from "@geist-ui/icons";
-import CreateWarehouseModal from "../components/CreateWarehouseModal";
-import { Warehouse } from "@/redux/models/inventory";
+import CreateTransactionModal from "../components/CreateTransactionModal";
+import { InventoryTransaction } from "@/redux/models/inventory";
 
-const WarehouseList: React.FC = () => {
+const TransactionList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { warehouses, loading, error, pagination } = useSelector(
-    (state: RootState) => state.warehouse
+  const { transactions, loading, error, pagination } = useSelector(
+    (state: RootState) => state.inventoryTransaction
   );
   const [searchTerm, setSearchTerm] = useState("");
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchWarehouses(page, searchTerm));
+      dispatch(fetchTransactions(page, searchTerm));
     }
   };
 
   useEffect(() => {
-    dispatch(fetchWarehouses(1, searchTerm));
+    dispatch(fetchTransactions(1, searchTerm));
   }, [dispatch, searchTerm]);
 
   const createPageLinks = () => {
@@ -71,18 +71,29 @@ const WarehouseList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/warehouses/${id}`);
+    navigate(`/transactions/${id}`);
+  };
+
+  const getBadgeColor = (movemenent: string) => {
+    switch (movemenent) {
+      case "Entrada":
+        return "bg-green-400";
+      case "Salida":
+        return "bg-red-400";
+      default:
+        return "bg-gray-400";
+    }
   };
 
   return (
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Campus</h2>
-        <CreateWarehouseModal />
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Transacciones</h2>
+        <CreateTransactionModal />
       </div>
       <Input
         type="text"
-        placeholder="Buscar por nombre"
+        placeholder="Buscar por"
         value={searchTerm}
         onChange={handleSearchChange}
         className="mb-4"
@@ -95,33 +106,74 @@ const WarehouseList: React.FC = () => {
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} campu(s) fueron encontrados.
+              {pagination?.totalItems} transaccion(es) encontrada(s).
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">
                 <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Nombre
+                  Persona
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Descripción
+                  Producto
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Locación
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Campus
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Cantidad
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Movimiento
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Concepto
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Fecha
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {warehouses.map((warehouse: Warehouse) => (
-                <TableRow key={warehouse.id} className="hover:bg-gray-100">
+              {transactions.map((transaction: InventoryTransaction) => (
+                <TableRow key={transaction.id} className="hover:bg-gray-100">
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.name}
+                    {transaction.person?.first_name}{" "}
+                    {transaction.person?.last_name}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.description}
+                    {transaction.inventory.product.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {transaction.inventory.location.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {transaction.inventory.location.warehouse.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {transaction.quantity}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    <Badge
+                      className={getBadgeColor(transaction.movement_display)}
+                    >
+                      {transaction.movement_display}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {transaction.type_display}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {transaction.created_at}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
                     <Edit
                       size={20}
                       className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(warehouse.id)}
+                      onClick={() => handleSettings(transaction.id)}
                     />
                   </TableCell>
                 </TableRow>
@@ -159,4 +211,4 @@ const WarehouseList: React.FC = () => {
   );
 };
 
-export default WarehouseList;
+export default TransactionList;

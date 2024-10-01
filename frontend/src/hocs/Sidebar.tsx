@@ -20,6 +20,10 @@ const Sidebar: React.FC<{
     navigate("/warehouses");
   };
 
+  const handleHome = () => {
+    navigate("/");
+  };
+
   const handleLocation = () => {
     navigate("/locations");
   };
@@ -33,7 +37,7 @@ const Sidebar: React.FC<{
   };
 
   const handleInventory = () => {
-    navigate("/inventory");
+    navigate("/inventories");
   };
 
   const handleTransaction = () => {
@@ -52,7 +56,10 @@ const Sidebar: React.FC<{
     >
       {/* Logo */}
       {sidebarOpen ? (
-        <div className="p-4 flex justify-center items-center">
+        <div
+          className="p-4 flex justify-center items-center cursor-pointer"
+          onClick={handleHome}
+        >
           <img src={TecNMLogo} alt="TecNM Logo" className="h-16 w-auto" />
         </div>
       ) : null}
@@ -65,7 +72,7 @@ const Sidebar: React.FC<{
             onClick={handleWarehouse}
           >
             <Home className="h-6 w-6 mr-2" />{" "}
-            {sidebarOpen && <span>Planteles</span>}
+            {sidebarOpen && <span>Campus</span>}
           </li>
           <li
             className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
@@ -86,7 +93,7 @@ const Sidebar: React.FC<{
             onClick={handleCategory}
           >
             <Bookmark className="h-6 w-6 mr-2" />{" "}
-            {sidebarOpen && <span>Categorías</span>}
+            {sidebarOpen && <span>Partidas</span>}
           </li>
           <li
             className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"

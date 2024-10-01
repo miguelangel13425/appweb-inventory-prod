@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { getConfig } from "../axiosConfig";
 import { InventoryTransaction } from "../../models/inventory";
 import { AppDispatch } from "../../store";
 import {
@@ -20,15 +20,26 @@ import {
 
 import { INVENTORY_URL } from "@/constants/urls";
 
-export const fetchTransactions = (page: number) => async (dispatch: AppDispatch) => {
+export const fetchTransactions = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchTransactionsStart());
     try {
-        const response = await axios.get(`${INVENTORY_URL}/transactions?page=${page}`);
+        const response = await axios.get(`${INVENTORY_URL}/transactions/`, { 
+            params: { 
+            page,
+            search: searchTerm 
+            }, 
+        ...getConfig()
+        });
         dispatch(fetchTransactionsSuccess({
             message: response.data.message,
-            data: response.data.transactions,
+            data: response.data.inventory_transactions,
             status: response.status,
-            pagination: response.data.meta
+            pagination: {
+                currentPage: response.data.meta.current_page,
+                totalPages: response.data.meta.total_pages,
+                totalItems: response.data.meta.total_items,
+                pageSize: response.data.meta.page_size
+            }
         }));
     } catch (error: any) {
         dispatch(fetchTransactionsFailure({
@@ -43,7 +54,7 @@ export const fetchTransaction = (id: string) => async (dispatch: AppDispatch) =>
         const response = await axios.get(`${INVENTORY_URL}/transactions/${id}`);
         dispatch(fetchTransactionSuccess({
             message: response.data.message,
-            data: response.data.transaction,
+            data: response.data.inventory_transaction,
             status: response.status
         }));
     } catch (error: any) {
@@ -60,7 +71,7 @@ export const createTransaction = (newTransaction: InventoryTransaction) => async
         const response = await axios.post(`${INVENTORY_URL}/transactions`, newTransaction);
         dispatch(createTransactionSuccess({
             message: response.data.message,
-            data: response.data.transaction,
+            data: response.data.inventory_transaction,
             status: response.status
         }));
     } catch (error: any) {
@@ -77,7 +88,7 @@ export const updateTransaction = (id: string, updatedTransaction: InventoryTrans
         const response = await axios.put(`${INVENTORY_URL}/transactions/${id}`, updatedTransaction);
         dispatch(updateTransactionSuccess({
             message: response.data.message,
-            data: response.data.transaction,
+            data: response.data.inventory_transaction,
             status: response.status
         }));
     } catch (error: any) {

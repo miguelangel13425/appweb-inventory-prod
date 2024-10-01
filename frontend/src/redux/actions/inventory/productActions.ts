@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { getConfig } from "../axiosConfig";
 import { Product } from "../../models/inventory";
 import { AppDispatch } from "../../store";
 import {
@@ -20,15 +20,26 @@ import {
 
 import { INVENTORY_URL } from "@/constants/urls";
 
-export const fetchProducts = (page: number) => async (dispatch: AppDispatch) => {
+export const fetchProducts = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchProductsStart());
     try {
-        const response = await axios.get(`${INVENTORY_URL}/products?page=${page}`);
+        const response = await axios.get(`${INVENTORY_URL}/products/`, { 
+            params: { 
+            page,
+            search: searchTerm 
+            }, 
+        ...getConfig()
+        });
         dispatch(fetchProductsSuccess({
             message: response.data.message,
             data: response.data.products,
             status: response.status,
-            pagination: response.data.meta
+            pagination: {
+                currentPage: response.data.meta.current_page,
+                totalPages: response.data.meta.total_pages,
+                totalItems: response.data.meta.total_items,
+                pageSize: response.data.meta.page_size
+            }
         }));
     } catch (error: any) {
         dispatch(fetchProductsFailure({

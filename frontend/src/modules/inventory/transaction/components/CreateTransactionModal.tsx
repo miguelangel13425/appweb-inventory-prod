@@ -11,7 +11,7 @@ import { Button, Input } from "@/components/index";
 import { RootState } from "@/redux/store";
 import { createWarehouse } from "@/redux/actions/inventory/warehouseActions";
 
-const CreateWarehouseModal: React.FC = () => {
+const CreateTransactionModal: React.FC = () => {
   const dispatch = useDispatch();
   const [form, setForm] = useState({
     name: "",
@@ -27,12 +27,12 @@ const CreateWarehouseModal: React.FC = () => {
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="mb-4 bg-vibrantCyan">Crear campus</Button>
+          <Button className="mb-4 bg-vibrantCyan">Crear transacción</Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogTitle>Crear nuevo campus</DialogTitle>
+          <DialogTitle>Crear nuevo producto</DialogTitle>
           <DialogDescription>
-            Por favor, rellene el formulario para crear un nuevo campus.
+            Por favor, rellene el formulario para crear un nuevo producto.
           </DialogDescription>
           <div className="mt-4">
             <Input
@@ -64,4 +64,4 @@ const CreateWarehouseModal: React.FC = () => {
   );
 };
 
-export default CreateWarehouseModal;
+export default CreateTransactionModal;

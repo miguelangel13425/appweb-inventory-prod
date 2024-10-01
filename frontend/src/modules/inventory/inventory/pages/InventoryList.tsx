@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchWarehouses } from "@/redux/actions/inventory/warehouseActions";
+import { fetchInventories } from "@/redux/actions/inventory/inventoryActions";
 import {
   Table,
   TableBody,
@@ -20,27 +20,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Spinner, Card, Input } from "@/components/index";
+import { Spinner, Card, Input, Badge } from "@/components/index";
 import { Edit } from "@geist-ui/icons";
-import CreateWarehouseModal from "../components/CreateWarehouseModal";
-import { Warehouse } from "@/redux/models/inventory";
+import CreateInventoryModal from "../components/CreateInventoryModal";
+import { Inventory } from "@/redux/models/inventory";
 
-const WarehouseList: React.FC = () => {
+const InventoryList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { warehouses, loading, error, pagination } = useSelector(
-    (state: RootState) => state.warehouse
+  const { inventories, loading, error, pagination } = useSelector(
+    (state: RootState) => state.inventory
   );
   const [searchTerm, setSearchTerm] = useState("");
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchWarehouses(page, searchTerm));
+      dispatch(fetchInventories(page, searchTerm));
     }
   };
 
   useEffect(() => {
-    dispatch(fetchWarehouses(1, searchTerm));
+    dispatch(fetchInventories(1, searchTerm));
   }, [dispatch, searchTerm]);
 
   const createPageLinks = () => {
@@ -71,18 +71,34 @@ const WarehouseList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/warehouses/${id}`);
+    navigate(`/inventorys/${id}`);
+  };
+
+  // Función para determinar el color del Badge según la disponibilidad
+  const getBadgeColor = (availability: string) => {
+    switch (availability) {
+      case "Sin existencia":
+        return "bg-red-400";
+      case "Baja":
+        return "bg-yellow-400";
+      case "Media":
+        return "bg-orange-400";
+      case "Alta":
+        return "bg-green-400";
+      default:
+        return "bg-gray-400";
+    }
   };
 
   return (
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Campus</h2>
-        <CreateWarehouseModal />
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Inventarios</h2>
+        <CreateInventoryModal />
       </div>
       <Input
         type="text"
-        placeholder="Buscar por nombre"
+        placeholder="Buscar por nombre o campus"
         value={searchTerm}
         onChange={handleSearchChange}
         className="mb-4"
@@ -95,33 +111,68 @@ const WarehouseList: React.FC = () => {
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} campu(s) fueron encontrados.
+              {pagination?.totalItems} inventario(s) fueron encontrados.
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">
                 <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Partida
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
                   Nombre
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Descripción
+                  Unidad
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Ubicación
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Campus
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Existencia
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Disponibilidad
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {warehouses.map((warehouse: Warehouse) => (
-                <TableRow key={warehouse.id} className="hover:bg-gray-100">
+              {inventories.map((inventory: Inventory) => (
+                <TableRow key={inventory.id} className="hover:bg-gray-100">
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.name}
+                    {inventory.product.category.code} -{" "}
+                    {inventory.product.category.name}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.description}
+                    {inventory.product.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {inventory.product.unit_display}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {inventory.location.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {inventory.location.warehouse.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
+                    {inventory.quantity}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
+                    <Badge
+                      className={getBadgeColor(inventory.availability_display)}
+                    >
+                      {inventory.availability_display}
+                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
                     <Edit
                       size={20}
                       className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(warehouse.id)}
+                      onClick={() => handleSettings(inventory.id)}
                     />
                   </TableCell>
                 </TableRow>
@@ -159,4 +210,4 @@ const WarehouseList: React.FC = () => {
   );
 };
 
-export default WarehouseList;
+export default InventoryList;

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { getConfig } from "../axiosConfig";
 import { Location } from "../../models/inventory";
 import { AppDispatch } from "../../store";
 import {
@@ -20,15 +20,26 @@ import {
 
 import { INVENTORY_URL } from "@/constants/urls";
 
-export const fetchLocations = (page: number) => async (dispatch: AppDispatch) => {
+export const fetchLocations = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchLocationsStart());
     try {
-        const response = await axios.get(`${INVENTORY_URL}/locations?page=${page}`);
+        const response = await axios.get(`${INVENTORY_URL}/locations/`, { 
+            params: { 
+            page,
+            search: searchTerm 
+            }, 
+        ...getConfig()
+        });
         dispatch(fetchLocationsSuccess({
             message: response.data.message,
             data: response.data.locations,
             status: response.status,
-            pagination: response.data.meta
+            pagination: {
+                currentPage: response.data.meta.current_page,
+                totalPages: response.data.meta.total_pages,
+                totalItems: response.data.meta.total_items,
+                pageSize: response.data.meta.page_size
+            }
         }));
     } catch (error: any) {
         dispatch(fetchLocationsFailure({

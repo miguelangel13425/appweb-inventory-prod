@@ -21,7 +21,7 @@ export interface Category extends Base {
 export interface Product extends Base {
     name: string;
     description?: string;
-    unit: string;
+    unit_display: string;
     category: Category;
     is_single_use: boolean;
 }
@@ -30,12 +30,14 @@ export interface Inventory extends Base {
     product: Product;
     location: Location;
     quantity?: number;
-    availability?: string; 
+    availability_display?: string; 
 }
 
 export interface InventoryTransaction extends Base {
     inventory: Inventory;
     person?: Person;
     quantity: number;
-    movement: string; 
+    movement_display: string; 
+    type_display: string;
+    description?: string;
 }

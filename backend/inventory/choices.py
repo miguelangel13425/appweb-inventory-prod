@@ -16,3 +16,11 @@ class AvailabilityChoices(models.TextChoices):
 class MovementChoices(models.TextChoices):
     IN = 'IN', 'Entrada'
     OUT = 'OUT', 'Salida'
+
+class TypeChoices(models.TextChoices):
+    PURCHASE = 'PURCHASE', 'Compra'
+    SALE = 'SALE', 'Venta'
+    LOST = 'LOST', 'Perdido'
+    DAMAGED = 'DAMAGED', 'Dañado'
+    LOAN = 'LOAN', 'Préstamo'
+    RETURN = 'RETURN', 'Devolución'

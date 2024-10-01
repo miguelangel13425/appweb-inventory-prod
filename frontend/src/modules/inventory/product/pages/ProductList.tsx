@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchWarehouses } from "@/redux/actions/inventory/warehouseActions";
+import { fetchProducts } from "@/redux/actions/inventory/productActions";
 import {
   Table,
   TableBody,
@@ -21,26 +21,26 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner, Card, Input } from "@/components/index";
-import { Edit } from "@geist-ui/icons";
-import CreateWarehouseModal from "../components/CreateWarehouseModal";
-import { Warehouse } from "@/redux/models/inventory";
+import { Edit, CheckInCircle } from "@geist-ui/icons";
+import CreateProductModal from "../components/CreateProductModal";
+import { Product } from "@/redux/models/inventory";
 
-const WarehouseList: React.FC = () => {
+const ProductList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { warehouses, loading, error, pagination } = useSelector(
-    (state: RootState) => state.warehouse
+  const { products, loading, error, pagination } = useSelector(
+    (state: RootState) => state.product
   );
   const [searchTerm, setSearchTerm] = useState("");
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchWarehouses(page, searchTerm));
+      dispatch(fetchProducts(page, searchTerm));
     }
   };
 
   useEffect(() => {
-    dispatch(fetchWarehouses(1, searchTerm));
+    dispatch(fetchProducts(1, searchTerm));
   }, [dispatch, searchTerm]);
 
   const createPageLinks = () => {
@@ -71,18 +71,18 @@ const WarehouseList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/warehouses/${id}`);
+    navigate(`/products/${id}`);
   };
 
   return (
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Campus</h2>
-        <CreateWarehouseModal />
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Productos</h2>
+        <CreateProductModal />
       </div>
       <Input
         type="text"
-        placeholder="Buscar por nombre"
+        placeholder="Buscar por nombre, partida o unidad"
         value={searchTerm}
         onChange={handleSearchChange}
         className="mb-4"
@@ -95,7 +95,7 @@ const WarehouseList: React.FC = () => {
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} campu(s) fueron encontrados.
+              {pagination?.totalItems} producto(s) fueron encontrados.
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">
@@ -103,25 +103,39 @@ const WarehouseList: React.FC = () => {
                   Nombre
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Descripción
+                  Partida
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Unidad
+                </TableHead>
+                <TableHead className="px-4 py-2 text-left text-gray-600">
+                  Un uso
                 </TableHead>
                 <TableHead className="px-4 py-2 text-left"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {warehouses.map((warehouse: Warehouse) => (
-                <TableRow key={warehouse.id} className="hover:bg-gray-100">
+              {products.map((product: Product) => (
+                <TableRow key={product.id} className="hover:bg-gray-100">
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.name}
+                    {product.name}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {warehouse.description}
+                    {product.category.code} - {product.category.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {product.unit_display}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 border-b border-gray-200">
+                    {product.is_single_use ? (
+                      <CheckInCircle size={20} className="text-impactBlue" />
+                    ) : null}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
                     <Edit
                       size={20}
                       className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(warehouse.id)}
+                      onClick={() => handleSettings(product.id)}
                     />
                   </TableCell>
                 </TableRow>
@@ -159,4 +173,4 @@ const WarehouseList: React.FC = () => {
   );
 };
 
-export default WarehouseList;
+export default ProductList;

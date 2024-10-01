@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { getConfig } from "../axiosConfig";
 import { Category } from "../../models/inventory";
 import { AppDispatch } from "../../store";
 import {
@@ -20,15 +20,26 @@ import {
 
 import { INVENTORY_URL } from "@/constants/urls";
 
-export const fetchCategories = (page: number) => async (dispatch: AppDispatch) => {
+export const fetchCategories = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchCategoriesStart());
     try {
-        const response = await axios.get(`${INVENTORY_URL}/categories?page=${page}`);
+        const response = await axios.get(`${INVENTORY_URL}/categories/`, { 
+            params: { 
+            page,
+            search: searchTerm 
+            }, 
+        ...getConfig()
+        });
         dispatch(fetchCategoriesSuccess({
             message: response.data.message,
             data: response.data.categories,
             status: response.status,
-            pagination: response.data.meta
+            pagination: {
+                currentPage: response.data.meta.current_page,
+                totalPages: response.data.meta.total_pages,
+                totalItems: response.data.meta.total_items,
+                pageSize: response.data.meta.page_size
+            }
         }));
     } catch (error: any) {
         dispatch(fetchCategoriesFailure({

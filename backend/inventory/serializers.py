@@ -7,6 +7,9 @@ from .managers import (
     WarehouseManager, LocationManager, CategoryManager,
     ProductManager, InventoryManager, InventoryTransactionManager
 )
+from accounts.serializers import (
+    PersonCustomSerializer,
+)
 
 class DateFormatManager(serializers.ModelSerializer):
     def format_date(self, date):
@@ -23,6 +26,11 @@ class DateFormatManager(serializers.ModelSerializer):
                     representation[field] = formatted_date
         return representation
 
+class WarehouseCustomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WarehouseModel
+        fields = ['id', 'name']
+
 class WarehouseListSerializer(WarehouseManager):
     class Meta:
         model = WarehouseModel
@@ -34,16 +42,31 @@ class WarehouseDetailSerializer(WarehouseManager, DateFormatManager):
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at', 'deleted_at']
 
-class LocationListSerializer(LocationManager):
+class LocationCustomSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseCustomSerializer()
+
     class Meta:
         model = LocationModel
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'warehouse']
+
+
+class LocationListSerializer(LocationManager):
+    warehouse = WarehouseCustomSerializer()
+    
+    class Meta:
+        model = LocationModel
+        fields = ['id', 'name', 'description', 'warehouse']
 
 class LocationDetailSerializer(LocationManager):
     class Meta:
         model = LocationModel
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at']
+
+class CategoryCustomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryModel
+        fields = ['id', 'code', 'name']
 
 class CategoryListSerializer(CategoryManager):
     class Meta:
@@ -56,12 +79,24 @@ class CategoryDetailSerializer(CategoryManager):
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at']
 
+class ProductCustomSerializer(serializers.ModelSerializer):
+    unit_display = serializers.SerializerMethodField()
+    category = CategoryCustomSerializer()
+
+    class Meta:
+        model = ProductModel
+        fields = ['id', 'name', 'unit_display', 'category']
+
+    def get_unit_display(self, obj):
+        return obj.get_unit_display()
+
 class ProductListSerializer(ProductManager):
     unit_display = serializers.SerializerMethodField()
+    category = CategoryCustomSerializer()
     
     class Meta:
         model = ProductModel
-        fields = ['id', 'name', 'description', 'unit_display', 'category']
+        fields = ['id', 'name', 'description', 'is_single_use', 'unit_display', 'category']
 
     def get_unit_display(self, obj):
         return obj.get_unit_display()
@@ -72,10 +107,26 @@ class ProductDetailSerializer(ProductManager):
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at']
 
-class InventoryListSerializer(InventoryManager):
+class InventoryCustomSerializer(serializers.ModelSerializer):
+    product = ProductCustomSerializer()
+    location = LocationCustomSerializer()
+
     class Meta:
         model = InventoryModel
         fields = ['id', 'product', 'location']
+
+class InventoryListSerializer(InventoryManager):
+    product = ProductCustomSerializer()
+    location = LocationCustomSerializer()
+    availability_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = InventoryModel
+        fields = ['id', 'product', 'location', 'quantity', 'availability_display']
+
+    def get_availability_display(self, obj):
+        return obj.get_availability_display()
+
 
 class InventoryDetailSerializer(InventoryManager):
     class Meta:
@@ -83,15 +134,22 @@ class InventoryDetailSerializer(InventoryManager):
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at']
 
-class InventoryTransactionListSerializer(InventoryTransactionManager):
+class InventoryTransactionListSerializer(InventoryTransactionManager, DateFormatManager):
     movement_display = serializers.SerializerMethodField()
+    type_display = serializers.SerializerMethodField()
+    inventory = InventoryCustomSerializer()
+    person = PersonCustomSerializer()
 
     class Meta:
         model = InventoryTransactionModel
-        fields = ['id', 'product', 'location', 'quantity', 'movement_display'] 
+        fields = ['id', 'person', 'inventory', 'quantity', 'movement_display', 'type_display', 'inventory', 'created_at']
+        read_only_fields = ['created_at'] 
 
     def get_movement_display(self, obj):
         return obj.get_movement_display()
+
+    def get_type_display(self, obj):
+        return obj.get_type_display()
 
 class InventoryTransactionDetailSerializer(InventoryTransactionManager):
     class Meta:
