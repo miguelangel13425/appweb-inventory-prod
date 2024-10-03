@@ -21,6 +21,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner, Card, Input } from "@/components/index";
+import {
+  NotFound,
+  Unauthorized,
+  Forbidden,
+  ServerError,
+} from "@/modules/base/index";
 import { Edit } from "@geist-ui/icons";
 import CreateWarehouseModal from "../components/CreateWarehouseModal";
 import { Warehouse } from "@/redux/models/inventory";
@@ -28,7 +34,7 @@ import { Warehouse } from "@/redux/models/inventory";
 const WarehouseList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { warehouses, loading, error, pagination } = useSelector(
+  const { warehouses, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.warehouse
   );
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,6 +80,13 @@ const WarehouseList: React.FC = () => {
     navigate(`/warehouses/${id}`);
   };
 
+  if (error) {
+    if (status === 401) return <Unauthorized />;
+    if (status === 403) return <Forbidden />;
+    if (status === 404) return <NotFound />;
+    if (status === 500) return <ServerError />;
+  }
+
   return (
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
@@ -89,8 +102,8 @@ const WarehouseList: React.FC = () => {
       />
       {loading ? (
         <Spinner />
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
+      ) : warehouses.length === 0 ? (
+        <div className="text-gray-500">No hay campus</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">

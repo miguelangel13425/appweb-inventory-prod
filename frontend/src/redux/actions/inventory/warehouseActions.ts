@@ -68,7 +68,7 @@ export const fetchWarehouse = (id: string) => async (dispatch: AppDispatch) => {
 export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
     dispatch(createWarehouseStart());
     try {
-        const response = await axios.post(`${INVENTORY_URL}/warehouses`, newWarehouse, getConfig());
+        const response = await axios.post(`${INVENTORY_URL}/warehouses/`, newWarehouse, getConfig());
         dispatch(createWarehouseSuccess({
             message: response.data.message,
             data: response.data.warehouse,
@@ -77,6 +77,7 @@ export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: App
     } catch (error: any) {
         dispatch(createWarehouseFailure({
             error: error.response?.data.message || error.message,
+            errors: error.response?.data.errors || {},
             status: error.response?.status || 500
         }));
     }
@@ -85,7 +86,7 @@ export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: App
 export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
     dispatch(updateWarehouseStart());
     try {
-        const response = await axios.put(`${INVENTORY_URL}/warehouses/${id}`, updatedWarehouse, getConfig());
+        const response = await axios.put(`${INVENTORY_URL}/warehouses/${id}/`, updatedWarehouse, getConfig());
         dispatch(updateWarehouseSuccess({
             message: response.data.message,
             data: response.data.warehouse,
@@ -102,7 +103,7 @@ export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => asyn
 export const deleteWarehouse = (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteWarehouseStart());
     try {
-        const response = await axios.delete(`${INVENTORY_URL}/warehouses/${id}`, getConfig());
+        const response = await axios.delete(`${INVENTORY_URL}/warehouses/${id}/`, getConfig());
         dispatch(deleteWarehouseSuccess({
             message: response.data.message,
             status: response.status
