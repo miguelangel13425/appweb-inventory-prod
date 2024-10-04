@@ -9,53 +9,53 @@ from accounts.models import PersonModel
 # Create your models here.
 
 class WarehouseModel(BaseModel):
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True, verbose_name='nombre')
     description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Warehouse'
-        verbose_name_plural = 'Warehouses'
+        verbose_name = 'Campus'
+        verbose_name_plural = 'Campus'
         ordering = ['created_at']
 
     def __str__(self):
         return self.name
     
 class LocationModel(BaseModel):
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True, verbose_name='nombre')
     description = models.TextField(max_length=128, null=True, blank=True)
     warehouse = models.ForeignKey(WarehouseModel, on_delete=models.CASCADE, related_name='locations')
 
     class Meta:
-        verbose_name = 'Location'
-        verbose_name_plural = 'Locations'
+        verbose_name = 'Ubicación'
+        verbose_name_plural = 'Ubicaciones'
         ordering = ['created_at']
 
     def __str__(self):
         return self.name
     
 class CategoryModel(BaseModel):
-    code = models.PositiveIntegerField(unique=True)
+    code = models.PositiveIntegerField(unique=True, verbose_name='código')
     name = models.CharField(max_length=64, unique=True)
     description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Category'
-        verbose_name_plural = 'Categories'
+        verbose_name = 'Partida'
+        verbose_name_plural = 'Partidas'
         ordering = ['created_at']
 
     def __str__(self):
         return f'{self.code} - {self.name}'
     
 class ProductModel(BaseModel):
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True, verbose_name='nombre')
     description = models.TextField(max_length=128, null=True, blank=True)
     unit = models.CharField(max_length=8, choices=UnitChoices.choices, default=UnitChoices.PIECE)
     category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE, related_name='products')
     is_single_use = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
         ordering = ['created_at']
 
     def __str__(self):
@@ -66,8 +66,8 @@ class InventoryModel(BaseModel):
     location = models.ForeignKey(LocationModel, on_delete=models.CASCADE, related_name='inventories')
 
     class Meta:
-        verbose_name = 'Inventory'
-        verbose_name_plural = 'Inventories'
+        verbose_name = 'Inventario'
+        verbose_name_plural = 'Inventarios'
         unique_together = ('product', 'location')
 
     def __str__(self):
@@ -104,8 +104,8 @@ class InventoryTransactionModel(BaseModel):
     description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Inventory Transaction'
-        verbose_name_plural = 'Inventory Transactions'
+        verbose_name = 'Transacción'
+        verbose_name_plural = 'Transacciones'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -114,7 +114,7 @@ class InventoryTransactionModel(BaseModel):
     def save(self, *args, **kwargs):
         if self.movement == MovementChoices.OUT:
             if self.inventory.quantity < self.quantity:
-                raise ValueError("Insufficient inventory")
+                raise ValueError("Inventario insuficiente")
         if self.movement == MovementChoices.IN and self.type in [TypeChoices.LOST, TypeChoices.DAMAGED]:
             raise ValueError("El tipo de transacción no puede ser 'Perdido' o 'Dañado' para una entrada")
         if self.movement == MovementChoices.OUT and self.type == TypeChoices.PURCHASE:

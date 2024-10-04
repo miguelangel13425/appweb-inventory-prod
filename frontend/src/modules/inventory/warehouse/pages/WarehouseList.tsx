@@ -108,7 +108,7 @@ const WarehouseList: React.FC = () => {
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} campu(s) fueron encontrados.
+              {pagination?.totalItems} campu(s) fueron encontrado(s).
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">

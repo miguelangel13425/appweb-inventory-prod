@@ -10,6 +10,7 @@ interface WarehouseState {
     errors: Record<string, string[]> | null;
     message: string | null;
     status: number | null;
+    detailCode: string | null;
     pagination: Pagination | null;
 }
 
@@ -21,6 +22,7 @@ const initialState: WarehouseState = {
     errors: null,
     message: null,
     status: null,
+    detailCode: null,
     pagination: {
         currentPage: 1,
         totalPages: 1,
@@ -39,35 +41,40 @@ const warehouseSlice = createSlice({
             state.errors = null;
             state.message = null;
             state.status = null;
+            state.detailCode = null;
         },
-        fetchWarehousesSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse[], status: number, pagination: Pagination }>) => {
+        fetchWarehousesSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse[], status: number, pagination: Pagination, detailCode: string }>) => {
             state.warehouses = action.payload.data;
             state.loading = false;
             state.error = null;
             state.errors = null;
             state.message = action.payload.message;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
             state.pagination = action.payload.pagination;
         },
-        fetchWarehousesFailure: (state, action: PayloadAction<{ error: string, status: number }>) => {
+        fetchWarehousesFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = null;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
-        fetchWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number }>) => {
+        fetchWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number, detailCode: string }>) => {
             state.warehouse = action.payload.data;
             state.loading = false;
             state.error = null;
             state.errors = null;
             state.message = action.payload.message;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
-        fetchWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number }>) => {
+        fetchWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = null;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
         createWarehouseStart: (state) => {
             state.loading = true;
@@ -75,21 +82,24 @@ const warehouseSlice = createSlice({
             state.errors = null;
             state.message = null;
             state.status = null;
+            state.detailCode = null;
         },
-        createWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number }>) => {
+        createWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number, detailCode: string }>) => {
             state.warehouse = action.payload.data;
             state.loading = false;
             state.error = null;
             state.errors = null;
             state.message = action.payload.message;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
-        createWarehouseFailure: (state, action: PayloadAction<{ error: string, errors: Record<string, string[]>, status: number }>) => {
+        createWarehouseFailure: (state, action: PayloadAction<{ error: string, errors: Record<string, string[]>, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = action.payload.errors;
             state.message = action.payload.error;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
         updateWarehouseStart: (state) => {
             state.loading = true;
@@ -97,20 +107,23 @@ const warehouseSlice = createSlice({
             state.errors = null;
             state.message = null;
             state.status = null;
+            state.detailCode = null;
         },
-        updateWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number }>) => {
+        updateWarehouseSuccess: (state, action: PayloadAction<{ message: string, data: Warehouse, status: number, detailCode: string }>) => {
             state.warehouse = action.payload.data;
             state.loading = false;
             state.error = null;
             state.errors = null;
             state.message = action.payload.message;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
-        updateWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number }>) => {
+        updateWarehouseFailure: (state, action: PayloadAction<{ error: string, errors: Record<string, string[]>, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
-            state.errors = null;
+            state.errors = action.payload.errors;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
         deleteWarehouseStart: (state) => {
             state.loading = true;
@@ -118,20 +131,24 @@ const warehouseSlice = createSlice({
             state.errors = null;
             state.message = null;
             state.status = null;
+            state.detailCode = null;
         },
-        deleteWarehouseSuccess: (state, action: PayloadAction<{ message: string, status: number }>) => {
+        deleteWarehouseSuccess: (state, action: PayloadAction<{ message: string, status: number, detailCode: string }>) => {
+            console.log('Reducer deleteWarehouseSuccess:', action);
             state.warehouse = null;
             state.loading = false;
             state.error = null;
             state.errors = null;
             state.message = action.payload.message;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         },
-        deleteWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number }>) => {
+        deleteWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = null;
             state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
         }
     }
 });

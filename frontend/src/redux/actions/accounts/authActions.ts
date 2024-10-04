@@ -111,8 +111,8 @@ export const login = (email: string, password: string) => async (dispatch: AppDi
     const res = await axios.post(`${AUTH_URL}/jwt/create/`, body, config);
     dispatch(loginSuccess(res.data));
     dispatch(getUser());
-  } catch (err) {
-    dispatch(loginFail(err));
+  } catch (err: any) {
+    dispatch(loginFail(err.response.data));
   }
 };
 

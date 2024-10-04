@@ -32,9 +32,11 @@ const WarehouseDetail: React.FC = () => {
     if (status === 500) return <ServerError />;
   }
 
+  if (!warehouse) return null;
+
   return (
-    <div>
-      {warehouse && <UpdateDeleteWarehouseForm warehouse={warehouse} />}
+    <div className="p-8">
+      <UpdateDeleteWarehouseForm warehouse={warehouse} />
     </div>
   );
 };

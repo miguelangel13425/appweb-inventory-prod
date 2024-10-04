@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import {
   updateWarehouse,
   deleteWarehouse,
@@ -15,6 +15,18 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button, Input, Textarea, Label } from "@/components/index";
+import { useToast } from "@/hooks/use-toast"; // Asumimos que tienes un hook para toast
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 interface UpdateDeleteWarehouseFormProps {
   warehouse: Warehouse;
@@ -25,36 +37,87 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const { status, detailCode, message, errors } = useSelector(
+    (state: RootState) => state.warehouse
+  );
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     name: warehouse.name,
     description: warehouse.description,
-    is_active: warehouse.is_active,
   });
+
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setFormData({
+      name: warehouse.name,
+      description: warehouse.description,
+    });
+  }, [warehouse]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(updateWarehouse(warehouse.id, formData));
-    navigate("/warehouses");
   };
 
   const handleDelete = () => {
+    setIsAlertDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
     dispatch(deleteWarehouse(warehouse.id));
+    setIsAlertDialogOpen(false);
+  };
+
+  const handleBack = () => {
     navigate("/warehouses");
   };
 
+  useEffect(() => {
+    console.log(detailCode, status, message, errors);
+  }, [detailCode, status, message, errors]);
+
+  useEffect(() => {
+    if (detailCode === "UPDATE_WAREHOUSE_SUCCESS") {
+      toast({
+        title: "¡Muy bien!",
+        description: message,
+      });
+    }
+  }, [detailCode, message, toast]);
+
+  useEffect(() => {
+    if (detailCode === "DELETE_WAREHOUSE_SUCCESS") {
+      toast({
+        title: "¡Hecho!",
+        description: message,
+      });
+      navigate("/warehouses");
+    }
+  }, [detailCode, message, navigate, toast]);
+
+  useEffect(() => {
+    if (status === 400) {
+      toast({
+        title: "¡Lo siento!",
+        description: message,
+      });
+    }
+  }, [status, message, toast]);
+
   return (
-    <Card>
+    <Card className="p-6">
       <CardHeader>
         <CardTitle>Configuración de Almacén</CardTitle>
         <CardDescription>Modifica los detalles del almacén.</CardDescription>
@@ -92,6 +155,9 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
               onChange={handleChange}
               className="mt-1 block w-full"
             />
+            {errors?.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>
+            )}
           </div>
           <div className="mb-4">
             <Label
@@ -107,34 +173,47 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
               onChange={handleChange}
               className="mt-1 block w-full"
             />
+            {errors?.description && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.description[0]}
+              </p>
+            )}
           </div>
-          <div className="mb-4 flex items-center">
-            <Input
-              id="is_active"
-              name="is_active"
-              type="checkbox"
-              checked={formData.is_active}
-              onChange={handleChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-            />
-            <Label
-              htmlFor="is_active"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Activo
-            </Label>
-          </div>
-          <div className="flex space-x-4">
-            <Button type="submit" className="bg-sunnyYellow text-white">
-              Actualizar
-            </Button>
+          <div className="flex justify-between">
             <Button
               type="button"
-              onClick={handleDelete}
-              className="bg-smartRed text-white"
+              onClick={handleBack}
+              className="bg-vibrantCyan text-white"
             >
-              Eliminar
+              Volver
             </Button>
+            <div className="flex space-x-4">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" className="bg-smartRed text-white">
+                    Eliminar
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se puede deshacer. Esto eliminará
+                      permanentemente el almacén y sus datos asociados.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={confirmDelete}>
+                      Eliminar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <Button type="submit" className="bg-sunnyYellow text-white">
+                Actualizar
+              </Button>
+            </div>
           </div>
         </form>
       </CardContent>
