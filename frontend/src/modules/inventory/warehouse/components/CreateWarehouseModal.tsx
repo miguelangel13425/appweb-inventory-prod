@@ -23,7 +23,7 @@ const CreateWarehouseModal: React.FC = () => {
     description: "",
   });
   const { toast } = useToast();
-  const { status, message, errors } = useSelector(
+  const { status, detailCode, message, errors } = useSelector(
     (state: RootState) => state.warehouse
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -34,14 +34,14 @@ const CreateWarehouseModal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (status === 201) {
+    if (detailCode === "CREATE_WAREHOUSE_SUCCESS") {
       toast({
         title: "¡Listo!",
         description: message,
       });
       dispatch(fetchWarehouses(1));
       setIsDialogOpen(false);
-    } else if (status === 400) {
+    } else if (detailCode === "CREATE_WAREHOUSE_VALIDATION_ERROR") {
       toast({
         title: "¡Lo siento!",
         description: message,

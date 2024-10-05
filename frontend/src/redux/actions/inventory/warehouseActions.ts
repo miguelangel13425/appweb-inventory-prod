@@ -5,6 +5,9 @@ import {
     fetchWarehousesStart,
     fetchWarehousesSuccess,
     fetchWarehousesFailure,
+    fetchSimplifiedWarehousesStart,
+    fetchSimplifiedWarehousesSuccess,
+    fetchSimplifiedWarehousesFailure,
     fetchWarehouseSuccess,
     fetchWarehouseFailure,
     createWarehouseStart,
@@ -47,6 +50,28 @@ export const fetchWarehouses = (page: number, searchTerm: string = "") => async 
             error: error.response?.data.message || error.message,
             status: error.response?.status || 500,
             detailCode: error.response?.data.detail_code || 'FETCH_WAREHOUSES_ERROR'
+        }));
+    }
+};
+
+export const fetchSimplifiedWarehouses = (searchTerm: string = "") => async (dispatch: AppDispatch) => {
+    dispatch(fetchSimplifiedWarehousesStart());
+    try {
+        const response = await axios.get(`${INVENTORY_URL}/warehouses/options/`, {
+            params: { search: searchTerm }, 
+            ...getConfig() 
+        });
+        dispatch(fetchSimplifiedWarehousesSuccess({
+            message: response.data.message,
+            data: response.data.warehouses,
+            status: response.status,
+            detailCode: response.data.detail_code
+        }));
+    } catch (error: any) {
+        dispatch(fetchSimplifiedWarehousesFailure({
+            error: error.response?.data.message || error.message,
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'FETCH_SIMPLIFIED_WAREHOUSES_ERROR'
         }));
     }
 };
@@ -118,7 +143,6 @@ export const deleteWarehouse = (id: string) => async (dispatch: AppDispatch) => 
             status: response.status,
             detailCode: response.data.detail_code
         }));
-        console.log(response.data);
     } catch (error: any) {
         dispatch(deleteWarehouseFailure({
             error: error.response?.data.message || error.message,

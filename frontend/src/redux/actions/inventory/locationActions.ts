@@ -25,10 +25,10 @@ export const fetchLocations = (page: number, searchTerm: string = "") => async (
     try {
         const response = await axios.get(`${INVENTORY_URL}/locations/`, { 
             params: { 
-            page,
-            search: searchTerm 
+                page,
+                search: searchTerm 
             }, 
-        ...getConfig()
+            ...getConfig()
         });
         dispatch(fetchLocationsSuccess({
             message: response.data.message,
@@ -39,28 +39,32 @@ export const fetchLocations = (page: number, searchTerm: string = "") => async (
                 totalPages: response.data.meta.total_pages,
                 totalItems: response.data.meta.total_items,
                 pageSize: response.data.meta.page_size
-            }
+            },
+            detailCode: response.data.detail_code
         }));
     } catch (error: any) {
         dispatch(fetchLocationsFailure({
             error: error.response?.data.message || error.message,
-            status: error.response?.status || 500
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'FETCH_LOCATIONS_ERROR'
         }));
     }
 };
 
 export const fetchLocation = (id: string) => async (dispatch: AppDispatch) => {
     try {
-        const response = await axios.get(`${INVENTORY_URL}/locations/${id}`);
+        const response = await axios.get(`${INVENTORY_URL}/locations/${id}/`, getConfig());
         dispatch(fetchLocationSuccess({
             message: response.data.message,
             data: response.data.location,
-            status: response.status
+            status: response.status,
+            detailCode: response.data.detail_code
         }));
     } catch (error: any) {
         dispatch(fetchLocationFailure({
             error: error.response?.data.message || error.message,
-            status: error.response?.status || 500
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'FETCH_LOCATION_ERROR'
         }));
     }
 };
@@ -68,16 +72,19 @@ export const fetchLocation = (id: string) => async (dispatch: AppDispatch) => {
 export const createLocation = (newLocation: Location) => async (dispatch: AppDispatch) => {
     dispatch(createLocationStart());
     try {
-        const response = await axios.post(`${INVENTORY_URL}/locations`, newLocation);
+        const response = await axios.post(`${INVENTORY_URL}/locations/`, newLocation, getConfig());
         dispatch(createLocationSuccess({
             message: response.data.message,
             data: response.data.location,
-            status: response.status
+            status: response.status,
+            detailCode: response.data.detail_code
         }));
     } catch (error: any) {
         dispatch(createLocationFailure({
             error: error.response?.data.message || error.message,
-            status: error.response?.status || 500
+            errors: error.response?.data.errors || {},
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'CREATE_LOCATION_ERROR'
         }));
     }
 };
@@ -85,16 +92,19 @@ export const createLocation = (newLocation: Location) => async (dispatch: AppDis
 export const updateLocation = (id: string, updatedLocation: Location) => async (dispatch: AppDispatch) => {
     dispatch(updateLocationStart());
     try {
-        const response = await axios.put(`${INVENTORY_URL}/locations/${id}`, updatedLocation);
+        const response = await axios.put(`${INVENTORY_URL}/locations/${id}/`, updatedLocation, getConfig());
         dispatch(updateLocationSuccess({
             message: response.data.message,
             data: response.data.location,
-            status: response.status
+            status: response.status,
+            detailCode: response.data.detail_code
         }));
     } catch (error: any) {
         dispatch(updateLocationFailure({
             error: error.response?.data.message || error.message,
-            status: error.response?.status || 500
+            errors: error.response?.data.errors || {},
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'UPDATE_LOCATION_ERROR'
         }));
     }
 };
@@ -102,15 +112,17 @@ export const updateLocation = (id: string, updatedLocation: Location) => async (
 export const deleteLocation = (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteLocationStart());
     try {
-        const response = await axios.delete(`${INVENTORY_URL}/locations/${id}`);
+        const response = await axios.delete(`${INVENTORY_URL}/locations/${id}/`, getConfig());
         dispatch(deleteLocationSuccess({
             message: response.data.message,
-            status: response.status
+            status: response.status,
+            detailCode: response.data.detail_code
         }));
     } catch (error: any) {
         dispatch(deleteLocationFailure({
             error: error.response?.data.message || error.message,
-            status: error.response?.status || 500
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'DELETE_LOCATION_ERROR'
         }));
     }
 };

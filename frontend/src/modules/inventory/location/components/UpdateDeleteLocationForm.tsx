@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  updateWarehouse,
-  deleteWarehouse,
-} from "@/redux/actions/inventory/warehouseActions";
-import { Warehouse } from "@/redux/models/inventory";
+  updateLocation,
+  deleteLocation,
+} from "@/redux/actions/inventory/locationActions";
+import { Location } from "@/redux/models/inventory";
 import {
   Card,
   CardContent,
@@ -28,33 +28,33 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 
-interface UpdateDeleteWarehouseFormProps {
-  warehouse: Warehouse;
+interface UpdateDeleteLocationFormProps {
+  location: Location;
 }
 
-const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
-  warehouse,
+const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
+  location,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.warehouse
+    (state: RootState) => state.location
   );
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    name: warehouse.name,
-    description: warehouse.description,
+    name: location.name,
+    description: location.description,
   });
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   useEffect(() => {
     setFormData({
-      name: warehouse.name,
-      description: warehouse.description,
+      name: location.name,
+      description: location.description,
     });
-  }, [warehouse]);
+  }, [location]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,7 +68,7 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateWarehouse(warehouse.id, formData));
+    dispatch(updateLocation(location.id, formData));
   };
 
   const handleDelete = () => {
@@ -77,27 +77,27 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    dispatch(deleteWarehouse(warehouse.id));
+    dispatch(deleteLocation(location.id));
     toast({
       title: "¡Hecho!",
-      description: "¡Campus eliminado con éxito!",
+      description: "¡Ubicación eliminada con éxito!",
     });
     setIsAlertDialogOpen(false);
     handleBack();
   };
 
   const handleBack = () => {
-    navigate("/campus");
+    navigate("/ubicaciones");
   };
 
   useEffect(() => {
-    if (detailCode === "UPDATE_WAREHOUSE_SUCCESS") {
+    if (detailCode === "UPDATE_LOCATION_SUCCESS") {
       toast({
         title: "¡Muy bien!",
         description: message,
       });
     }
-    if (detailCode === "UPDATE_WAREHOUSE_VALIDATION_ERROR") {
+    if (detailCode === "UPDATE_LOCATION_VALIDATION_ERROR") {
       toast({
         title: "¡Lo siento!",
         description: message,
@@ -108,14 +108,16 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
   return (
     <Card className="p-6">
       <CardHeader>
-        <CardTitle>Configuración de Almacén</CardTitle>
-        <CardDescription>Modifica los detalles del almacén.</CardDescription>
+        <CardTitle>Configuración de Ubicación</CardTitle>
+        <CardDescription>
+          Modifica los detalles de la ubicación.
+        </CardDescription>
         <div className="mb-4">
           <Label
             htmlFor="created_at"
             className="block text-sm font-medium text-gray-700"
           >
-            Creado el {warehouse.created_at}
+            Creado el {location.created_at}
           </Label>
         </div>
         <div className="mb-4">
@@ -123,9 +125,9 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Este campus está{" "}
+            Esta ubicación está{" "}
             <strong className="text-gray-900">
-              {warehouse.is_active ? "vigente" : "descontinuado"}
+              {location.is_active ? "vigente" : "descontinuada"}
             </strong>
           </Label>
         </div>
@@ -191,7 +193,7 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción no se puede deshacer. Esto eliminará
-                      permanentemente el almacén y sus datos asociados.
+                      permanentemente la ubicación y sus datos asociados.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -213,4 +215,4 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
   );
 };
 
-export default UpdateDeleteWarehouseForm;
+export default UpdateDeleteLocationForm;

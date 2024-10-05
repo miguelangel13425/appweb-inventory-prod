@@ -21,6 +21,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner, Card, Input, Badge } from "@/components/index";
+import {
+  NotFound,
+  Unauthorized,
+  Forbidden,
+  ServerError,
+} from "@/modules/base/index";
 import { Edit } from "@geist-ui/icons";
 import CreateTransactionModal from "../components/CreateTransactionModal";
 import { InventoryTransaction } from "@/redux/models/inventory";
@@ -28,7 +34,7 @@ import { InventoryTransaction } from "@/redux/models/inventory";
 const TransactionList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { transactions, loading, error, pagination } = useSelector(
+  const { transactions, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.inventoryTransaction
   );
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,8 +77,15 @@ const TransactionList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/transactions/${id}`);
+    navigate(`/transacciones/${id}`);
   };
+
+  if (error) {
+    if (status === 401) return <Unauthorized />;
+    if (status === 403) return <Forbidden />;
+    if (status === 404) return <NotFound />;
+    if (status === 500) return <ServerError />;
+  }
 
   const getBadgeColor = (movemenent: string) => {
     switch (movemenent) {
@@ -100,8 +113,8 @@ const TransactionList: React.FC = () => {
       />
       {loading ? (
         <Spinner />
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
+      ) : transactions.length === 0 ? (
+        <div className="text-gray-500">No hay transacciones.</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">

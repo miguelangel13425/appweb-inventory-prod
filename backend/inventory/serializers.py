@@ -49,6 +49,10 @@ class LocationCustomSerializer(serializers.ModelSerializer):
         model = LocationModel
         fields = ['id', 'name', 'warehouse']
 
+class LocationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocationModel
+        fields = ['name', 'description', 'warehouse']
 
 class LocationListSerializer(LocationManager):
     warehouse = WarehouseCustomSerializer()
@@ -73,7 +77,7 @@ class CategoryListSerializer(CategoryManager):
         model = CategoryModel
         fields = ['id', 'code', 'name', 'description']
 
-class CategoryDetailSerializer(CategoryManager):
+class CategoryDetailSerializer(CategoryManager, DateFormatManager):
     class Meta:
         model = CategoryModel
         fields = '__all__'

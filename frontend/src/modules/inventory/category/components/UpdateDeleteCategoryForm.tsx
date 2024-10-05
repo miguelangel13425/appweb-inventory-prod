@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  updateWarehouse,
-  deleteWarehouse,
-} from "@/redux/actions/inventory/warehouseActions";
-import { Warehouse } from "@/redux/models/inventory";
+  updateCategory,
+  deleteCategory,
+} from "@/redux/actions/inventory/categoryActions";
+import { Category } from "@/redux/models/inventory";
 import {
   Card,
   CardContent,
@@ -28,33 +28,35 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 
-interface UpdateDeleteWarehouseFormProps {
-  warehouse: Warehouse;
+interface UpdateDeleteCategoryFormProps {
+  category: Category;
 }
 
-const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
-  warehouse,
+const UpdateDeleteCategoryForm: React.FC<UpdateDeleteCategoryFormProps> = ({
+  category,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.warehouse
+    (state: RootState) => state.category
   );
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    name: warehouse.name,
-    description: warehouse.description,
+    code: category.code,
+    name: category.name,
+    description: category.description,
   });
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   useEffect(() => {
     setFormData({
-      name: warehouse.name,
-      description: warehouse.description,
+      code: category.code,
+      name: category.name,
+      description: category.description,
     });
-  }, [warehouse]);
+  }, [category]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,7 +70,7 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateWarehouse(warehouse.id, formData));
+    dispatch(updateCategory(category.id, formData));
   };
 
   const handleDelete = () => {
@@ -77,27 +79,27 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    dispatch(deleteWarehouse(warehouse.id));
+    dispatch(deleteCategory(category.id));
     toast({
       title: "¡Hecho!",
-      description: "¡Campus eliminado con éxito!",
+      description: "¡Categoría eliminada con éxito!",
     });
     setIsAlertDialogOpen(false);
     handleBack();
   };
 
   const handleBack = () => {
-    navigate("/campus");
+    navigate("/partidas");
   };
 
   useEffect(() => {
-    if (detailCode === "UPDATE_WAREHOUSE_SUCCESS") {
+    if (detailCode === "UPDATE_CATEGORY_SUCCESS") {
       toast({
         title: "¡Muy bien!",
         description: message,
       });
     }
-    if (detailCode === "UPDATE_WAREHOUSE_VALIDATION_ERROR") {
+    if (detailCode === "UPDATE_CATEGORY_VALIDATION_ERROR") {
       toast({
         title: "¡Lo siento!",
         description: message,
@@ -108,14 +110,16 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
   return (
     <Card className="p-6">
       <CardHeader>
-        <CardTitle>Configuración de Almacén</CardTitle>
-        <CardDescription>Modifica los detalles del almacén.</CardDescription>
+        <CardTitle>Configuración de Categoría</CardTitle>
+        <CardDescription>
+          Modifica los detalles de la categoría.
+        </CardDescription>
         <div className="mb-4">
           <Label
             htmlFor="created_at"
             className="block text-sm font-medium text-gray-700"
           >
-            Creado el {warehouse.created_at}
+            Creado el {category.created_at}
           </Label>
         </div>
         <div className="mb-4">
@@ -123,15 +127,34 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Este campus está{" "}
+            Esta categoría está{" "}
             <strong className="text-gray-900">
-              {warehouse.is_active ? "vigente" : "descontinuado"}
+              {category.is_active ? "activa" : "desactivada"}
             </strong>
           </Label>
         </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <Label
+              htmlFor="code"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Código
+            </Label>
+            <Input
+              id="code"
+              name="code"
+              type="number"
+              value={formData.code}
+              onChange={handleChange}
+              className="mt-1 block w-full"
+            />
+            {errors?.code && (
+              <p className="text-red-500 text-sm mt-1">{errors.code[0]}</p>
+            )}
+          </div>
           <div className="mb-4">
             <Label
               htmlFor="name"
@@ -191,7 +214,7 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción no se puede deshacer. Esto eliminará
-                      permanentemente el almacén y sus datos asociados.
+                      permanentemente la categoría y sus datos asociados.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -213,4 +236,4 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
   );
 };
 
-export default UpdateDeleteWarehouseForm;
+export default UpdateDeleteCategoryForm;

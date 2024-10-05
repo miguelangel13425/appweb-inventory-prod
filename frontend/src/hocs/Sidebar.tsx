@@ -17,7 +17,7 @@ const Sidebar: React.FC<{
   const navigate = useNavigate();
 
   const handleWarehouse = () => {
-    navigate("/warehouses");
+    navigate("/campus");
   };
 
   const handleHome = () => {
@@ -25,23 +25,23 @@ const Sidebar: React.FC<{
   };
 
   const handleLocation = () => {
-    navigate("/locations");
+    navigate("/ubicaciones");
   };
 
   const handleProduct = () => {
-    navigate("/products");
+    navigate("/productos");
   };
 
   const handleCategory = () => {
-    navigate("/categories");
+    navigate("/partidas");
   };
 
   const handleInventory = () => {
-    navigate("/inventories");
+    navigate("/inventarios");
   };
 
   const handleTransaction = () => {
-    navigate("/transactions");
+    navigate("/transacciones");
   };
 
   const handleUser = () => {

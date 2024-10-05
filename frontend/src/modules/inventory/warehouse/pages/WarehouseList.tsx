@@ -77,7 +77,7 @@ const WarehouseList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/warehouses/${id}`);
+    navigate(`/campus/${id}`);
   };
 
   if (error) {
@@ -103,12 +103,12 @@ const WarehouseList: React.FC = () => {
       {loading ? (
         <Spinner />
       ) : warehouses.length === 0 ? (
-        <div className="text-gray-500">No hay campus</div>
+        <div className="text-gray-500">No hay campus.</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} campu(s) fueron encontrado(s).
+              {pagination?.totalItems} campu(s) encontrado(s).
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">

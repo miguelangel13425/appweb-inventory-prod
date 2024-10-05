@@ -21,14 +21,20 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner, Card, Input } from "@/components/index";
-import { Edit, CheckInCircle } from "@geist-ui/icons";
+import {
+  NotFound,
+  Unauthorized,
+  Forbidden,
+  ServerError,
+} from "@/modules/base/index";
+import { Edit } from "@geist-ui/icons";
 import CreateLocationModal from "../components/CreateLocationModal";
 import { Location } from "@/redux/models/inventory";
 
 const LocationList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { locations, loading, error, pagination } = useSelector(
+  const { locations, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.location
   );
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,8 +77,15 @@ const LocationList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/locations/${id}`);
+    navigate(`/ubicaciones/${id}`);
   };
+
+  if (error) {
+    if (status === 401) return <Unauthorized />;
+    if (status === 403) return <Forbidden />;
+    if (status === 404) return <NotFound />;
+    if (status === 500) return <ServerError />;
+  }
 
   return (
     <Card className="p-6 bg-gray-100">
@@ -89,13 +102,13 @@ const LocationList: React.FC = () => {
       />
       {loading ? (
         <Spinner />
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
+      ) : locations.length === 0 ? (
+        <div className="text-gray-500">No hay ubicaciones.</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} ubicacione(s) fueron encontradas.
+              {pagination?.totalItems} ubicacion(es) encontrada(s).
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">

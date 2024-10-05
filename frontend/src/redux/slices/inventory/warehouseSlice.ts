@@ -2,8 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Warehouse } from "../../models/inventory";
 import { Pagination } from "../../models/pagination";
 
+interface SimplifiedWarehouse {
+    id: string;
+    name: string;
+}
+
 interface WarehouseState {
     warehouses: Warehouse[];
+    simplifiedWarehouses: SimplifiedWarehouse[];
     warehouse: Warehouse | null;
     loading: boolean;
     error: string | null;
@@ -16,6 +22,7 @@ interface WarehouseState {
 
 const initialState: WarehouseState = {
     warehouses: [],
+    simplifiedWarehouses: [],
     warehouse: null,
     loading: false,
     error: null,
@@ -54,6 +61,30 @@ const warehouseSlice = createSlice({
             state.pagination = action.payload.pagination;
         },
         fetchWarehousesFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
+            state.loading = false;
+            state.error = action.payload.error;
+            state.errors = null;
+            state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
+        },
+        fetchSimplifiedWarehousesStart: (state) => {
+            state.loading = true;
+            state.error = null;
+            state.errors = null;
+            state.message = null;
+            state.status = null;
+            state.detailCode = null;
+        },
+        fetchSimplifiedWarehousesSuccess: (state, action: PayloadAction<{ message: string, data: SimplifiedWarehouse[], status: number, detailCode: string }>) => {
+            state.simplifiedWarehouses = action.payload.data;
+            state.loading = false;
+            state.error = null;
+            state.errors = null;
+            state.message = action.payload.message;
+            state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
+        },
+        fetchSimplifiedWarehousesFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = null;
@@ -122,6 +153,7 @@ const warehouseSlice = createSlice({
             state.loading = false;
             state.error = action.payload.error;
             state.errors = action.payload.errors;
+            state.message = action.payload.error;
             state.status = action.payload.status;
             state.detailCode = action.payload.detailCode;
         },
@@ -134,7 +166,6 @@ const warehouseSlice = createSlice({
             state.detailCode = null;
         },
         deleteWarehouseSuccess: (state, action: PayloadAction<{ message: string, status: number, detailCode: string }>) => {
-            console.log('Reducer deleteWarehouseSuccess:', action);
             state.warehouse = null;
             state.loading = false;
             state.error = null;
@@ -142,7 +173,7 @@ const warehouseSlice = createSlice({
             state.message = action.payload.message;
             state.status = action.payload.status;
             state.detailCode = action.payload.detailCode;
-        },
+        },        
         deleteWarehouseFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
@@ -157,6 +188,9 @@ export const {
     fetchWarehousesStart,
     fetchWarehousesSuccess,
     fetchWarehousesFailure,
+    fetchSimplifiedWarehousesStart,
+    fetchSimplifiedWarehousesSuccess,
+    fetchSimplifiedWarehousesFailure,
     fetchWarehouseSuccess,
     fetchWarehouseFailure,
     createWarehouseStart,

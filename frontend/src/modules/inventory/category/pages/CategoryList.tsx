@@ -21,6 +21,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner, Card, Input } from "@/components/index";
+import {
+  NotFound,
+  Unauthorized,
+  Forbidden,
+  ServerError,
+} from "@/modules/base/index";
 import { Edit } from "@geist-ui/icons";
 import CreateCategoryModal from "../components/CreateCategoryModal";
 import { Category } from "@/redux/models/inventory";
@@ -28,7 +34,7 @@ import { Category } from "@/redux/models/inventory";
 const CategoryList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { categories, loading, error, pagination } = useSelector(
+  const { categories, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.category
   );
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,8 +77,15 @@ const CategoryList: React.FC = () => {
   };
 
   const handleSettings = (id: string) => {
-    navigate(`/categorys/${id}`);
+    navigate(`/partidas/${id}`);
   };
+
+  if (error) {
+    if (status === 401) return <Unauthorized />;
+    if (status === 403) return <Forbidden />;
+    if (status === 404) return <NotFound />;
+    if (status === 500) return <ServerError />;
+  }
 
   return (
     <Card className="p-6 bg-gray-100">
@@ -82,20 +95,20 @@ const CategoryList: React.FC = () => {
       </div>
       <Input
         type="text"
-        placeholder="Buscar por nombre o campus"
+        placeholder="Buscar por nombre o código"
         value={searchTerm}
         onChange={handleSearchChange}
         className="mb-4"
       />
       {loading ? (
         <Spinner />
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
+      ) : categories.length === 0 ? (
+        <div className="text-gray-500">No hay partidas.</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">
             <TableCaption className="text-gray-500">
-              {pagination?.totalItems} partida(s) fueron encontradas.
+              {pagination?.totalItems} partida(s) encontrada(s).
             </TableCaption>
             <TableHeader>
               <TableRow className="bg-gray-200">

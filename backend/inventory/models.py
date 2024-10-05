@@ -35,7 +35,7 @@ class LocationModel(BaseModel):
     
 class CategoryModel(BaseModel):
     code = models.PositiveIntegerField(unique=True, verbose_name='código')
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True, verbose_name='nombre')
     description = models.TextField(max_length=128, null=True, blank=True)
 
     class Meta:
