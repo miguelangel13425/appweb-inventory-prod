@@ -122,6 +122,15 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
         </div>
         <div className="mb-4">
           <Label
+            htmlFor="created_at"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Campus{" "}
+            <strong className="text-gray-900">{location.warehouse.name}</strong>
+          </Label>
+        </div>
+        <div className="mb-4">
+          <Label
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >

@@ -3,11 +3,16 @@ from core.validations import (
     remove_spaces, validate_length, validate_no_start_num_or_special,
     validate_in_choices, validate_min_value, validate_max_value,
 )
+from .models import (
+    WarehouseModel, LocationModel, CategoryModel, 
+    ProductModel, InventoryModel, InventoryTransactionModel
+)
 from .choices import UnitChoices, MovementChoices
 
 class WarehouseManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = WarehouseModel
 
     def validate_name(self, value):
         value = remove_spaces(value)
@@ -24,6 +29,7 @@ class WarehouseManager(serializers.ModelSerializer):
 class LocationManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = LocationModel
 
     def validate_name(self, value):
         value = remove_spaces(value)
@@ -40,6 +46,7 @@ class LocationManager(serializers.ModelSerializer):
 class CategoryManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = CategoryModel
 
     def validate_code(self, value):
         value = validate_min_value(value, 10000)
@@ -61,6 +68,7 @@ class CategoryManager(serializers.ModelSerializer):
 class ProductManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = ProductModel
 
     def validate_name(self, value):
         value = remove_spaces(value)
@@ -81,6 +89,7 @@ class ProductManager(serializers.ModelSerializer):
 class InventoryManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = InventoryModel
 
     def validate_quantity(self, value):
         value = validate_min_value(value, 0)
@@ -89,6 +98,7 @@ class InventoryManager(serializers.ModelSerializer):
 class InventoryTransactionManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
+        model = InventoryTransactionModel
 
     def validate_quantity(self, value):
         value = validate_min_value(value, 0)

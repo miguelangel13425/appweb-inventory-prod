@@ -2,8 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Location } from "../../models/inventory";
 import { Pagination } from "../../models/pagination";
 
+interface SimplifiedLocation {
+    id: string;
+    name: string;
+}
+
 interface LocationState {
     locations: Location[];
+    simplifiedLocations: SimplifiedLocation[];
     location: Location | null;
     loading: boolean;
     error: string | null;
@@ -16,6 +22,7 @@ interface LocationState {
 
 const initialState: LocationState = {
     locations: [],
+    simplifiedLocations: [],
     location: null,
     loading: false,
     error: null,
@@ -54,6 +61,30 @@ const locationSlice = createSlice({
             state.pagination = action.payload.pagination;
         },
         fetchLocationsFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
+            state.loading = false;
+            state.error = action.payload.error;
+            state.errors = null;
+            state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
+        },
+        fetchSimplifiedLocationsStart: (state) => {
+            state.loading = true;
+            state.error = null;
+            state.errors = null;
+            state.message = null;
+            state.status = null;
+            state.detailCode = null;
+        },
+        fetchSimplifiedLocationsSuccess: (state, action: PayloadAction<{ message: string, data: SimplifiedLocation[], status: number, detailCode: string }>) => {
+            state.simplifiedLocations = action.payload.data;
+            state.loading = false;
+            state.error = null;
+            state.errors = null;
+            state.message = action.payload.message;
+            state.status = action.payload.status;
+            state.detailCode = action.payload.detailCode;
+        },
+        fetchSimplifiedLocationsFailure: (state, action: PayloadAction<{ error: string, status: number, detailCode: string }>) => {
             state.loading = false;
             state.error = action.payload.error;
             state.errors = null;
@@ -157,6 +188,9 @@ export const {
     fetchLocationsStart,
     fetchLocationsSuccess,
     fetchLocationsFailure,
+    fetchSimplifiedLocationsStart,
+    fetchSimplifiedLocationsSuccess,
+    fetchSimplifiedLocationsFailure,
     fetchLocationSuccess,
     fetchLocationFailure,
     createLocationStart,

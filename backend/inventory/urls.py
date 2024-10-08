@@ -1,8 +1,8 @@
 from django.urls import path
 from .views.warehouse_views import WarehouseListView, WarehouseDetailView, WarehouseCustomView
 from .views.location_views import LocationListView, LocationDetailView
-from .views.category_views import CategoryListView, CategoryDetailView
-from .views.product_views import ProductListView, ProductDetailView
+from .views.category_views import CategoryListView, CategoryDetailView, CategoryCustomView
+from .views.product_views import ProductListView, ProductDetailView, ProductCustomView
 from .views.inventory_views import InventoryListView, InventoryDetailView
 from .views.inventory_transaction_views import InventoryTransactionListView, InventoryTransactionDetailView
 
@@ -17,9 +17,11 @@ urlpatterns = [
 
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('categories/<uuid:pk>/', CategoryDetailView.as_view(), name='category-detail'),
+    path('categories/options/', CategoryCustomView.as_view(), name='category-options'),
 
     path('products/', ProductListView.as_view(), name='product-list'),
     path('products/<uuid:pk>/', ProductDetailView.as_view(), name='product-detail'),
+    path('products/options/', ProductCustomView.as_view(), name='product-options'),
 
     path('inventories/', InventoryListView.as_view(), name='inventory-list'),
     path('inventories/<uuid:pk>/', InventoryDetailView.as_view(), name='inventory-detail'),

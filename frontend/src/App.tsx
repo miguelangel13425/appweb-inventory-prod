@@ -6,6 +6,7 @@ import Login from "@/modules/accounts/user/pages/Signin";
 import Dashboard from "@/modules/accounts/user/pages/Dashboard";
 import WarehouseList from "@/modules/inventory/warehouse/pages/WarehouseList";
 import ProductList from "@/modules/inventory/product/pages/ProductList";
+import ProductDetail from "@/modules/inventory/product/pages/ProductDetail";
 import LocationList from "@/modules/inventory/location/pages/LocationList";
 import LocationDetail from "@/modules/inventory/location/pages/LocationDetail";
 import CategoryList from "@/modules/inventory/category/pages/CategoryList";
@@ -53,6 +54,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProductList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/productos/:id"
+              element={
+                <ProtectedRoute>
+                  <ProductDetail />
                 </ProtectedRoute>
               }
             />

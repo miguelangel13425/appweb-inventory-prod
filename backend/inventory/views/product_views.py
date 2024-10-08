@@ -8,12 +8,8 @@ from inventory.models import (
     ProductModel, InventoryModel, InventoryTransactionModel
 )
 from inventory.serializers import (
-    WarehouseListSerializer, WarehouseDetailSerializer,
-    LocationListSerializer, LocationDetailSerializer,
-    CategoryListSerializer, CategoryDetailSerializer,
     ProductListSerializer, ProductDetailSerializer,
-    InventoryListSerializer, InventoryDetailSerializer,
-    InventoryTransactionListSerializer, InventoryTransactionDetailSerializer
+    ProductCustomSerializer, ProductCreateUpdateSerializer,
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -22,6 +18,38 @@ from django.http import Http404
 from django.db.models import Q
 
 # Create your views here.
+class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = ProductModel.objects.filter(is_active=True)
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(
+                Q(name__icontains=search_term) |
+                Q(unit__icontains=search_term)
+            )
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = ProductListSerializer(queryset, many=True)
+            return self.custom_paginated_response(
+                data_key='products',
+                data=serializer.data,
+                message='¡Productos encontrados con éxito!',
+                detail_code='FETCH_PRODUCTS_SUCCESS',
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return self.custom_error(
+                message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
+                detail_code='FETCH_PRODUCTS_ERROR',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=str(e)
+            )
+
 class ProductListView(CustomResponseMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdmin]
     pagination_class = PageNumberPagination
@@ -61,7 +89,7 @@ class ProductListView(CustomResponseMixin, generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            serializer = ProductListSerializer(data=request.data)
+            serializer = ProductCreateUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
@@ -139,7 +167,7 @@ class ProductDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIVi
         try:
             instance = self.get_object()
             get_object_or_404(ProductModel, pk=instance.pk)
-            serializer = ProductDetailSerializer(instance, data=request.data, partial=True)
+            serializer = ProductCreateUpdateSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(

@@ -6,7 +6,8 @@ from inventory.models import (
     InventoryTransactionModel
 )
 from inventory.serializers import (
-    InventoryTransactionListSerializer, InventoryTransactionDetailSerializer
+    InventoryTransactionListSerializer, InventoryTransactionDetailSerializer,
+    InventoryTransactionCreateUpdateSerializer
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -49,7 +50,7 @@ class InventoryTransactionListView(CustomResponseMixin, generics.ListCreateAPIVi
 
     def create(self, request, *args, **kwargs):
         try:
-            serializer = InventoryTransactionListSerializer(data=request.data)
+            serializer = InventoryTransactionCreateUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
@@ -126,7 +127,7 @@ class InventoryTransactionDetailView(CustomResponseMixin, generics.RetrieveUpdat
         try:
             instance = self.get_object()
             get_object_or_404(InventoryTransactionModel, pk=instance.pk)
-            serializer = InventoryTransactionDetailSerializer(instance, data=request.data, partial=True)
+            serializer = InventoryTransactionCreateUpdateSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(

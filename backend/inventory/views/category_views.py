@@ -1,19 +1,13 @@
 from rest_framework import generics, status
-from rest_framework.exceptions import ValidationError, NotFound
-from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.exceptions import ValidationError
 from inventory.permissions import IsAdmin
 from core.mixins import CustomResponseMixin
 from inventory.models import (
-    WarehouseModel, LocationModel, CategoryModel,
-    ProductModel, InventoryModel, InventoryTransactionModel
+    CategoryModel
 )
 from inventory.serializers import (
-    WarehouseListSerializer, WarehouseDetailSerializer,
-    LocationListSerializer, LocationDetailSerializer,
     CategoryListSerializer, CategoryDetailSerializer,
-    ProductListSerializer, ProductDetailSerializer,
-    InventoryListSerializer, InventoryDetailSerializer,
-    InventoryTransactionListSerializer, InventoryTransactionDetailSerializer
+    CategoryCustomSerializer, CategoryCreateUpdateSerializer
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -22,6 +16,38 @@ from django.http import Http404
 from django.db.models import Q
 
 # Create your views here.
+class CategoryCustomView(CustomResponseMixin, generics.ListAPIView):
+    pagination_class = None
+
+    def get_queryset(self):
+        queryset = CategoryModel.objects.filter(is_active=True)
+        search_term = self.request.query_params.get('search', None)
+        if (search_term):
+            queryset = queryset.filter(
+                Q(name__icontains=search_term) |
+                Q(code__icontains=search_term)
+            )
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = CategoryCustomSerializer(queryset, many=True)
+            return self.custom_response(
+                data_key='categories',
+                data=serializer.data,
+                message='¡Partidas encontradas con éxito!',
+                detail_code='FETCH_CATEGORIES_SUCCESS',
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return self.custom_error(
+                message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
+                detail_code='FETCH_CATEGORIES_ERROR',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=str(e)
+            )
+
 class CategoryListView(CustomResponseMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdmin]
     pagination_class = PageNumberPagination
@@ -59,7 +85,7 @@ class CategoryListView(CustomResponseMixin, generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            serializer = CategoryListSerializer(data=request.data)
+            serializer = CategoryCreateUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
@@ -136,7 +162,7 @@ class CategoryDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIV
         try:
             instance = self.get_object()
             get_object_or_404(CategoryModel, pk=instance.pk)
-            serializer = CategoryDetailSerializer(instance, data=request.data, partial=True)
+            serializer = CategoryCreateUpdateSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(

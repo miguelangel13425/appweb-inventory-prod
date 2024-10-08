@@ -5,6 +5,9 @@ import {
     fetchLocationsStart,
     fetchLocationsSuccess,
     fetchLocationsFailure,
+    fetchSimplifiedLocationsStart,
+    fetchSimplifiedLocationsFailure,
+    fetchSimplifiedLocationsSuccess,
     fetchLocationSuccess,
     fetchLocationFailure,
     createLocationStart,
@@ -47,6 +50,28 @@ export const fetchLocations = (page: number, searchTerm: string = "") => async (
             error: error.response?.data.message || error.message,
             status: error.response?.status || 500,
             detailCode: error.response?.data.detail_code || 'FETCH_LOCATIONS_ERROR'
+        }));
+    }
+};
+
+export const fetchSimplifiedLocations = (searchTerm: string = "") => async (dispatch: AppDispatch) => {
+    dispatch(fetchSimplifiedLocationsStart());
+    try {
+        const response = await axios.get(`${INVENTORY_URL}/locations/options/`, {
+            params: { search: searchTerm }, 
+            ...getConfig() 
+        });
+        dispatch(fetchSimplifiedLocationsSuccess({
+            message: response.data.message,
+            data: response.data.locations,
+            status: response.status,
+            detailCode: response.data.detail_code
+        }));
+    } catch (error: any) {
+        dispatch(fetchSimplifiedLocationsFailure({
+            error: error.response?.data.message || error.message,
+            status: error.response?.status || 500,
+            detailCode: error.response?.data.detail_code || 'FETCH_SIMPLIFIED_LOCATIONS_ERROR'
         }));
     }
 };

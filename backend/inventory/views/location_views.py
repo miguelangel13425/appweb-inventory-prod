@@ -7,7 +7,7 @@ from inventory.models import (
 )
 from inventory.serializers import (
     LocationListSerializer, LocationDetailSerializer,
-    LocationCreateSerializer,
+    LocationCreateUpdateSerializer,
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -53,7 +53,7 @@ class LocationListView(CustomResponseMixin, generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            serializer = LocationCreateSerializer(data=request.data)
+            serializer = LocationCreateUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
@@ -130,7 +130,7 @@ class LocationDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIV
         try:
             instance = self.get_object()
             get_object_or_404(LocationModel, pk=instance.pk)
-            serializer = LocationDetailSerializer(instance, data=request.data, partial=True)
+            serializer = LocationCreateUpdateSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
