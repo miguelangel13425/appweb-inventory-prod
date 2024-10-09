@@ -102,6 +102,7 @@ export const updateCategory = (id: string, updatedCategory: Category) => async (
             status: response.status,
             detailCode: response.data.detail_code
         }));
+        dispatch(fetchCategory(id));
     } catch (error: any) {
         dispatch(updateCategoryFailure({
             error: error.response?.data.message || error.message,

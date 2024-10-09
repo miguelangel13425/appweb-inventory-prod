@@ -91,6 +91,7 @@ export const updateInventory = (id: string, updatedInventory: Inventory) => asyn
             data: response.data.inventory,
             status: response.status
         }));
+        dispatch(fetchInventory(id));
     } catch (error: any) {
         dispatch(updateInventoryFailure({
             error: error.response?.data.message || error.message,

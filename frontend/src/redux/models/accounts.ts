@@ -12,11 +12,12 @@ export interface User extends Base {
     role: Role[];
     is_staff: boolean;
     date_joined: string;
+    profile: Profile;
 }
   
 export interface Profile extends Base {
-    user: User;
     gender: string;
+    gender_display?: string;
     birthdate?: string;
     bio?: string;
     age?: number;
@@ -32,6 +33,7 @@ export interface Person extends Base {
 export interface Student extends Person {
     control_number: string;
     degree: string;
+    degree_display?: string;
 }
   
 export interface Provider extends Person {

@@ -45,7 +45,7 @@ const Sidebar: React.FC<{
   };
 
   const handleUser = () => {
-    navigate("/users");
+    navigate("/personal");
   };
 
   return (

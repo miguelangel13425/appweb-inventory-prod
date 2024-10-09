@@ -1,13 +1,12 @@
 from rest_framework import serializers
 from core.validations import (
     remove_spaces, validate_length, validate_no_start_num_or_special,
-    validate_in_choices, validate_min_value, validate_max_value,
+    validate_min_value, validate_max_value,
 )
 from .models import (
     WarehouseModel, LocationModel, CategoryModel, 
     ProductModel, InventoryModel, InventoryTransactionModel
 )
-from .choices import UnitChoices, MovementChoices
 
 class WarehouseManager(serializers.ModelSerializer):
     class Meta:
@@ -82,10 +81,6 @@ class ProductManager(serializers.ModelSerializer):
         value = validate_no_start_num_or_special(value)
         return value
     
-    def validate_unit(self, value):
-        value = validate_in_choices(value, UnitChoices.choices)
-        return value
-    
 class InventoryManager(serializers.ModelSerializer):
     class Meta:
         abstract = True
@@ -102,8 +97,4 @@ class InventoryTransactionManager(serializers.ModelSerializer):
 
     def validate_quantity(self, value):
         value = validate_min_value(value, 0)
-        return value
-
-    def validate_movement(self, value):
-        value = validate_in_choices(value, MovementChoices.choices)
         return value

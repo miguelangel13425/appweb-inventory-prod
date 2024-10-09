@@ -6,7 +6,6 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/redux/actions/inventory/productActions";
-import { fetchSimplifiedCategories } from "@/redux/actions/inventory/categoryActions";
 import { Product } from "@/redux/models/inventory";
 import {
   Card,
@@ -48,20 +47,15 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
   const { status, detailCode, message, errors } = useSelector(
     (state: RootState) => state.product
   );
-  const { simplifiedCategories } = useSelector(
-    (state: RootState) => state.category
-  );
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
     unit: product.unit,
-    category: product.category?.id || "",
     is_single_use: product.is_single_use,
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -69,14 +63,9 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
       name: product.name,
       description: product.description,
       unit: product.unit,
-      category: product.category?.id || "",
       is_single_use: product.is_single_use,
     });
   }, [product]);
-
-  useEffect(() => {
-    dispatch(fetchSimplifiedCategories(searchTerm));
-  }, [searchTerm, dispatch]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -86,10 +75,6 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
       ...formData,
       [name]: value,
     });
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setFormData({ ...formData, category: value });
   };
 
   const handleUnitChange = (value: string) => {
@@ -139,14 +124,6 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
     }
   }, [dispatch, detailCode]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSearchClick = () => {
-    dispatch(fetchSimplifiedCategories(searchTerm));
-  };
-
   return (
     <Card className="p-6">
       <CardHeader>
@@ -176,7 +153,7 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Esta ubicación está{" "}
+            Este producto está{" "}
             <strong className="text-gray-900">
               {product.is_active ? "vigente" : "descontinuada"}
             </strong>
@@ -245,42 +222,6 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
             </Select>
             {errors?.unit && (
               <p className="text-red-500 text-sm mt-1">{errors.unit[0]}</p>
-            )}
-          </div>
-          <div className="mb-4 flex items-center">
-            <Input
-              placeholder="Buscar categoría"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <Button className="ml-2" onClick={handleSearchClick}>
-              Buscar
-            </Button>
-          </div>
-          <div className="mb-4">
-            <Label
-              htmlFor="category"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Categoría
-            </Label>
-            <Select
-              value={formData.category}
-              onValueChange={handleCategoryChange}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Seleccione una categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                {simplifiedCategories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.code} - {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors?.category && (
-              <p className="text-red-500 text-sm mt-1">{errors.category[0]}</p>
             )}
           </div>
           <div className="mb-4">

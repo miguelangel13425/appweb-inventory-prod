@@ -124,6 +124,7 @@ export const updateLocation = (id: string, updatedLocation: Location) => async (
             status: response.status,
             detailCode: response.data.detail_code
         }));
+        dispatch(fetchLocation(id));
     } catch (error: any) {
         dispatch(updateLocationFailure({
             error: error.response?.data.message || error.message,

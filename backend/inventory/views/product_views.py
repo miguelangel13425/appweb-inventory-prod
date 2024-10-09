@@ -34,7 +34,7 @@ class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
-            serializer = ProductListSerializer(queryset, many=True)
+            serializer = ProductCustomSerializer(queryset, many=True)
             return self.custom_paginated_response(
                 data_key='products',
                 data=serializer.data,

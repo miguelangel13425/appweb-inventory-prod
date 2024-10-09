@@ -124,6 +124,7 @@ export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => asyn
             status: response.status,
             detailCode: response.data.detail_code
         }));
+        dispatch(fetchWarehouse(id));
     } catch (error: any) {
         dispatch(updateWarehouseFailure({
             error: error.response?.data.message || error.message,

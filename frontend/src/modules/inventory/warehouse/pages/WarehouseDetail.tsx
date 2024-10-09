@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchWarehouse } from "@/redux/actions/inventory/warehouseActions";
-import { Spinner } from "@/components";
+import { SkeletonCard } from "@/components";
 import {
   Unauthorized,
   Forbidden,
@@ -20,10 +20,11 @@ const WarehouseDetail: React.FC = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchWarehouse(id));
+    dispatch(fetchWarehouse(id as string));
   }, [dispatch, id]);
 
-  if (loading) return <Spinner />;
+  if (loading)
+    return <SkeletonCard headerRows={1} detailRows={2} actionRows={2} />;
 
   if (error) {
     if (status === 401) return <Unauthorized />;

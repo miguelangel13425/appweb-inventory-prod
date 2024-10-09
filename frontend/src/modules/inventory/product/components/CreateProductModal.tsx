@@ -168,7 +168,11 @@ const CreateProductModal: React.FC = () => {
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-              <Button className="ml-2" onClick={handleSearchClick}>
+              <Button
+                className="ml-2"
+                type="button"
+                onClick={handleSearchClick}
+              >
                 Buscar
               </Button>
             </div>

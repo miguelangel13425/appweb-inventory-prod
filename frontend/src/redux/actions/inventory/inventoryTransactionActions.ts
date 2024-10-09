@@ -91,6 +91,7 @@ export const updateTransaction = (id: string, updatedTransaction: InventoryTrans
             data: response.data.inventory_transaction,
             status: response.status
         }));
+        dispatch(fetchTransaction(id));
     } catch (error: any) {
         dispatch(updateTransactionFailure({
             error: error.response?.data.message || error.message,

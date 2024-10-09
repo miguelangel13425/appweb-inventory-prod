@@ -2,8 +2,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import Layout from "@/hocs/Layout";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Login from "@/modules/accounts/user/pages/Signin";
-import Dashboard from "@/modules/accounts/user/pages/Dashboard";
+import Login from "@/modules/accounts/auth/pages/Signin";
+import Dashboard from "@/modules/accounts/auth/pages/Dashboard";
+import UserList from "@/modules/accounts/user/pages/UserList";
+import StudentList from "@/modules/accounts/student/pages/StudentList";
+import ProviderList from "@/modules/accounts/provider/pages/ProviderList";
 import WarehouseList from "@/modules/inventory/warehouse/pages/WarehouseList";
 import ProductList from "@/modules/inventory/product/pages/ProductList";
 import ProductDetail from "@/modules/inventory/product/pages/ProductDetail";
@@ -30,6 +33,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/personal"
+              element={
+                <ProtectedRoute>
+                  <UserList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estudiantes"
+              element={
+                <ProtectedRoute>
+                  <StudentList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pro"
+              element={
+                <ProtectedRoute>
+                  <ProviderList />
                 </ProtectedRoute>
               }
             />

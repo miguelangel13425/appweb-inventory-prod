@@ -124,6 +124,7 @@ export const updateProduct = (id: string, updatedProduct: Product) => async (dis
             status: response.status,
             detailCode: response.data.detail_code
         }));
+        dispatch(fetchProduct(id));
     } catch (error: any) {
         dispatch(updateProductFailure({
             error: error.response?.data.message || error.message,

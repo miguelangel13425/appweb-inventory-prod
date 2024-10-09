@@ -44,6 +44,7 @@ import { Tooltip } from './ui/tooltip';
 
 // Others
 import { Spinner } from './others/spinner';
+import { SkeletonCard } from './others/skeleton-card';
 
 export {
   Accordion,
@@ -79,6 +80,7 @@ export {
   Separator,
   Sheet,
   Skeleton,
+  SkeletonCard,
   Slider,
   Spinner,
   Switch,

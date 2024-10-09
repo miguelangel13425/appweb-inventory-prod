@@ -14,11 +14,6 @@ def validate_no_start_num_or_special(value):
         raise serializers.ValidationError('El campo no puede iniciar con un número o un carácter especial')
     return value
 
-def validate_in_choices(value, choices):
-    if value not in choices:
-        raise serializers.ValidationError(f'El campo debe ser uno de los siguientes: {", ".join(choices)}')
-    return value
-
 def validate_min_value(value, min_value):
     if value < min_value:
         raise serializers.ValidationError(f'El valor no puede ser menor que {min_value}')

@@ -56,6 +56,7 @@ class ProfileModel(BaseModel):
     class Meta:
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
+        ordering = ['created_at']
 
     @property
     def age(self):
@@ -77,6 +78,7 @@ class PersonModel(BaseModel):
     class Meta:
         verbose_name = 'Person'
         verbose_name_plural = 'People'
+        ordering = ['created_at']
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
@@ -94,6 +96,7 @@ class StudentModel(PersonModel):
     class Meta:
         verbose_name = 'Student'
         verbose_name_plural = 'Students'
+        ordering = ['created_at']
 
 class ProviderModel(PersonModel):
     RFC = models.CharField(max_length=13, unique=True)
@@ -102,3 +105,4 @@ class ProviderModel(PersonModel):
     class Meta:
         verbose_name = 'Provider'
         verbose_name_plural = 'Providers'
+        ordering = ['created_at']
