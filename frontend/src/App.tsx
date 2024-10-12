@@ -21,6 +21,23 @@ import NotFound from "@/modules/base/pages/NotFound";
 import store from "./redux/store";
 import "./App.css";
 
+const routes = [
+  { path: "/", element: <Dashboard /> },
+  { path: "/personal", element: <UserList /> },
+  { path: "/estudiantes", element: <StudentList /> },
+  { path: "/pro", element: <ProviderList /> },
+  { path: "/campus", element: <WarehouseList /> },
+  { path: "/campus/:id", element: <WarehouseDetail /> },
+  { path: "/productos", element: <ProductList /> },
+  { path: "/productos/:id", element: <ProductDetail /> },
+  { path: "/ubicaciones", element: <LocationList /> },
+  { path: "/ubicaciones/:id", element: <LocationDetail /> },
+  { path: "/partidas", element: <CategoryList /> },
+  { path: "/partidas/:id", element: <CategoryDetail /> },
+  { path: "/inventarios", element: <InventoryList /> },
+  { path: "/transacciones", element: <TransactionList /> },
+];
+
 function App() {
   return (
     <Provider store={store}>
@@ -28,118 +45,13 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/personal"
-              element={
-                <ProtectedRoute>
-                  <UserList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estudiantes"
-              element={
-                <ProtectedRoute>
-                  <StudentList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pro"
-              element={
-                <ProtectedRoute>
-                  <ProviderList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/campus"
-              element={
-                <ProtectedRoute>
-                  <WarehouseList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/campus/:id"
-              element={
-                <ProtectedRoute>
-                  <WarehouseDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/productos"
-              element={
-                <ProtectedRoute>
-                  <ProductList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/productos/:id"
-              element={
-                <ProtectedRoute>
-                  <ProductDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ubicaciones"
-              element={
-                <ProtectedRoute>
-                  <LocationList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ubicaciones/:id"
-              element={
-                <ProtectedRoute>
-                  <LocationDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/partidas"
-              element={
-                <ProtectedRoute>
-                  <CategoryList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/partidas/:id"
-              element={
-                <ProtectedRoute>
-                  <CategoryDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/inventarios"
-              element={
-                <ProtectedRoute>
-                  <InventoryList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/transacciones"
-              element={
-                <ProtectedRoute>
-                  <TransactionList />
-                </ProtectedRoute>
-              }
-            />
+            {routes.map(({ path, element }) => (
+              <Route
+                key={path}
+                path={path}
+                element={<ProtectedRoute>{element}</ProtectedRoute>}
+              />
+            ))}
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
