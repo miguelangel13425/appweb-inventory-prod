@@ -202,7 +202,6 @@ const TransactionList: React.FC = () => {
                     onClick={() =>
                       handlePageChange(pagination!.currentPage - 1)
                     }
-                    disabled={pagination?.currentPage <= 1}
                   />
                 </PaginationItem>
                 {createPageLinks()}
@@ -212,7 +211,6 @@ const TransactionList: React.FC = () => {
                     onClick={() =>
                       handlePageChange(pagination!.currentPage + 1)
                     }
-                    disabled={pagination?.currentPage >= pagination?.totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>

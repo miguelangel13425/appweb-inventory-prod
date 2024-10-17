@@ -20,8 +20,9 @@ import {
     deleteWarehouseSuccess,
     deleteWarehouseFailure,
 } from "../../slices/inventory/warehouseSlice";
-
 import { INVENTORY_URL } from "@/constants/urls";
+
+type WarehouseForm = Omit<Warehouse, 'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
 export const fetchWarehouses = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
     dispatch(fetchWarehousesStart());
@@ -94,7 +95,7 @@ export const fetchWarehouse = (id: string) => async (dispatch: AppDispatch) => {
     }
 };
 
-export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
+export const createWarehouse = (newWarehouse: WarehouseForm) => async (dispatch: AppDispatch) => {
     dispatch(createWarehouseStart());
     try {
         const response = await axios.post(`${INVENTORY_URL}/warehouses/`, newWarehouse, getConfig());
@@ -114,7 +115,7 @@ export const createWarehouse = (newWarehouse: Warehouse) => async (dispatch: App
     }
 };
 
-export const updateWarehouse = (id: string, updatedWarehouse: Warehouse) => async (dispatch: AppDispatch) => {
+export const updateWarehouse = (id: string, updatedWarehouse: WarehouseForm) => async (dispatch: AppDispatch) => {
     dispatch(updateWarehouseStart());
     try {
         const response = await axios.put(`${INVENTORY_URL}/warehouses/${id}/`, updatedWarehouse, getConfig());

@@ -170,7 +170,6 @@ const StudentList: React.FC = () => {
                     onClick={() =>
                       handlePageChange(pagination!.currentPage - 1)
                     }
-                    disabled={pagination?.currentPage <= 1}
                   />
                 </PaginationItem>
                 {createPageLinks()}
@@ -180,7 +179,6 @@ const StudentList: React.FC = () => {
                     onClick={() =>
                       handlePageChange(pagination!.currentPage + 1)
                     }
-                    disabled={pagination?.currentPage >= pagination?.totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>

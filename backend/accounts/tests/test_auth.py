@@ -183,5 +183,5 @@ class AuthTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn('detail', response.data)
-        self.assertEqual(response.data['detail'], "Token is invalid or expired")
+        self.assertEqual(response.data['detail'], "El token es inválido o ha expirado")
         self.assertEqual(response.data['code'], "token_not_valid")

@@ -12,7 +12,6 @@ import {
   createWarehouse,
   fetchWarehouses,
 } from "@/redux/actions/inventory/warehouseActions";
-import { createWarehouseFailure } from "@/redux/slices/inventory/warehouseSlice";
 import { RootState, AppDispatch } from "@/redux/store";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,9 +54,6 @@ const CreateWarehouseModal: React.FC = () => {
         name: "",
         description: "",
       });
-      dispatch(
-        createWarehouseFailure({ error: null, errors: null, status: null })
-      );
     }
   }, [isDialogOpen, dispatch]);
 
