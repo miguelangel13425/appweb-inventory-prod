@@ -25,7 +25,7 @@ const routes = [
   { path: "/", element: <Dashboard /> },
   { path: "/personal", element: <UserList /> },
   { path: "/estudiantes", element: <StudentList /> },
-  { path: "/pro", element: <ProviderList /> },
+  { path: "/proveedores", element: <ProviderList /> },
   { path: "/campus", element: <WarehouseList /> },
   { path: "/campus/:id", element: <WarehouseDetail /> },
   { path: "/productos", element: <ProductList /> },

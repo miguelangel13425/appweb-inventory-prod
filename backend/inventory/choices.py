@@ -5,6 +5,8 @@ class UnitChoices(models.TextChoices):
     PIECE = 'PC', 'Pieza'
     BOX = 'BOX', 'Caja'
     METER = 'M', 'Metro'
+    LITRE = 'L', 'Litro'
+    KILO = 'KG', 'Kilogramo'
     PACKAGE = 'PKG', 'Paquete'
 
 class AvailabilityChoices(models.TextChoices):
@@ -18,9 +20,11 @@ class MovementChoices(models.TextChoices):
     OUT = 'OUT', 'Salida'
 
 class TypeChoices(models.TextChoices):
-    PURCHASE = 'PURCHASE', 'Compra'
-    SALE = 'SALE', 'Venta'
-    LOST = 'LOST', 'Perdido'
-    DAMAGED = 'DAMAGED', 'Dañado'
+    # IN
+    PURCHASE = 'PURCHASE', 'Compra' 
+    # OUT
+    SALE = 'SALE', 'Venta' 
+    LOST = 'LOST', 'Perdido' 
+    DAMAGED = 'DAMAGED', 'Dañado' 
+    # BOTH
     LOAN = 'LOAN', 'Préstamo'
-    RETURN = 'RETURN', 'Devolución'

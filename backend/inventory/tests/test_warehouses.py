@@ -16,7 +16,7 @@ class WarehouseTests(APITestCase):
         """
         self.email = "QpB6K@example.com"
         self.password = "password"
-        self.role = RoleModel.objects.create(name='Administrator', description='Admin role')
+        self.role = RoleModel.objects.create(name='ADMIN', description='Admin role')
         self.user = User.objects.create_user(
             email=self.email,
             password=self.password,
@@ -74,7 +74,7 @@ class WarehouseTests(APITestCase):
         response = self.client.post(self.list_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Error creating warehouse')
+        self.assertEqual(response.data['message'], '¡Hubo un error de validación!')
         self.assertIn('errors', response.data)
         self.assertIn('name', response.data['errors'])
 
@@ -89,7 +89,7 @@ class WarehouseTests(APITestCase):
         response = self.client.put(self.detail_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Updated warehouse successfully!')
+        self.assertEqual(response.data['message'], '¡Campus actualizado con éxito!')
 
     def test_update_warehouse_with_invalid_data(self):
         """
@@ -102,7 +102,7 @@ class WarehouseTests(APITestCase):
         response = self.client.put(self.detail_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Error updating warehouse')
+        self.assertEqual(response.data['message'], '¡Hubo un error de validación!')
         self.assertIn('errors', response.data)
         self.assertIn('name', response.data['errors'])
         self.assertIn('description', response.data['errors'])
@@ -112,9 +112,9 @@ class WarehouseTests(APITestCase):
         Ensure we can delete a warehouse.
         """
         response = self.client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Deleted warehouse successfully!')
+        self.assertEqual(response.data['message'], '¡Campus eliminado con éxito!')
 
     def test_get_all_warehouses(self):
         """
@@ -123,7 +123,7 @@ class WarehouseTests(APITestCase):
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Fetched warehouses successfully!')
+        self.assertEqual(response.data['message'], '¡Campus encontrados con éxito!')
         self.assertIn('warehouses', response.data)
         self.assertEqual(len(response.data['warehouses']), 2)
 
@@ -134,7 +134,7 @@ class WarehouseTests(APITestCase):
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('message', response.data)
-        self.assertEqual(response.data['message'], 'Fetched warehouse successfully!')
+        self.assertEqual(response.data['message'], '¡Campus encontrado con éxito!')
         self.assertIn('warehouse', response.data)
         self.assertEqual(response.data['warehouse']['id'], str(self.warehouse1.pk))
         self.assertEqual(response.data['warehouse']['name'], self.warehouse1.name)

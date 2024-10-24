@@ -187,6 +187,14 @@ class InventoryTransactionListSerializer(InventoryTransactionManager, DateFormat
     def get_type_display(self, obj):
         return obj.get_type_display()
     
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        created_at = instance.created_at
+        if created_at:
+            # Formatear la fecha en el formato "Día mes año"
+            representation['created_at'] = created_at.strftime('%d %B %Y')
+        return representation
+    
 class InventoryTransactionCreateUpdateSerializer(InventoryTransactionManager):
     class Meta:
         model = InventoryTransactionModel
