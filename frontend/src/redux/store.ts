@@ -1,11 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './slices/index';
+import { configureStore } from '@reduxjs/toolkit'
+import rootReducer from './slices/index'
 
 const store = configureStore({
-  reducer: rootReducer
-});
+  reducer: rootReducer,
+})
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 
-export default store;
+export default store

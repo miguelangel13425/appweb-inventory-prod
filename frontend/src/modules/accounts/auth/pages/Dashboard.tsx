@@ -1,10 +1,10 @@
-import React from "react";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
-import { Card, Badge } from "@/components/index";
+import React from 'react'
+import { RootState } from '@/redux/store'
+import { useSelector } from 'react-redux'
+import { Card, Badge } from '@/components/index'
 
 const Dashboard: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth)
 
   return (
     <div className="p-6">
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

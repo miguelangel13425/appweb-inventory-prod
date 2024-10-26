@@ -1,18 +1,18 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
-import CreateJWTForm from "../components/CreateJWTForm";
-import TecNMLogo from "@/assets/TecNM2021.png";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { RootState } from '@/redux/store'
+import { useSelector } from 'react-redux'
+import CreateJWTForm from '../components/CreateJWTForm'
+import TecNMLogo from '@/assets/TecNM2021.png'
 
 const Signin: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+    (state: RootState) => state.auth,
+  )
 
   if (isAuthenticated && user) {
-    navigate("/");
+    navigate('/')
   }
 
   return (
@@ -26,7 +26,7 @@ const Signin: React.FC = () => {
         <CreateJWTForm />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Signin;
+export default Signin

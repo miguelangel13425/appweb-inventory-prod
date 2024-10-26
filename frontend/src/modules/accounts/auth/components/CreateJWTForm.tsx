@@ -1,32 +1,32 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "@/redux/store";
-import { login } from "@/redux/actions/accounts/authActions";
-import { Button, Input, Label, Card } from "@/components/index";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { AppDispatch, RootState } from '@/redux/store'
+import { login } from '@/redux/actions/accounts/authActions'
+import { Button, Input, Label, Card } from '@/components/index'
 
 const CreateJWTForm: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+    email: '',
+    password: '',
+  })
 
-  const { error } = useSelector((state: RootState) => state.auth);
+  const { error } = useSelector((state: RootState) => state.auth)
 
   const goToResetPassword = () => {
-    navigate("/reset-password");
-  };
+    navigate('/reset-password')
+  }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(login(formData.email, formData.password));
-  };
+    e.preventDefault()
+    dispatch(login(formData.email, formData.password))
+  }
 
   return (
     <div className="max-w-md mx-auto p-6 shadow-lg rounded-md bg-gray-900 text-white">
@@ -66,7 +66,7 @@ const CreateJWTForm: React.FC = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default CreateJWTForm;
+export default CreateJWTForm

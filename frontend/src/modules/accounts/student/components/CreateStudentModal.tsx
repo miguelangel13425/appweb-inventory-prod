@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const CreateStudentModal = () => {
-  return <div>CreateStudentModal</div>;
-};
+  return <div>CreateStudentModal</div>
+}
 
-export default CreateStudentModal;
+export default CreateStudentModal

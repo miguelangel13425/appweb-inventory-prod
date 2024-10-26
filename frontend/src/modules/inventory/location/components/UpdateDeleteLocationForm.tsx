@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
 import {
   updateLocation,
   deleteLocation,
-} from "@/redux/actions/inventory/locationActions";
-import { Location } from "@/redux/models/inventory";
+} from '@/redux/actions/inventory/locationActions'
+import { Location } from '@/redux/models/inventory'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button, Input, Textarea, Label } from "@/components/index";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/card'
+import { Button, Input, Textarea, Label } from '@/components/index'
+import { useToast } from '@/hooks/use-toast'
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -26,84 +26,84 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 
 interface UpdateDeleteLocationFormProps {
-  location: Location;
+  location: Location
 }
 
 const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
   location,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.location
-  );
-  const { toast } = useToast();
+    (state: RootState) => state.location,
+  )
+  const { toast } = useToast()
 
   const [formData, setFormData] = useState({
     name: location.name,
     description: location.description,
-  });
+  })
 
-  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
     setFormData({
       name: location.name,
       description: location.description,
-    });
-  }, [location]);
+    })
+  }, [location])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(updateLocation(location.id, formData));
-  };
+    e.preventDefault()
+    dispatch(updateLocation(location.id, formData))
+  }
 
   const handleDelete = () => {
-    setIsAlertDialogOpen(true);
-  };
+    setIsAlertDialogOpen(true)
+  }
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(deleteLocation(location.id));
+    e.preventDefault()
+    dispatch(deleteLocation(location.id))
     toast({
-      title: "¡Hecho!",
-      description: "¡Ubicación eliminada con éxito!",
-    });
-    setIsAlertDialogOpen(false);
-    handleBack();
-  };
+      title: '¡Hecho!',
+      description: '¡Ubicación eliminada con éxito!',
+    })
+    setIsAlertDialogOpen(false)
+    handleBack()
+  }
 
   const handleBack = () => {
-    navigate("/ubicaciones");
-  };
+    navigate('/ubicaciones')
+  }
 
   useEffect(() => {
-    if (detailCode === "UPDATE_LOCATION_SUCCESS") {
+    if (detailCode === 'UPDATE_LOCATION_SUCCESS') {
       toast({
-        title: "¡Muy bien!",
+        title: '¡Muy bien!',
         description: message,
-      });
+      })
     }
-    if (detailCode === "UPDATE_LOCATION_VALIDATION_ERROR") {
+    if (detailCode === 'UPDATE_LOCATION_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [dispatch, detailCode]);
+  }, [dispatch, detailCode])
 
   return (
     <Card className="p-6">
@@ -125,7 +125,7 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
             htmlFor="created_at"
             className="block text-sm font-medium text-gray-700"
           >
-            Campus{" "}
+            Campus{' '}
             <strong className="text-gray-900">{location.warehouse.name}</strong>
           </Label>
         </div>
@@ -134,9 +134,9 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Esta ubicación está{" "}
+            Esta ubicación está{' '}
             <strong className="text-gray-900">
-              {location.is_active ? "vigente" : "descontinuada"}
+              {location.is_active ? 'vigente' : 'descontinuada'}
             </strong>
           </Label>
         </div>
@@ -221,7 +221,7 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default UpdateDeleteLocationForm;
+export default UpdateDeleteLocationForm

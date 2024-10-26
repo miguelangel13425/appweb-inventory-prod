@@ -1,72 +1,72 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button, Input } from "@/components/index";
+} from '@/components/ui/dialog'
+import { Button, Input } from '@/components/index'
 import {
   createCategory,
   fetchCategories,
-} from "@/redux/actions/inventory/categoryActions";
-import { createCategoryFailure } from "@/redux/slices/inventory/categorySlice";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useToast } from "@/hooks/use-toast";
+} from '@/redux/actions/inventory/categoryActions'
+import { createCategoryFailure } from '@/redux/slices/inventory/categorySlice'
+import { RootState, AppDispatch } from '@/redux/store'
+import { useToast } from '@/hooks/use-toast'
 
 const CreateCategoryModal: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
   const [form, setForm] = useState({
-    code: "",
-    name: "",
-    description: "",
-  });
-  const { toast } = useToast();
+    code: '',
+    name: '',
+    description: '',
+  })
+  const { toast } = useToast()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.category
-  );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+    (state: RootState) => state.category,
+  )
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const handleCreateCategory = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(createCategory(form));
-  };
+    e.preventDefault()
+    dispatch(createCategory(form))
+  }
 
   useEffect(() => {
-    if (detailCode === "CREATE_CATEGORY_SUCCESS") {
+    if (detailCode === 'CREATE_CATEGORY_SUCCESS') {
       toast({
-        title: "¡Listo!",
+        title: '¡Listo!',
         description: message,
-      });
-      dispatch(fetchCategories(1));
-      setIsDialogOpen(false);
-    } else if (detailCode === "CREATE_CATEGORY_VALIDATION_ERROR") {
+      })
+      dispatch(fetchCategories(1))
+      setIsDialogOpen(false)
+    } else if (detailCode === 'CREATE_CATEGORY_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [status, message, toast, dispatch]);
+  }, [status, message, toast, dispatch])
 
   useEffect(() => {
     if (!isDialogOpen) {
       setForm({
-        code: "",
-        name: "",
-        description: "",
-      });
+        code: '',
+        name: '',
+        description: '',
+      })
       dispatch(
         createCategoryFailure({
           error: null,
           errors: null,
           status: null,
           detailCode: null,
-        })
-      );
+        }),
+      )
     }
-  }, [isDialogOpen, dispatch]);
+  }, [isDialogOpen, dispatch])
 
   return (
     <div>
@@ -132,7 +132,7 @@ const CreateCategoryModal: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default CreateCategoryModal;
+export default CreateCategoryModal

@@ -1,93 +1,93 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button, Input } from "@/components/index";
+} from '@/components/ui/dialog'
+import { Button, Input } from '@/components/index'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; // Importa los componentes del nuevo Select
+} from '@/components/ui/select' // Importa los componentes del nuevo Select
 import {
   createLocation,
   fetchLocations,
-} from "@/redux/actions/inventory/locationActions";
-import { fetchSimplifiedWarehouses } from "@/redux/actions/inventory/warehouseActions"; // Nueva acción para fetchSimplifiedWarehouses
-import { createLocationFailure } from "@/redux/slices/inventory/locationSlice";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useToast } from "@/hooks/use-toast";
+} from '@/redux/actions/inventory/locationActions'
+import { fetchSimplifiedWarehouses } from '@/redux/actions/inventory/warehouseActions' // Nueva acción para fetchSimplifiedWarehouses
+import { createLocationFailure } from '@/redux/slices/inventory/locationSlice'
+import { RootState, AppDispatch } from '@/redux/store'
+import { useToast } from '@/hooks/use-toast'
 
 const CreateLocationModal: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    warehouse: "", // Nuevo campo para warehouse ID
-  });
-  const [searchTerm, setSearchTerm] = useState("");
-  const { toast } = useToast();
+    name: '',
+    description: '',
+    warehouse: '', // Nuevo campo para warehouse ID
+  })
+  const [searchTerm, setSearchTerm] = useState('')
+  const { toast } = useToast()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.location
-  );
+    (state: RootState) => state.location,
+  )
   const { simplifiedWarehouses } = useSelector(
-    (state: RootState) => state.warehouse
-  ); // Obtener warehouses simplificados del estado global
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+    (state: RootState) => state.warehouse,
+  ) // Obtener warehouses simplificados del estado global
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   useEffect(() => {
     if (isDialogOpen) {
-      dispatch(fetchSimplifiedWarehouses(searchTerm)); // Fetch warehouses simplificados cuando el dialog se abre
+      dispatch(fetchSimplifiedWarehouses(searchTerm)) // Fetch warehouses simplificados cuando el dialog se abre
     }
-  }, [isDialogOpen, searchTerm, dispatch]);
+  }, [isDialogOpen, searchTerm, dispatch])
 
   const handleCreateLocation = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(createLocation({ ...form })); // Enviar warehouse como string
-  };
+    e.preventDefault()
+    dispatch(createLocation({ ...form })) // Enviar warehouse como string
+  }
 
   useEffect(() => {
-    if (detailCode === "CREATE_LOCATION_SUCCESS") {
+    if (detailCode === 'CREATE_LOCATION_SUCCESS') {
       toast({
-        title: "¡Listo!",
+        title: '¡Listo!',
         description: message,
-      });
-      dispatch(fetchLocations(1));
-      setIsDialogOpen(false);
-    } else if (detailCode === "CREATE_LOCATION_VALIDATION_ERROR") {
+      })
+      dispatch(fetchLocations(1))
+      setIsDialogOpen(false)
+    } else if (detailCode === 'CREATE_LOCATION_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [detailCode, message, toast, dispatch]);
+  }, [detailCode, message, toast, dispatch])
 
   useEffect(() => {
     if (!isDialogOpen) {
       setForm({
-        name: "",
-        description: "",
-        warehouse: "", // Reset warehouse ID
-      });
+        name: '',
+        description: '',
+        warehouse: '', // Reset warehouse ID
+      })
       dispatch(
-        createLocationFailure({ error: null, errors: null, status: null })
-      );
+        createLocationFailure({ error: null, errors: null, status: null }),
+      )
     }
-  }, [isDialogOpen, dispatch]);
+  }, [isDialogOpen, dispatch])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   const handleWarehouseChange = (value: string) => {
-    setForm({ ...form, warehouse: value });
-  };
+    setForm({ ...form, warehouse: value })
+  }
 
   return (
     <div>
@@ -167,7 +167,7 @@ const CreateLocationModal: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default CreateLocationModal;
+export default CreateLocationModal

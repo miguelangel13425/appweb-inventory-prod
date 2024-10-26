@@ -1,110 +1,110 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button, Input, Switch, Label } from "@/components/index";
+} from '@/components/ui/dialog'
+import { Button, Input, Switch, Label } from '@/components/index'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 import {
   createProduct,
   fetchProducts,
-} from "@/redux/actions/inventory/productActions";
-import { fetchSimplifiedCategories } from "@/redux/actions/inventory/categoryActions";
-import { createProductFailure } from "@/redux/slices/inventory/productSlice";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useToast } from "@/hooks/use-toast";
+} from '@/redux/actions/inventory/productActions'
+import { fetchSimplifiedCategories } from '@/redux/actions/inventory/categoryActions'
+import { createProductFailure } from '@/redux/slices/inventory/productSlice'
+import { RootState, AppDispatch } from '@/redux/store'
+import { useToast } from '@/hooks/use-toast'
 
 const CreateProductModal: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-    unit: "PC", // Default unit
-    category: "", // Category ID
+    name: '',
+    description: '',
+    unit: 'PC', // Default unit
+    category: '', // Category ID
     is_single_use: false,
-  });
-  const [searchTerm, setSearchTerm] = useState("");
-  const { toast } = useToast();
+  })
+  const [searchTerm, setSearchTerm] = useState('')
+  const { toast } = useToast()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.product
-  );
+    (state: RootState) => state.product,
+  )
   const { simplifiedCategories } = useSelector(
-    (state: RootState) => state.category
-  );
+    (state: RootState) => state.category,
+  )
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   useEffect(() => {
     if (isDialogOpen) {
-      dispatch(fetchSimplifiedCategories(searchTerm));
+      dispatch(fetchSimplifiedCategories(searchTerm))
     }
-  }, [isDialogOpen, dispatch]);
+  }, [isDialogOpen, dispatch])
 
   const handleCreateProduct = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(createProduct({ ...form }));
-  };
+    e.preventDefault()
+    dispatch(createProduct({ ...form }))
+  }
 
   useEffect(() => {
-    if (detailCode === "CREATE_PRODUCT_SUCCESS") {
+    if (detailCode === 'CREATE_PRODUCT_SUCCESS') {
       toast({
-        title: "¡Listo!",
+        title: '¡Listo!',
         description: message,
-      });
-      dispatch(fetchProducts(1));
-      setIsDialogOpen(false);
-    } else if (detailCode === "CREATE_PRODUCT_VALIDATION_ERROR") {
+      })
+      dispatch(fetchProducts(1))
+      setIsDialogOpen(false)
+    } else if (detailCode === 'CREATE_PRODUCT_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [detailCode, message, toast, dispatch]);
+  }, [detailCode, message, toast, dispatch])
 
   useEffect(() => {
     if (!isDialogOpen) {
       setForm({
-        name: "",
-        description: "",
-        unit: "PC",
-        category: "",
+        name: '',
+        description: '',
+        unit: 'PC',
+        category: '',
         is_single_use: false,
-      });
+      })
       dispatch(
-        createProductFailure({ error: null, errors: null, status: null })
-      );
+        createProductFailure({ error: null, errors: null, status: null }),
+      )
     }
-  }, [isDialogOpen, dispatch]);
+  }, [isDialogOpen, dispatch])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   const handleSearchClick = () => {
-    dispatch(fetchSimplifiedCategories(searchTerm));
-  };
+    dispatch(fetchSimplifiedCategories(searchTerm))
+  }
 
   const handleCategoryChange = (value: string) => {
-    setForm({ ...form, category: value });
-  };
+    setForm({ ...form, category: value })
+  }
 
   const handleUnitChange = (value: string) => {
-    setForm({ ...form, unit: value });
-  };
+    setForm({ ...form, unit: value })
+  }
 
   const handleSingleUseChange = (value: boolean) => {
-    setForm({ ...form, is_single_use: value });
-  };
+    setForm({ ...form, is_single_use: value })
+  }
 
   return (
     <div>
@@ -226,7 +226,7 @@ const CreateProductModal: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default CreateProductModal;
+export default CreateProductModal

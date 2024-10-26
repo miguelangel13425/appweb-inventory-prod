@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
 import {
   updateWarehouse,
   deleteWarehouse,
-} from "@/redux/actions/inventory/warehouseActions";
-import { Warehouse } from "@/redux/models/inventory";
+} from '@/redux/actions/inventory/warehouseActions'
+import { Warehouse } from '@/redux/models/inventory'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button, Input, Textarea, Label } from "@/components/index";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/card'
+import { Button, Input, Textarea, Label } from '@/components/index'
+import { useToast } from '@/hooks/use-toast'
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -26,84 +26,84 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 
 interface UpdateDeleteWarehouseFormProps {
-  warehouse: Warehouse;
+  warehouse: Warehouse
 }
 
 const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
   warehouse,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.warehouse
-  );
-  const { toast } = useToast();
+    (state: RootState) => state.warehouse,
+  )
+  const { toast } = useToast()
 
   const [formData, setFormData] = useState({
     name: warehouse.name,
     description: warehouse.description,
-  });
+  })
 
-  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
     setFormData({
       name: warehouse.name,
       description: warehouse.description,
-    });
-  }, [warehouse]);
+    })
+  }, [warehouse])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(updateWarehouse(warehouse.id, formData));
-  };
+    e.preventDefault()
+    dispatch(updateWarehouse(warehouse.id, formData))
+  }
 
   const handleDelete = () => {
-    setIsAlertDialogOpen(true);
-  };
+    setIsAlertDialogOpen(true)
+  }
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(deleteWarehouse(warehouse.id));
+    e.preventDefault()
+    dispatch(deleteWarehouse(warehouse.id))
     toast({
-      title: "¡Hecho!",
-      description: "¡Campus eliminado con éxito!",
-    });
-    setIsAlertDialogOpen(false);
-    handleBack();
-  };
+      title: '¡Hecho!',
+      description: '¡Campus eliminado con éxito!',
+    })
+    setIsAlertDialogOpen(false)
+    handleBack()
+  }
 
   const handleBack = () => {
-    navigate("/campus");
-  };
+    navigate('/campus')
+  }
 
   useEffect(() => {
-    if (detailCode === "UPDATE_WAREHOUSE_SUCCESS") {
+    if (detailCode === 'UPDATE_WAREHOUSE_SUCCESS') {
       toast({
-        title: "¡Muy bien!",
+        title: '¡Muy bien!',
         description: message,
-      });
+      })
     }
-    if (detailCode === "UPDATE_WAREHOUSE_VALIDATION_ERROR") {
+    if (detailCode === 'UPDATE_WAREHOUSE_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [dispatch, detailCode]);
+  }, [dispatch, detailCode])
 
   return (
     <Card className="p-6">
@@ -123,9 +123,9 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Este campus está{" "}
+            Este campus está{' '}
             <strong className="text-gray-900">
-              {warehouse.is_active ? "vigente" : "descontinuado"}
+              {warehouse.is_active ? 'vigente' : 'descontinuado'}
             </strong>
           </Label>
         </div>
@@ -210,7 +210,7 @@ const UpdateDeleteWarehouseForm: React.FC<UpdateDeleteWarehouseFormProps> = ({
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default UpdateDeleteWarehouseForm;
+export default UpdateDeleteWarehouseForm

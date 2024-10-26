@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchStudents } from "@/redux/actions/accounts/studentActions";
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
+import { fetchStudents } from '@/redux/actions/accounts/studentActions'
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table'
 import {
   Pagination,
   PaginationContent,
@@ -19,39 +19,39 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Spinner, Card, Input } from "@/components/index";
+} from '@/components/ui/pagination'
+import { Spinner, Card, Input } from '@/components/index'
 import {
   NotFound,
   Unauthorized,
   Forbidden,
   ServerError,
-} from "@/modules/base/index";
-import { Edit } from "@geist-ui/icons";
-import CreateStudentModal from "../components/CreateStudentModal";
-import { Student } from "@/redux/models/accounts";
+} from '@/modules/base/index'
+import { Edit } from '@geist-ui/icons'
+import CreateStudentModal from '../components/CreateStudentModal'
+import { Student } from '@/redux/models/accounts'
 
 const StudentList: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch()
+  const navigate = useNavigate()
   const { students, loading, status, error, pagination } = useSelector(
-    (state: RootState) => state.student
-  );
-  const [searchTerm, setSearchTerm] = useState("");
+    (state: RootState) => state.student,
+  )
+  const [searchTerm, setSearchTerm] = useState('')
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchStudents(page, searchTerm));
+      dispatch(fetchStudents(page, searchTerm))
     }
-  };
+  }
 
   useEffect(() => {
-    dispatch(fetchStudents(1, searchTerm));
-  }, [dispatch, searchTerm]);
+    dispatch(fetchStudents(1, searchTerm))
+  }, [dispatch, searchTerm])
 
   const createPageLinks = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
 
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
@@ -60,31 +60,31 @@ const StudentList: React.FC = () => {
             onClick={() => handlePageChange(i)}
             className={
               pagination?.currentPage === i
-                ? "font-bold cursor-pointer"
-                : "cursor-pointer"
+                ? 'font-bold cursor-pointer'
+                : 'cursor-pointer'
             }
           >
             {i}
           </PaginationLink>
-        </PaginationItem>
-      );
+        </PaginationItem>,
+      )
     }
-    return pages;
-  };
+    return pages
+  }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   const handleSettings = (id: string) => {
-    navigate(`/personal/${id}`);
-  };
+    navigate(`/personal/${id}`)
+  }
 
   if (error) {
-    if (status === 401) return <Unauthorized />;
-    if (status === 403) return <Forbidden />;
-    if (status === 404) return <NotFound />;
-    if (status === 500) return <ServerError />;
+    if (status === 401) return <Unauthorized />
+    if (status === 403) return <Forbidden />
+    if (status === 404) return <NotFound />
+    if (status === 500) return <ServerError />
   }
 
   return (
@@ -145,7 +145,7 @@ const StudentList: React.FC = () => {
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {student.phone_number !== null
                       ? student.phone_number
-                      : "No"}
+                      : 'No'}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {student.degree_display}
@@ -187,7 +187,7 @@ const StudentList: React.FC = () => {
         </>
       )}
     </Card>
-  );
-};
+  )
+}
 
-export default StudentList;
+export default StudentList

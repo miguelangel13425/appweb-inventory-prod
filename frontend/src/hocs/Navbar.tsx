@@ -1,22 +1,22 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { LogOut, User, Menu } from "@geist-ui/icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { logout } from "@/redux/slices/accounts/authSlice";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
+import { LogOut, User, Menu } from '@geist-ui/icons'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { logout } from '@/redux/slices/accounts/authSlice'
 
 interface NavbarProps {
-  isAuthenticated: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  sidebarOpen: boolean;
+  isAuthenticated: boolean
+  setSidebarOpen: (open: boolean) => void
+  sidebarOpen: boolean
 }
 
 const GuestNavbar: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleLogin = () => {
-    navigate("/login");
-  };
+    navigate('/login')
+  }
   return (
     <nav className="w-full bg-impactBlue text-white flex flex-col md:flex-row justify-between items-center shadow-lg py-4">
       <div className="flex items-center space-x-4 ml-4">
@@ -29,23 +29,23 @@ const GuestNavbar: React.FC = () => {
         ></span>
       </div>
     </nav>
-  );
-};
+  )
+}
 
 const AuthenticatedNavbar: React.FC<{
-  setSidebarOpen: (open: boolean) => void;
-  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void
+  sidebarOpen: boolean
 }> = ({ setSidebarOpen, sidebarOpen }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
+  const { user } = useSelector((state: RootState) => state.auth)
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
-  };
+    dispatch(logout())
+    navigate('/login')
+  }
   const handleProfile = () => {
-    navigate("/me");
-  };
+    navigate('/me')
+  }
   return (
     <nav className="w-full bg-impactBlue text-white flex flex-col md:flex-row justify-between items-center shadow-lg py-4">
       <div className="flex items-center space-x-4 ml-4">
@@ -72,13 +72,13 @@ const AuthenticatedNavbar: React.FC<{
           className="p-2 rounded flex items-center cursor-pointer"
           onClick={handleLogout}
         >
-          <span className="mr-2">Cerrar sesión</span>{" "}
+          <span className="mr-2">Cerrar sesión</span>{' '}
           <LogOut className="h-6 w-6" />
         </span>
       </div>
     </nav>
-  );
-};
+  )
+}
 
 const Navbar: React.FC<NavbarProps> = ({
   isAuthenticated,
@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({
     />
   ) : (
     <GuestNavbar />
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

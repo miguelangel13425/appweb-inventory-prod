@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from 'axios'
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true
 
 const getConfig = () => ({
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+    Authorization: `Bearer ${localStorage.getItem('access')}`,
   },
-});
+})
 
-export default axios;
-export { getConfig };
+export default axios
+export { getConfig }

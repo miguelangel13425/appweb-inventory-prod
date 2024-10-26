@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button, Input } from "@/components/index";
-import { RootState } from "@/redux/store";
-import { createWarehouse } from "@/redux/actions/inventory/warehouseActions";
+} from '@/components/ui/dialog'
+import { Button, Input } from '@/components/index'
+import { RootState } from '@/redux/store'
+import { createWarehouse } from '@/redux/actions/inventory/warehouseActions'
 
 const CreateTransactionModal: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-  });
+    name: '',
+    description: '',
+  })
 
   const handleCreateWarehouse = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(createWarehouse(form));
-  };
+    e.preventDefault()
+    dispatch(createWarehouse(form))
+  }
 
   return (
     <div>
@@ -61,7 +61,7 @@ const CreateTransactionModal: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default CreateTransactionModal;
+export default CreateTransactionModal

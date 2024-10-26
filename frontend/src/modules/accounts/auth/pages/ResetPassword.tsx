@@ -1,5 +1,5 @@
-import React from "react";
-import SendResetPassForm from "../components/SendResetPassForm";
+import React from 'react'
+import SendResetPassForm from '../components/SendResetPassForm'
 
 const ResetPassword = () => {
   return (
@@ -8,7 +8,7 @@ const ResetPassword = () => {
       <p>Ingresa tu correo electronico para recuperar tu contraseña</p>
       <SendResetPassForm />
     </div>
-  );
-};
+  )
+}
 
-export default ResetPassword;
+export default ResetPassword

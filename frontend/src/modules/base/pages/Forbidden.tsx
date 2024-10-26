@@ -1,14 +1,14 @@
-import React from "react";
-import { Button, Card, Avatar } from "@/components/index";
-import { useNavigate } from "react-router-dom";
-import { LockClosedIcon } from "@heroicons/react/solid";
+import React from 'react'
+import { Button, Card, Avatar } from '@/components/index'
+import { useNavigate } from 'react-router-dom'
+import { LockClosedIcon } from '@heroicons/react/solid'
 
 const Forbidden: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleGoBack = () => {
-    navigate("/");
-  };
+    navigate('/')
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6">
@@ -35,7 +35,7 @@ const Forbidden: React.FC = () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default Forbidden;
+export default Forbidden

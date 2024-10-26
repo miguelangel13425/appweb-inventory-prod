@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
 import {
   updateProduct,
   deleteProduct,
-} from "@/redux/actions/inventory/productActions";
-import { Product } from "@/redux/models/inventory";
+} from '@/redux/actions/inventory/productActions'
+import { Product } from '@/redux/models/inventory'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button, Input, Textarea, Switch, Label } from "@/components/index";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/card'
+import { Button, Input, Textarea, Switch, Label } from '@/components/index'
+import { useToast } from '@/hooks/use-toast'
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -26,37 +26,37 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 
 interface UpdateDeleteProductFormProps {
-  product: Product;
+  product: Product
 }
 
 const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
   product,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.product
-  );
-  const { toast } = useToast();
+    (state: RootState) => state.product,
+  )
+  const { toast } = useToast()
 
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
     unit: product.unit,
     is_single_use: product.is_single_use,
-  });
+  })
 
-  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
     setFormData({
@@ -64,65 +64,65 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
       description: product.description,
       unit: product.unit,
       is_single_use: product.is_single_use,
-    });
-  }, [product]);
+    })
+  }, [product])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleUnitChange = (value: string) => {
-    setFormData({ ...formData, unit: value });
-  };
+    setFormData({ ...formData, unit: value })
+  }
 
   const handleSingleUseChange = (value: boolean) => {
-    setFormData({ ...formData, is_single_use: value });
-  };
+    setFormData({ ...formData, is_single_use: value })
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(updateProduct(product.id, formData));
-  };
+    e.preventDefault()
+    dispatch(updateProduct(product.id, formData))
+  }
 
   const handleDelete = () => {
-    setIsAlertDialogOpen(true);
-  };
+    setIsAlertDialogOpen(true)
+  }
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(deleteProduct(product.id));
+    e.preventDefault()
+    dispatch(deleteProduct(product.id))
     toast({
-      title: "¡Hecho!",
-      description: "¡Producto eliminado con éxito!",
-    });
-    setIsAlertDialogOpen(false);
-    handleBack();
-  };
+      title: '¡Hecho!',
+      description: '¡Producto eliminado con éxito!',
+    })
+    setIsAlertDialogOpen(false)
+    handleBack()
+  }
 
   const handleBack = () => {
-    navigate("/productos");
-  };
+    navigate('/productos')
+  }
 
   useEffect(() => {
-    if (detailCode === "UPDATE_PRODUCT_SUCCESS") {
+    if (detailCode === 'UPDATE_PRODUCT_SUCCESS') {
       toast({
-        title: "¡Muy bien!",
+        title: '¡Muy bien!',
         description: message,
-      });
+      })
     }
-    if (detailCode === "UPDATE_PRODUCT_VALIDATION_ERROR") {
+    if (detailCode === 'UPDATE_PRODUCT_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [dispatch, detailCode]);
+  }, [dispatch, detailCode])
 
   return (
     <Card className="p-6">
@@ -142,9 +142,9 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
             htmlFor="created_at"
             className="block text-sm font-medium text-gray-700"
           >
-            Partida{" "}
+            Partida{' '}
             <strong className="text-gray-900">{product.category.code}</strong>
-            {" - "}
+            {' - '}
             <strong className="text-gray-900">{product.category.name}</strong>
           </Label>
         </div>
@@ -153,9 +153,9 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Este producto está{" "}
+            Este producto está{' '}
             <strong className="text-gray-900">
-              {product.is_active ? "vigente" : "descontinuada"}
+              {product.is_active ? 'vigente' : 'descontinuada'}
             </strong>
           </Label>
         </div>
@@ -279,7 +279,7 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default UpdateDeleteProductForm;
+export default UpdateDeleteProductForm

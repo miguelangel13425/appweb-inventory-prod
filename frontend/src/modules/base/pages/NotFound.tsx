@@ -1,14 +1,14 @@
-import React from "react";
-import { Button, Card, Avatar } from "@/components/index";
-import { useNavigate } from "react-router-dom";
-import { ArrowUpLeft } from "@geist-ui/icons";
+import React from 'react'
+import { Button, Card, Avatar } from '@/components/index'
+import { useNavigate } from 'react-router-dom'
+import { ArrowUpLeft } from '@geist-ui/icons'
 
 const NotFound: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleGoBack = () => {
-    navigate("/");
-  };
+    navigate('/')
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6">
@@ -36,7 +36,7 @@ const NotFound: React.FC = () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

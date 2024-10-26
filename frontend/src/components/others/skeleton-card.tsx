@@ -1,9 +1,9 @@
-import React from "react";
-import { Skeleton } from "@/components";
+import React from 'react'
+import { Skeleton } from '@/components'
 
 interface SkeletonSectionProps {
-  rows: number;
-  className?: string;
+  rows: number
+  className?: string
 }
 
 const SkeletonSection: React.FC<SkeletonSectionProps> = ({
@@ -16,13 +16,13 @@ const SkeletonSection: React.FC<SkeletonSectionProps> = ({
         <Skeleton key={index} className="h-4 w-full" />
       ))}
     </div>
-  );
-};
+  )
+}
 
 interface SkeletonCardProps {
-  headerRows?: number;
-  detailRows?: number;
-  actionRows?: number;
+  headerRows?: number
+  detailRows?: number
+  actionRows?: number
 }
 
 const SkeletonCard: React.FC<SkeletonCardProps> = ({
@@ -46,7 +46,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { SkeletonCard };
+export { SkeletonCard }

@@ -1,61 +1,61 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button, Input } from "@/components/index";
+} from '@/components/ui/dialog'
+import { Button, Input } from '@/components/index'
 import {
   createWarehouse,
   fetchWarehouses,
-} from "@/redux/actions/inventory/warehouseActions";
-import { RootState, AppDispatch } from "@/redux/store";
-import { useToast } from "@/hooks/use-toast";
+} from '@/redux/actions/inventory/warehouseActions'
+import { RootState, AppDispatch } from '@/redux/store'
+import { useToast } from '@/hooks/use-toast'
 
 const CreateWarehouseModal: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
   const [form, setForm] = useState({
-    name: "",
-    description: "",
-  });
-  const { toast } = useToast();
+    name: '',
+    description: '',
+  })
+  const { toast } = useToast()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.warehouse
-  );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+    (state: RootState) => state.warehouse,
+  )
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const handleCreateWarehouse = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(createWarehouse(form));
-  };
+    e.preventDefault()
+    dispatch(createWarehouse(form))
+  }
 
   useEffect(() => {
-    if (detailCode === "CREATE_WAREHOUSE_SUCCESS") {
+    if (detailCode === 'CREATE_WAREHOUSE_SUCCESS') {
       toast({
-        title: "¡Listo!",
+        title: '¡Listo!',
         description: message,
-      });
-      dispatch(fetchWarehouses(1));
-      setIsDialogOpen(false);
-    } else if (detailCode === "CREATE_WAREHOUSE_VALIDATION_ERROR") {
+      })
+      dispatch(fetchWarehouses(1))
+      setIsDialogOpen(false)
+    } else if (detailCode === 'CREATE_WAREHOUSE_VALIDATION_ERROR') {
       toast({
-        title: "¡Lo siento!",
+        title: '¡Lo siento!',
         description: message,
-      });
+      })
     }
-  }, [status, message, toast, dispatch]);
+  }, [status, message, toast, dispatch])
 
   useEffect(() => {
     if (!isDialogOpen) {
       setForm({
-        name: "",
-        description: "",
-      });
+        name: '',
+        description: '',
+      })
     }
-  }, [isDialogOpen, dispatch]);
+  }, [isDialogOpen, dispatch])
 
   return (
     <div>
@@ -108,7 +108,7 @@ const CreateWarehouseModal: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default CreateWarehouseModal;
+export default CreateWarehouseModal

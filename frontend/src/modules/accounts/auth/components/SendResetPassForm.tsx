@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "@/redux/store";
-import { resetPassword } from "@/redux/actions/accounts/authActions";
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { AppDispatch } from '@/redux/store'
+import { resetPassword } from '@/redux/actions/accounts/authActions'
 
 const SendResetPassForm: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const [requestSent, setRequestSent] = useState(false);
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+  const [requestSent, setRequestSent] = useState(false)
   const [formData, setFormData] = useState({
-    email: "",
-  });
+    email: '',
+  })
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(resetPassword(formData.email));
-    setRequestSent(true);
-  };
+    e.preventDefault()
+    dispatch(resetPassword(formData.email))
+    setRequestSent(true)
+  }
 
   if (requestSent) {
-    navigate("/login");
+    navigate('/login')
   }
 
   return (
@@ -44,7 +44,7 @@ const SendResetPassForm: React.FC = () => {
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default SendResetPassForm;
+export default SendResetPassForm

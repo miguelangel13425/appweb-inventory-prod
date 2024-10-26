@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const CreateUserModal = () => {
-  return <div>CreateUserModal</div>;
-};
+  return <div>CreateUserModal</div>
+}
 
-export default CreateUserModal;
+export default CreateUserModal

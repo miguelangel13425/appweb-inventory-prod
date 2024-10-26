@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { fetchProviders } from "@/redux/actions/accounts/providerActions";
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
+import { fetchProviders } from '@/redux/actions/accounts/providerActions'
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table'
 import {
   Pagination,
   PaginationContent,
@@ -19,39 +19,39 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Spinner, Card, Input } from "@/components/index";
+} from '@/components/ui/pagination'
+import { Spinner, Card, Input } from '@/components/index'
 import {
   NotFound,
   Unauthorized,
   Forbidden,
   ServerError,
-} from "@/modules/base/index";
-import { Edit } from "@geist-ui/icons";
-import CreateProviderModal from "../components/CreateProviderModal";
-import { Provider } from "@/redux/models/accounts";
+} from '@/modules/base/index'
+import { Edit } from '@geist-ui/icons'
+import CreateProviderModal from '../components/CreateProviderModal'
+import { Provider } from '@/redux/models/accounts'
 
 const ProviderList: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch()
+  const navigate = useNavigate()
   const { providers, loading, status, error, pagination } = useSelector(
-    (state: RootState) => state.provider
-  );
-  const [searchTerm, setSearchTerm] = useState("");
+    (state: RootState) => state.provider,
+  )
+  const [searchTerm, setSearchTerm] = useState('')
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchProviders(page, searchTerm));
+      dispatch(fetchProviders(page, searchTerm))
     }
-  };
+  }
 
   useEffect(() => {
-    dispatch(fetchProviders(1, searchTerm));
-  }, [dispatch, searchTerm]);
+    dispatch(fetchProviders(1, searchTerm))
+  }, [dispatch, searchTerm])
 
   const createPageLinks = () => {
-    const pages = [];
-    const totalPages = pagination?.totalPages || 1;
+    const pages = []
+    const totalPages = pagination?.totalPages || 1
 
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
@@ -60,31 +60,31 @@ const ProviderList: React.FC = () => {
             onClick={() => handlePageChange(i)}
             className={
               pagination?.currentPage === i
-                ? "font-bold cursor-pointer"
-                : "cursor-pointer"
+                ? 'font-bold cursor-pointer'
+                : 'cursor-pointer'
             }
           >
             {i}
           </PaginationLink>
-        </PaginationItem>
-      );
+        </PaginationItem>,
+      )
     }
-    return pages;
-  };
+    return pages
+  }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   const handleSettings = (id: string) => {
-    navigate(`/personal/${id}`);
-  };
+    navigate(`/personal/${id}`)
+  }
 
   if (error) {
-    if (status === 401) return <Unauthorized />;
-    if (status === 403) return <Forbidden />;
-    if (status === 404) return <NotFound />;
-    if (status === 500) return <ServerError />;
+    if (status === 401) return <Unauthorized />
+    if (status === 403) return <Forbidden />
+    if (status === 404) return <NotFound />
+    if (status === 500) return <ServerError />
   }
 
   return (
@@ -145,7 +145,7 @@ const ProviderList: React.FC = () => {
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {provider.phone_number !== null
                       ? provider.phone_number
-                      : "No"}
+                      : 'No'}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {provider.NSS}
@@ -187,7 +187,7 @@ const ProviderList: React.FC = () => {
         </>
       )}
     </Card>
-  );
-};
+  )
+}
 
-export default ProviderList;
+export default ProviderList

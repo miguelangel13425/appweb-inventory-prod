@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import { Outlet } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
+import React, { useState } from 'react'
+import { RootState } from '@/redux/store'
+import { useSelector } from 'react-redux'
+import Navbar from './Navbar'
+import Sidebar from './Sidebar'
+import { Outlet } from 'react-router-dom'
+import { Toaster } from '@/components/ui/toaster'
 
 const Layout: React.FC = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,7 +25,7 @@ const Layout: React.FC = () => {
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

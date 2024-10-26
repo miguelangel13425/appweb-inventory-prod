@@ -1,6 +1,6 @@
-import axios, { getConfig } from "../axiosConfig";
-import { Provider } from "../../models/accounts"; 
-import { AppDispatch } from "../../store";
+import axios, { getConfig } from '../axiosConfig'
+import { Provider } from '../../models/accounts'
+import { AppDispatch } from '../../store'
 import {
   fetchProvidersStart,
   fetchProvidersSuccess,
@@ -16,114 +16,155 @@ import {
   deleteProviderStart,
   deleteProviderSuccess,
   deleteProviderFailure,
-} from "../../slices/accounts/providerSlice";
+} from '../../slices/accounts/providerSlice'
 
-import { ACCOUNTS_URL } from "@/constants/urls";
+import { ACCOUNTS_URL } from '@/constants/urls'
 
-export const fetchProviders = (page: number, searchTerm: string = "") => async (dispatch: AppDispatch) => {
-  dispatch(fetchProvidersStart());
-  try {
-    const response = await axios.get(`${ACCOUNTS_URL}/providers/`, { 
-      params: { 
-        page,
-        search: searchTerm 
-      }, 
-      ...getConfig()
-    });
-    dispatch(fetchProvidersSuccess({
-      message: response.data.message,
-      data: response.data.providers,
-      status: response.status,
-      pagination: {
-        currentPage: response.data.meta.current_page,
-        totalPages: response.data.meta.total_pages,
-        totalItems: response.data.meta.total_items,
-        pageSize: response.data.meta.page_size
-      },
-      detailCode: response.data.detail_code
-    }));
-  } catch (error: any) {
-    dispatch(fetchProvidersFailure({
-      error: error.response?.data.message || error.message,
-      status: error.response?.status || 500,
-      detailCode: error.response?.data.detail_code || 'FETCH_PROVIDERS_ERROR'
-    }));
+export const fetchProviders =
+  (page: number, searchTerm: string = '') =>
+  async (dispatch: AppDispatch) => {
+    dispatch(fetchProvidersStart())
+    try {
+      const response = await axios.get(`${ACCOUNTS_URL}/providers/`, {
+        params: {
+          page,
+          search: searchTerm,
+        },
+        ...getConfig(),
+      })
+      dispatch(
+        fetchProvidersSuccess({
+          message: response.data.message,
+          data: response.data.providers,
+          status: response.status,
+          pagination: {
+            currentPage: response.data.meta.current_page,
+            totalPages: response.data.meta.total_pages,
+            totalItems: response.data.meta.total_items,
+            pageSize: response.data.meta.page_size,
+          },
+          detailCode: response.data.detail_code,
+        }),
+      )
+    } catch (error: any) {
+      dispatch(
+        fetchProvidersFailure({
+          error: error.response?.data.message || error.message,
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code || 'FETCH_PROVIDERS_ERROR',
+        }),
+      )
+    }
   }
-};
 
 export const fetchProvider = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${ACCOUNTS_URL}/providers/${id}/`, getConfig());
-    dispatch(fetchProviderSuccess({
-      message: response.data.message,
-      data: response.data.provider,
-      status: response.status,
-      detailCode: response.data.detail_code
-    }));
+    const response = await axios.get(
+      `${ACCOUNTS_URL}/providers/${id}/`,
+      getConfig(),
+    )
+    dispatch(
+      fetchProviderSuccess({
+        message: response.data.message,
+        data: response.data.provider,
+        status: response.status,
+        detailCode: response.data.detail_code,
+      }),
+    )
   } catch (error: any) {
-    dispatch(fetchProviderFailure({
-      error: error.response?.data.message || error.message,
-      status: error.response?.status || 500,
-      detailCode: error.response?.data.detail_code || 'FETCH_PROVIDER_ERROR'
-    }));
+    dispatch(
+      fetchProviderFailure({
+        error: error.response?.data.message || error.message,
+        status: error.response?.status || 500,
+        detailCode: error.response?.data.detail_code || 'FETCH_PROVIDER_ERROR',
+      }),
+    )
   }
-};
+}
 
-export const createProvider = (newProvider: Provider) => async (dispatch: AppDispatch) => {
-  dispatch(createProviderStart());
-  try {
-    const response = await axios.post(`${ACCOUNTS_URL}/providers/`, newProvider, getConfig());
-    dispatch(createProviderSuccess({
-      message: response.data.message,
-      data: response.data.provider,
-      status: response.status,
-      detailCode: response.data.detail_code
-    }));
-  } catch (error: any) {
-    dispatch(createProviderFailure({
-      error: error.response?.data.message || error.message,
-      errors: error.response?.data.errors || {},
-      status: error.response?.status || 500,
-      detailCode: error.response?.data.detail_code || 'CREATE_PROVIDER_ERROR'
-    }));
+export const createProvider =
+  (newProvider: Provider) => async (dispatch: AppDispatch) => {
+    dispatch(createProviderStart())
+    try {
+      const response = await axios.post(
+        `${ACCOUNTS_URL}/providers/`,
+        newProvider,
+        getConfig(),
+      )
+      dispatch(
+        createProviderSuccess({
+          message: response.data.message,
+          data: response.data.provider,
+          status: response.status,
+          detailCode: response.data.detail_code,
+        }),
+      )
+    } catch (error: any) {
+      dispatch(
+        createProviderFailure({
+          error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code || 'CREATE_PROVIDER_ERROR',
+        }),
+      )
+    }
   }
-};
 
-export const updateProvider = (id: string, updatedProvider: Provider) => async (dispatch: AppDispatch) => {
-  dispatch(updateProviderStart());
-  try {
-    const response = await axios.put(`${ACCOUNTS_URL}/providers/${id}/`, updatedProvider, getConfig());
-    dispatch(updateProviderSuccess({
-      message: response.data.message,
-      data: response.data.provider,
-      status: response.status,
-      detailCode: response.data.detail_code
-    }));
-    dispatch(fetchProvider(id));
-  } catch (error: any) {
-    dispatch(updateProviderFailure({
-      error: error.response?.data.message || error.message,
-      errors: error.response?.data.errors || {},
-      status: error.response?.status || 500,
-      detailCode: error.response?.data.detail_code || 'UPDATE_PROVIDER_ERROR'
-    }));
+export const updateProvider =
+  (id: string, updatedProvider: Provider) => async (dispatch: AppDispatch) => {
+    dispatch(updateProviderStart())
+    try {
+      const response = await axios.put(
+        `${ACCOUNTS_URL}/providers/${id}/`,
+        updatedProvider,
+        getConfig(),
+      )
+      dispatch(
+        updateProviderSuccess({
+          message: response.data.message,
+          data: response.data.provider,
+          status: response.status,
+          detailCode: response.data.detail_code,
+        }),
+      )
+      dispatch(fetchProvider(id))
+    } catch (error: any) {
+      dispatch(
+        updateProviderFailure({
+          error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code || 'UPDATE_PROVIDER_ERROR',
+        }),
+      )
+    }
   }
-};
 
 export const deleteProvider = (id: string) => async (dispatch: AppDispatch) => {
-  dispatch(deleteProviderStart());
+  dispatch(deleteProviderStart())
   try {
-    const response = await axios.delete(`${ACCOUNTS_URL}/providers/${id}/`, getConfig());
-    dispatch(deleteProviderSuccess({
-      message: response.data.message,
-      status: response.status,
-      detailCode: response.data.detail_code
-    }));
+    const response = await axios.delete(
+      `${ACCOUNTS_URL}/providers/${id}/`,
+      getConfig(),
+    )
+    dispatch(
+      deleteProviderSuccess({
+        message: response.data.message,
+        status: response.status,
+        detailCode: response.data.detail_code,
+      }),
+    )
   } catch (error: any) {
-    dispatch(deleteProviderFailure({
-      error: error.response?.data.message || error.message,
-      status: error.response?.status || 500,
-      detailCode: error.response?.data.detail_code || 'DELETE_PROVIDER_ERROR'
-    }));
+    dispatch(
+      deleteProviderFailure({
+        error: error.response?.data.message || error.message,
+        status: error.response?.status || 500,
+        detailCode: error.response?.data.detail_code || 'DELETE_PROVIDER_ERROR',
+      }),
+    )
   }
-};
+}
