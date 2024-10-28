@@ -20,6 +20,12 @@ import {
 
 import { INVENTORY_URL } from '@/constants/urls'
 
+type InventoryForm = Omit<
+  Inventory,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>
+
+
 export const fetchInventories =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -76,7 +82,7 @@ export const fetchInventory = (id: string) => async (dispatch: AppDispatch) => {
 }
 
 export const createInventory =
-  (newInventory: Inventory) => async (dispatch: AppDispatch) => {
+  (newInventory: InventoryForm) => async (dispatch: AppDispatch) => {
     dispatch(createInventoryStart())
     try {
       const response = await axios.post(
@@ -101,7 +107,7 @@ export const createInventory =
   }
 
 export const updateInventory =
-  (id: string, updatedInventory: Inventory) =>
+  (id: string, updatedInventory: InventoryForm) =>
   async (dispatch: AppDispatch) => {
     dispatch(updateInventoryStart())
     try {

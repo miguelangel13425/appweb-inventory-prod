@@ -23,6 +23,12 @@ import {
 
 import { INVENTORY_URL } from '@/constants/urls'
 
+type LocationForm = Omit<
+  Location,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>
+
+
 export const fetchLocations =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -117,7 +123,7 @@ export const fetchLocation = (id: string) => async (dispatch: AppDispatch) => {
 }
 
 export const createLocation =
-  (newLocation: Location) => async (dispatch: AppDispatch) => {
+  (newLocation: LocationForm) => async (dispatch: AppDispatch) => {
     dispatch(createLocationStart())
     try {
       const response = await axios.post(
@@ -147,7 +153,7 @@ export const createLocation =
   }
 
 export const updateLocation =
-  (id: string, updatedLocation: Location) => async (dispatch: AppDispatch) => {
+  (id: string, updatedLocation: LocationForm) => async (dispatch: AppDispatch) => {
     dispatch(updateLocationStart())
     try {
       const response = await axios.put(

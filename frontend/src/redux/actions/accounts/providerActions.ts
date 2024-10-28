@@ -20,6 +20,11 @@ import {
 
 import { ACCOUNTS_URL } from '@/constants/urls'
 
+type ProviderForm = Omit<
+  Provider,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>  
+
 export const fetchProviders =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -84,7 +89,7 @@ export const fetchProvider = (id: string) => async (dispatch: AppDispatch) => {
 }
 
 export const createProvider =
-  (newProvider: Provider) => async (dispatch: AppDispatch) => {
+  (newProvider: ProviderForm) => async (dispatch: AppDispatch) => {
     dispatch(createProviderStart())
     try {
       const response = await axios.post(
@@ -114,7 +119,7 @@ export const createProvider =
   }
 
 export const updateProvider =
-  (id: string, updatedProvider: Provider) => async (dispatch: AppDispatch) => {
+  (id: string, updatedProvider: ProviderForm) => async (dispatch: AppDispatch) => {
     dispatch(updateProviderStart())
     try {
       const response = await axios.put(

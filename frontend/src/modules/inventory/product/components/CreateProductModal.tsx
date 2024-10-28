@@ -20,7 +20,6 @@ import {
   fetchProducts,
 } from '@/redux/actions/inventory/productActions'
 import { fetchSimplifiedCategories } from '@/redux/actions/inventory/categoryActions'
-import { createProductFailure } from '@/redux/slices/inventory/productSlice'
 import { RootState, AppDispatch } from '@/redux/store'
 import { useToast } from '@/hooks/use-toast'
 
@@ -52,7 +51,7 @@ const CreateProductModal: React.FC = () => {
 
   const handleCreateProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(createProduct({ ...form }))
+    dispatch(createProduct(form))
   }
 
   useEffect(() => {
@@ -80,9 +79,6 @@ const CreateProductModal: React.FC = () => {
         category: '',
         is_single_use: false,
       })
-      dispatch(
-        createProductFailure({ error: null, errors: null, status: null }),
-      )
     }
   }, [isDialogOpen, dispatch])
 

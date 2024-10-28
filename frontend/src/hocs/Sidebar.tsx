@@ -45,7 +45,11 @@ const Sidebar: React.FC<{
   }
 
   const handleUser = () => {
-    navigate('/personal')
+    navigate('/usuarios')
+  }
+
+  const handlePerson = () => {
+    navigate('/personas')
   }
 
   return (
@@ -115,6 +119,13 @@ const Sidebar: React.FC<{
           >
             <Users className="h-6 w-6 mr-2" />{' '}
             {sidebarOpen && <span>Usuarios</span>}
+          </li>
+          <li
+            className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
+            onClick={handlePerson}
+          >
+            <Users className="h-6 w-6 mr-2" />{' '}
+            {sidebarOpen && <span>Personas</span>}
           </li>
         </ul>
       </nav>

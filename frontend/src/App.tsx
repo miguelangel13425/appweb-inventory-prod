@@ -5,6 +5,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import Login from '@/modules/accounts/auth/pages/Signin'
 import Dashboard from '@/modules/accounts/auth/pages/Dashboard'
 import UserList from '@/modules/accounts/user/pages/UserList'
+import PersonList from '@/modules/accounts/person/pages/PersonList'
 import StudentList from '@/modules/accounts/student/pages/StudentList'
 import ProviderList from '@/modules/accounts/provider/pages/ProviderList'
 import WarehouseList from '@/modules/inventory/warehouse/pages/WarehouseList'
@@ -23,7 +24,8 @@ import './App.css'
 
 const routes = [
   { path: '/', element: <Dashboard /> },
-  { path: '/personal', element: <UserList /> },
+  { path: '/usuarios', element: <UserList /> },
+  { path: '/personas', element: <PersonList /> },
   { path: '/estudiantes', element: <StudentList /> },
   { path: '/proveedores', element: <ProviderList /> },
   { path: '/campus', element: <WarehouseList /> },

@@ -20,6 +20,12 @@ import {
 
 import { INVENTORY_URL } from '@/constants/urls'
 
+type InventoryTransactionForm = Omit<
+  InventoryTransaction,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>
+
+
 export const fetchTransactions =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -77,7 +83,7 @@ export const fetchTransaction =
   }
 
 export const createTransaction =
-  (newTransaction: InventoryTransaction) => async (dispatch: AppDispatch) => {
+  (newTransaction: InventoryTransactionForm) => async (dispatch: AppDispatch) => {
     dispatch(createTransactionStart())
     try {
       const response = await axios.post(
@@ -102,7 +108,7 @@ export const createTransaction =
   }
 
 export const updateTransaction =
-  (id: string, updatedTransaction: InventoryTransaction) =>
+  (id: string, updatedTransaction: InventoryTransactionForm) =>
   async (dispatch: AppDispatch) => {
     dispatch(updateTransactionStart())
     try {

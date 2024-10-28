@@ -90,7 +90,7 @@ class PersonModel(BaseModel):
         return self.email
 
 class StudentModel(PersonModel):
-    control_number = models.CharField(max_length=64, unique=True)
+    control_number = models.CharField(max_length=9, unique=True)
     degree = models.CharField(max_length=64, choices=DegreeChoices.choices, default=DegreeChoices.CSE)
 
     class Meta:

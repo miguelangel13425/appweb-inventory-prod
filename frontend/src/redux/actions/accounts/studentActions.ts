@@ -20,6 +20,12 @@ import {
 
 import { ACCOUNTS_URL } from '@/constants/urls'
 
+type StudentForm = Omit<
+  Student,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>
+
+
 export const fetchStudents =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -84,7 +90,7 @@ export const fetchStudent = (id: string) => async (dispatch: AppDispatch) => {
 }
 
 export const createStudent =
-  (newStudent: Student) => async (dispatch: AppDispatch) => {
+  (newStudent: StudentForm) => async (dispatch: AppDispatch) => {
     dispatch(createStudentStart())
     try {
       const response = await axios.post(
@@ -114,7 +120,7 @@ export const createStudent =
   }
 
 export const updateStudent =
-  (id: string, updatedStudent: Student) => async (dispatch: AppDispatch) => {
+  (id: string, updatedStudent: StudentForm) => async (dispatch: AppDispatch) => {
     dispatch(updateStudentStart())
     try {
       const response = await axios.put(

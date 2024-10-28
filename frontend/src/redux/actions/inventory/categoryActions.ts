@@ -23,6 +23,11 @@ import {
 
 import { INVENTORY_URL } from '@/constants/urls'
 
+type CategoryForm = Omit<
+  Category,
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
+>
+
 export const fetchCategories =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -87,7 +92,7 @@ export const fetchCategory = (id: string) => async (dispatch: AppDispatch) => {
 }
 
 export const createCategory =
-  (newCategory: Category) => async (dispatch: AppDispatch) => {
+  (newCategory: CategoryForm) => async (dispatch: AppDispatch) => {
     dispatch(createCategoryStart())
     try {
       const response = await axios.post(
@@ -117,7 +122,7 @@ export const createCategory =
   }
 
 export const updateCategory =
-  (id: string, updatedCategory: Category) => async (dispatch: AppDispatch) => {
+  (id: string, updatedCategory: CategoryForm) => async (dispatch: AppDispatch) => {
     dispatch(updateCategoryStart())
     try {
       const response = await axios.put(

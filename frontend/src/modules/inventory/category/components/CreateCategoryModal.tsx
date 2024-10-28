@@ -12,14 +12,13 @@ import {
   createCategory,
   fetchCategories,
 } from '@/redux/actions/inventory/categoryActions'
-import { createCategoryFailure } from '@/redux/slices/inventory/categorySlice'
 import { RootState, AppDispatch } from '@/redux/store'
 import { useToast } from '@/hooks/use-toast'
 
 const CreateCategoryModal: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [form, setForm] = useState({
-    code: '',
+    code: 0,
     name: '',
     description: '',
   })
@@ -53,18 +52,10 @@ const CreateCategoryModal: React.FC = () => {
   useEffect(() => {
     if (!isDialogOpen) {
       setForm({
-        code: '',
+        code: 0,
         name: '',
         description: '',
       })
-      dispatch(
-        createCategoryFailure({
-          error: null,
-          errors: null,
-          status: null,
-          detailCode: null,
-        }),
-      )
     }
   }, [isDialogOpen, dispatch])
 

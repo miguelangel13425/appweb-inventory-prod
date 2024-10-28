@@ -71,12 +71,12 @@ class PersonCustomSerializer(serializers.ModelSerializer):
         model = PersonModel
         fields = ['id', 'first_name', 'last_name', 'email', 'phone_number']
 
-class StudentCreateUpdateSerializer(serializers.ModelSerializer):
+class StudentCreateUpdateSerializer(StudentManager):
     class Meta:
         model = StudentModel
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'control_number', 'degree']
 
-class ProviderCreateUpdateSerializer(serializers.ModelSerializer):
+class ProviderCreateUpdateSerializer(ProviderManager):
     class Meta:
         model = ProviderModel
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'RFC', 'NSS']
