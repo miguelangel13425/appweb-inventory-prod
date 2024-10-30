@@ -40,6 +40,17 @@ class ProfileCustomSerializer(serializers.ModelSerializer):
     def get_gender_display(self, obj):
         return obj.get_gender_display()
 
+
+class ProfileListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileModel
+        fields = ['id', 'gender', 'birthdate', 'bio']
+
+class ProfileDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileModel
+        fields = '__all__'
+
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileModel

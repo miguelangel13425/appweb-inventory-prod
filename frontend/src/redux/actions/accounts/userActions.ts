@@ -20,6 +20,11 @@ import {
 
 import { ACCOUNTS_URL } from '@/constants/urls'
 
+type UserForm = Omit<
+  User, 
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'date_joined' | 'is_staff' | 'profile' | 'email' 
+>
+
 export const fetchUsers =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -51,7 +56,8 @@ export const fetchUsers =
         fetchUsersFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'FETCH_USERS_ERROR',
+          detailCode: 
+            error.response?.data.detail_code || 'FETCH_USERS_ERROR',
         }),
       )
     }
@@ -82,7 +88,8 @@ export const fetchUser = (id: string) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const createUser = (newUser: User) => async (dispatch: AppDispatch) => {
+export const createUser = 
+  (newUser: UserForm) => async (dispatch: AppDispatch) => {
   dispatch(createUserStart())
   try {
     const response = await axios.post(
@@ -104,14 +111,15 @@ export const createUser = (newUser: User) => async (dispatch: AppDispatch) => {
         error: error.response?.data.message || error.message,
         errors: error.response?.data.errors || {},
         status: error.response?.status || 500,
-        detailCode: error.response?.data.detail_code || 'CREATE_USER_ERROR',
+        detailCode: 
+          error.response?.data.detail_code || 'CREATE_USER_ERROR',
       }),
     )
   }
 }
 
 export const updateUser =
-  (id: string, updatedUser: User) => async (dispatch: AppDispatch) => {
+  (id: string, updatedUser: UserForm) => async (dispatch: AppDispatch) => {
     dispatch(updateUserStart())
     try {
       const response = await axios.put(
@@ -134,7 +142,8 @@ export const updateUser =
           error: error.response?.data.message || error.message,
           errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'UPDATE_USER_ERROR',
+          detailCode: 
+            error.response?.data.detail_code || 'UPDATE_USER_ERROR',
         }),
       )
     }

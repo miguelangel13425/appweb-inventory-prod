@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  User,
   Users,
   Home,
   Archive,
@@ -124,7 +125,7 @@ const Sidebar: React.FC<{
             className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
             onClick={handlePerson}
           >
-            <Users className="h-6 w-6 mr-2" />{' '}
+            <User className="h-6 w-6 mr-2" />{' '}
             {sidebarOpen && <span>Personas</span>}
           </li>
         </ul>

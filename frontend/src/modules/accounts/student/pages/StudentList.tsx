@@ -77,7 +77,7 @@ const StudentList: React.FC = () => {
   }
 
   const handleSettings = (id: string) => {
-    navigate(`/personal/${id}`)
+    navigate(`/estudiantes/${id}`)
   }
 
   if (error) {

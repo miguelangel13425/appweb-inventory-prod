@@ -77,7 +77,7 @@ const ProviderList: React.FC = () => {
   }
 
   const handleSettings = (id: string) => {
-    navigate(`/personal/${id}`)
+    navigate(`/proveedores/${id}`)
   }
 
   if (error) {

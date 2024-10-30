@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Provider } from '../../models/accounts' // Ajusta la ruta según tu estructura de archivos
+import { Provider } from '../../models/accounts'
 import { Pagination } from '../../models/pagination'
 
 interface ProviderState {

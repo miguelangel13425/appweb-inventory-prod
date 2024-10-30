@@ -1,33 +1,29 @@
 from rest_framework import generics, status
-from rest_framework.exceptions import ValidationError
-from inventory.permissions import IsAdmin
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from core.mixins import CustomResponseMixin
-from accounts.models import UserModel
-from accounts.serializers import (
-    UserListSerializer, UserDetailSerializer,
-    UserUpdateSerializer,
-)
 from django.shortcuts import get_object_or_404
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import PermissionDenied
-from django.http import Http404
+from accounts.models import ProfileModel
+from accounts.serializers import (
+    ProfileListSerializer,
+    ProfileDetailSerializer, ProfileUpdateSerializer
+)
+from inventory.permissions import IsAdmin
 from django.db.models import Q
+from django.http import Http404
+from rest_framework.pagination import PageNumberPagination
 
-# Create your views here.
-
-class UserListView(CustomResponseMixin, generics.ListAPIView):
+class ProfileListView(CustomResponseMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdmin]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = UserModel.objects.filter(is_active=True)
+        queryset = ProfileModel.objects.all()
         search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = queryset.filter(
-                Q(first_name__icontains=search_term) |
-                Q(last_name__icontains=search_term) |
-                Q(email__icontains=search_term) |
-                Q(role__name__icontains=search_term)
+                Q(user__first_name__icontains=search_term) |
+                Q(user__last_name__icontains=search_term) |
+                Q(user__email__icontains=search_term)
             )
         return queryset
 
@@ -35,67 +31,67 @@ class UserListView(CustomResponseMixin, generics.ListAPIView):
         try:
             queryset = self.get_queryset()
             page = self.paginate_queryset(queryset)
-            serializer = UserListSerializer(page, many=True)
+            serializer = ProfileListSerializer(page, many=True)
             return self.custom_paginated_response(
-                data_key='users',
+                data_key='profiles',
                 data=serializer.data,
-                message='¡Usuarios encontrados con éxito!',
+                message='¡Perfiles encontrados con éxito!',
                 paginator=self.paginator,
-                detail_code='FETCH_USERS_SUCCESS',
+                detail_code='FETCH_PROFILES_SUCCESS',
                 status_code=status.HTTP_200_OK
             )
         except Exception as e:
             return self.custom_error(
                 message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
-                detail_code='FETCH_USERS_ERROR',
+                detail_code='FETCH_PROFILES_ERROR',
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 errors=str(e)
             )
 
-class UserDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
+class ProfileDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdmin]
 
     def get_queryset(self):
-        return UserModel.objects.filter(is_active=True)
+        return ProfileModel.objects.all()
 
     def get_object(self):
         pk = self.kwargs.get('pk')
-        return get_object_or_404(UserModel, pk=pk)
+        return get_object_or_404(ProfileModel, pk=pk)
 
     def retrieve(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-            serializer = UserDetailSerializer(instance)
+            serializer = ProfileDetailSerializer(instance)
             return self.custom_response(
-                data_key='user',
+                data_key='profile',
                 data=serializer.data,
-                message='¡Usuario encontrado con éxito!',
-                detail_code='FETCH_USER_SUCCESS',
+                message='¡Perfil encontrado con éxito!',
+                detail_code='FETCH_PROFILE_SUCCESS',
                 status_code=status.HTTP_200_OK
             )
         except PermissionDenied:
             return self.custom_error(
                 message='Usted no posee permiso para acceder a este recurso.',
-                detail_code='FETCH_USER_PERMISSION_ERROR',
+                detail_code='FETCH_PROFILE_PERMISSION_ERROR',
                 status_code=status.HTTP_403_FORBIDDEN
             )
         except Http404:
             return self.custom_error(
-                message='Usuario no encontrado.',
-                detail_code='FETCH_USER_NOT_FOUND',
+                message='Perfil no encontrado.',
+                detail_code='FETCH_PROFILE_NOT_FOUND',
                 status_code=status.HTTP_404_NOT_FOUND
             )
         except ValidationError as ve:
             return self.custom_error(
                 message='¡Hubo un error de validación!',
-                detail_code='FETCH_USER_VALIDATION_ERROR',
+                detail_code='FETCH_PROFILE_VALIDATION_ERROR',
                 status_code=status.HTTP_400_BAD_REQUEST,
                 errors=ve.detail
             )
         except Exception as e:
             return self.custom_error(
                 message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
-                detail_code='FETCH_USER_ERROR',
+                detail_code='FETCH_PROFILE_ERROR',
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 errors=str(e)
             )
@@ -103,85 +99,60 @@ class UserDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView)
     def update(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-            get_object_or_404(UserModel, pk=instance.pk)
-            serializer = UserUpdateSerializer(instance, data=request.data, partial=True)
+            get_object_or_404(ProfileModel, pk=instance.pk)
+            serializer = ProfileUpdateSerializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return self.custom_response(
-                data_key='user',
+                data_key='profile',
                 data=serializer.data,
-                message='¡Usuario actualizado con éxito!',
-                detail_code='UPDATE_USER_SUCCESS',
+                message='¡Perfil actualizado con éxito!',
+                detail_code='UPDATE_PROFILE_SUCCESS',
                 status_code=status.HTTP_200_OK
             )
         except Http404:
             return self.custom_error(
-                message='Usuario no encontrado.',
-                detail_code='UPDATE_USER_NOT_FOUND',
+                message='Perfil no encontrado.',
+                detail_code='UPDATE_PROFILE_NOT_FOUND',
                 status_code=status.HTTP_404_NOT_FOUND
             )
         except ValidationError as ve:
             return self.custom_error(
                 message='¡Hubo un error de validación!',
-                detail_code='UPDATE_USER_VALIDATION_ERROR',
+                detail_code='UPDATE_PROFILE_VALIDATION_ERROR',
                 status_code=status.HTTP_400_BAD_REQUEST,
                 errors=ve.detail
             )
         except Exception as e:
             return self.custom_error(
                 message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
-                detail_code='UPDATE_USER_ERROR',
+                detail_code='UPDATE_PROFILE_ERROR',
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 errors=str(e)
             )
 
-    def destroy(self, request, *args, **kwargs):
+    '''def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-            get_object_or_404(UserModel, pk=instance.pk)
-            instance.is_active = False
-            instance.save()
+            get_object_or_404(ProfileModel, pk=instance.pk)
+            instance.delete()
             return self.custom_response(
-                data_key='user',
+                data_key='profile',
                 data=None,
-                message='¡Usuario eliminado con éxito!',
-                detail_code='DELETE_USER_SUCCESS',
+                message='¡Perfil eliminado con éxito!',
+                detail_code='DELETE_PROFILE_SUCCESS',
                 status_code=status.HTTP_200_OK
             )
         except Http404:
             return self.custom_error(
-                message='Usuario no encontrado.',
-                detail_code='DELETE_USER_NOT_FOUND',
+                message='Perfil no encontrado.',
+                detail_code='DELETE_PROFILE_NOT_FOUND',
                 status_code=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
             return self.custom_error(
                 message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
-                detail_code='DELETE_USER_ERROR',
+                detail_code='DELETE_PROFILE_ERROR',
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 errors=str(e)
-            )
-
-'''class UserDetailView(CustomResponseMixin, generics.RetrieveAPIView):
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return UserModel.objects.filter(id=pk, is_active=True)
-    
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = UserDetailSerializer(instance)
-        return self.custom_response(
-            data=serializer.data,
-            message='Fetched user successfully!',
-            status_code=status.HTTP_200_OK
-        )'''
-    
-class CurrentUserView(CustomResponseMixin, generics.RetrieveAPIView):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        serializer = UserDetailSerializer(user)
-        return self.custom_response(
-            data=serializer.data,
-            message='Fetched current user successfully!',
-            status_code=status.HTTP_200_OK
-        )
+            )'''

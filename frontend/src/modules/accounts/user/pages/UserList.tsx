@@ -28,7 +28,7 @@ import {
   ServerError,
 } from '@/modules/base/index'
 import { Edit } from '@geist-ui/icons'
-import CreateUserModal from '../components/CreateUserModal'
+import CreateUserModal from '../../auth/components/CreateUserModal'
 import { User } from '@/redux/models/accounts'
 
 const UserList: React.FC = () => {
@@ -77,7 +77,7 @@ const UserList: React.FC = () => {
   }
 
   const handleSettings = (id: string) => {
-    navigate(`/personal/${id}`)
+    navigate(`/usuarios/${id}`)
   }
 
   if (error) {
@@ -90,7 +90,7 @@ const UserList: React.FC = () => {
   return (
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Personal</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Usuarios</h2>
         <CreateUserModal />
       </div>
       <Input
@@ -103,7 +103,7 @@ const UserList: React.FC = () => {
       {loading ? (
         <Spinner />
       ) : users.length === 0 ? (
-        <div className="text-gray-500">No hay personal.</div>
+        <div className="text-gray-500">No hay usuarios.</div>
       ) : (
         <>
           <Table className="min-w-full bg-white rounded-lg shadow-md">

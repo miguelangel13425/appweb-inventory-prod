@@ -30,7 +30,7 @@ const SendResetPassForm: React.FC = () => {
     <div>
       <form onSubmit={onSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Correo electronico</label>
+          <label htmlFor="email">Correo electrónico</label>
           <input
             type="email"
             name="email"

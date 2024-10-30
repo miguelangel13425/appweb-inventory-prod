@@ -3,11 +3,16 @@ import { Provider } from 'react-redux'
 import Layout from '@/hocs/Layout'
 import ProtectedRoute from './routes/ProtectedRoute'
 import Login from '@/modules/accounts/auth/pages/Signin'
+import ResetPassword from '@/modules/accounts/auth/pages/ResetPassword'
+import ResetPasswordConfirm from '@/modules/accounts/auth/pages/ResetPasswordConfirm'
 import Dashboard from '@/modules/accounts/auth/pages/Dashboard'
 import UserList from '@/modules/accounts/user/pages/UserList'
+import UserDetail from './modules/accounts/user/pages/UserDetail'
 import PersonList from '@/modules/accounts/person/pages/PersonList'
 import StudentList from '@/modules/accounts/student/pages/StudentList'
+import StudentDetail from '@/modules/accounts/student/pages/StudentDetail'
 import ProviderList from '@/modules/accounts/provider/pages/ProviderList'
+import ProviderDetail from '@/modules/accounts/provider/pages/ProviderDetail'
 import WarehouseList from '@/modules/inventory/warehouse/pages/WarehouseList'
 import ProductList from '@/modules/inventory/product/pages/ProductList'
 import ProductDetail from '@/modules/inventory/product/pages/ProductDetail'
@@ -25,9 +30,12 @@ import './App.css'
 const routes = [
   { path: '/', element: <Dashboard /> },
   { path: '/usuarios', element: <UserList /> },
+  { path: '/usuarios/:id', element: <UserDetail /> },
   { path: '/personas', element: <PersonList /> },
   { path: '/estudiantes', element: <StudentList /> },
+  { path: '/estudiantes/:id', element: <StudentDetail /> },
   { path: '/proveedores', element: <ProviderList /> },
+  { path: '/proveedores/:id', element: <ProviderDetail /> },
   { path: '/campus', element: <WarehouseList /> },
   { path: '/campus/:id', element: <WarehouseDetail /> },
   { path: '/productos', element: <ProductList /> },
@@ -47,6 +55,11 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="login" element={<Login />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route
+              path="/password/reset/confirm/:uid/:token"
+              element={<ResetPasswordConfirm />}
+            />
             {routes.map(({ path, element }) => (
               <Route
                 key={path}

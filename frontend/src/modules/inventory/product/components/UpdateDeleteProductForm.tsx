@@ -54,6 +54,7 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
     description: product.description,
     unit: product.unit,
     is_single_use: product.is_single_use,
+    category: product.category,
   })
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
@@ -64,6 +65,7 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
       description: product.description,
       unit: product.unit,
       is_single_use: product.is_single_use,
+      category: product.category,
     })
   }, [product])
 

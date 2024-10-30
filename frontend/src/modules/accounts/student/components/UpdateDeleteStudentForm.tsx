@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import {
-  updateProvider,
-  deleteProvider,
-} from '@/redux/actions/accounts/providerActions'
+  updateStudent,
+  deleteStudent,
+} from '@/redux/actions/accounts/studentActions'
 import { RootState, AppDispatch } from '@/redux/store'
 import {
   Card,
@@ -14,7 +14,7 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
-import { Provider } from '@/redux/models/accounts'
+import { Student } from '@/redux/models/accounts'
 import { Button, Input, Textarea, Label } from '@/components/index'
 import {
   AlertDialog,
@@ -28,41 +28,41 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog'
 
-interface UpdateDeleteProviderFormProps {
-  provider: Provider
+interface UpdateDeleteStudentFormProps {
+  student: Student
 }
 
-const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
-  provider,
+const UpdateDeleteStudentForm: React.FC<UpdateDeleteStudentFormProps> = ({
+  student,
 }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.provider,
+    (state: RootState) => state.student,
   )
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
-    first_name: provider.first_name,
-    last_name: provider.last_name,
-    email: provider.email,
-    phone_number: provider.phone_number,
-    RFC: provider.RFC,
-    NSS: provider.NSS,
+    first_name: student.first_name,
+    last_name: student.last_name,
+    email: student.email,
+    phone_number: student.phone_number,
+    control_number: student.control_number,
+    degree: student.degree,
   })
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
     setFormData({
-      first_name: provider.first_name,
-      last_name: provider.last_name,
-      email: provider.email,
-      phone_number: provider.phone_number,
-      RFC: provider.RFC,
-      NSS: provider.NSS,
+      first_name: student.first_name,
+      last_name: student.last_name,
+      email: student.email,
+      phone_number: student.phone_number,
+      control_number: student.control_number,
+      degree: student.degree,
     })
-  }, [provider])
+  }, [student])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -76,7 +76,7 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(updateProvider(provider.id, formData))
+    dispatch(updateStudent(student.id, formData))
   }
 
   const handleDelete = () => {
@@ -85,27 +85,27 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    dispatch(deleteProvider(provider.id))
+    dispatch(deleteStudent(student.id))
     toast({
       title: '¡Hecho!',
-      description: '¡Proveedor eliminado con éxito!',
+      description: '¡Estudiante eliminado con éxito!',
     })
     setIsAlertDialogOpen(false)
     handleBack()
   }
 
   const handleBack = () => {
-    navigate('/proveedores')
+    navigate('/estudiantes')
   }
 
   useEffect(() => {
-    if (detailCode === 'UPDATE_PROVIDER_SUCCESS') {
+    if (detailCode === 'UPDATE_STUDENT_SUCCESS') {
       toast({
         title: '¡Muy bien!',
         description: message,
       })
     }
-    if (detailCode === 'UPDATE_PROVIDER_VALIDATION_ERROR') {
+    if (detailCode === 'UPDATE_STUDENT_VALIDATION_ERROR') {
       toast({
         title: '¡Lo siento!',
         description: message,
@@ -116,14 +116,14 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
   return (
     <Card className="p-6">
       <CardHeader>
-        <CardTitle>Configuración de Proveedor</CardTitle>
-        <CardDescription>Modifica los detalles del proveedor.</CardDescription>
+        <CardTitle>Configuración de Estudiante</CardTitle>
+        <CardDescription>Modifica los detalles del estudiante.</CardDescription>
         <div className="mb-4">
           <Label
             htmlFor="created_at"
             className="block text-sm font-medium text-gray-700"
           >
-            Creado el {provider.created_at}
+            Creado el {student.created_at}
           </Label>
         </div>
         <div className="mb-4">
@@ -131,9 +131,9 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
-            Este proveedor está{' '}
+            Este estudiante está{' '}
             <strong className="text-gray-900">
-              {provider.is_active ? 'activo' : 'desactivado'}
+              {student.is_active ? 'activo' : 'desactivado'}
             </strong>
           </Label>
         </div>
@@ -222,40 +222,42 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
           </div>
           <div className="mb-4">
             <Label
-              htmlFor="RFC"
+              htmlFor="control_number"
               className="block text-sm font-medium text-gray-700"
             >
-              RFC
+              Número de Control
             </Label>
             <Input
-              id="RFC"
-              name="RFC"
+              id="control_number"
+              name="control_number"
               type="text"
-              value={formData.RFC}
+              value={formData.control_number}
               onChange={handleChange}
               className="mt-1 block w-full"
             />
-            {errors?.RFC && (
-              <p className="text-red-500 text-sm mt-1">{errors.RFC[0]}</p>
+            {errors?.control_number && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.control_number[0]}
+              </p>
             )}
           </div>
           <div className="mb-4">
             <Label
-              htmlFor="NSS"
+              htmlFor="degree"
               className="block text-sm font-medium text-gray-700"
             >
-              NSS
+              Carrera
             </Label>
             <Input
-              id="NSS"
-              name="NSS"
+              id="degree"
+              name="degree"
               type="text"
-              value={formData.NSS}
+              value={formData.degree}
               onChange={handleChange}
               className="mt-1 block w-full"
             />
-            {errors?.NSS && (
-              <p className="text-red-500 text-sm mt-1">{errors.NSS[0]}</p>
+            {errors?.degree && (
+              <p className="text-red-500 text-sm mt-1">{errors.degree[0]}</p>
             )}
           </div>
           <div className="flex justify-between">
@@ -278,7 +280,7 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción no se puede deshacer. Esto eliminará
-                      permanentemente al proveedor y sus datos asociados.
+                      permanentemente al estudiante y sus datos asociados.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -300,4 +302,4 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
   )
 }
 
-export default UpdateDeleteProviderForm
+export default UpdateDeleteStudentForm

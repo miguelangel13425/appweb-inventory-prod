@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useToast } from '@/hooks/use-toast'
-import {
-  updateProvider,
-  deleteProvider,
-} from '@/redux/actions/accounts/providerActions'
-import { RootState, AppDispatch } from '@/redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/redux/store'
+import { updateUser, deleteUser } from '@/redux/actions/accounts/userActions'
+import { User } from '@/redux/models/accounts'
 import {
   Card,
   CardContent,
@@ -14,8 +11,8 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
-import { Provider } from '@/redux/models/accounts'
-import { Button, Input, Textarea, Label } from '@/components/index'
+import { Button, Input, Label } from '@/components/index'
+import { useToast } from '@/hooks/use-toast'
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -27,46 +24,45 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
-interface UpdateDeleteProviderFormProps {
-  provider: Provider
+interface UpdateDeleteUserFormProps {
+  user: User
 }
 
-const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
-  provider,
+const UpdateDeleteUserForm: React.FC<UpdateDeleteUserFormProps> = ({
+  user,
 }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const { status, detailCode, message, errors } = useSelector(
-    (state: RootState) => state.provider,
+    (state: RootState) => state.user,
   )
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
-    first_name: provider.first_name,
-    last_name: provider.last_name,
-    email: provider.email,
-    phone_number: provider.phone_number,
-    RFC: provider.RFC,
-    NSS: provider.NSS,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    role: user.role,
   })
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
     setFormData({
-      first_name: provider.first_name,
-      last_name: provider.last_name,
-      email: provider.email,
-      phone_number: provider.phone_number,
-      RFC: provider.RFC,
-      NSS: provider.NSS,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
     })
-  }, [provider])
+  }, [user])
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({
       ...formData,
@@ -74,9 +70,13 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
     })
   }
 
+  const handleRoleChange = (value: string) => {
+    setFormData({ ...formData, role: value })
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(updateProvider(provider.id, formData))
+    dispatch(updateUser(user.id, formData))
   }
 
   const handleDelete = () => {
@@ -85,27 +85,27 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
 
   const confirmDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    dispatch(deleteProvider(provider.id))
+    dispatch(deleteUser(user.id))
     toast({
       title: '¡Hecho!',
-      description: '¡Proveedor eliminado con éxito!',
+      description: '¡Usuario eliminado con éxito!',
     })
     setIsAlertDialogOpen(false)
     handleBack()
   }
 
   const handleBack = () => {
-    navigate('/proveedores')
+    navigate('/usuarios')
   }
 
   useEffect(() => {
-    if (detailCode === 'UPDATE_PROVIDER_SUCCESS') {
+    if (detailCode === 'UPDATE_USER_SUCCESS') {
       toast({
         title: '¡Muy bien!',
         description: message,
       })
     }
-    if (detailCode === 'UPDATE_PROVIDER_VALIDATION_ERROR') {
+    if (detailCode === 'UPDATE_USER_VALIDATION_ERROR') {
       toast({
         title: '¡Lo siento!',
         description: message,
@@ -116,27 +116,8 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
   return (
     <Card className="p-6">
       <CardHeader>
-        <CardTitle>Configuración de Proveedor</CardTitle>
-        <CardDescription>Modifica los detalles del proveedor.</CardDescription>
-        <div className="mb-4">
-          <Label
-            htmlFor="created_at"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Creado el {provider.created_at}
-          </Label>
-        </div>
-        <div className="mb-4">
-          <Label
-            htmlFor="is_active"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Este proveedor está{' '}
-            <strong className="text-gray-900">
-              {provider.is_active ? 'activo' : 'desactivado'}
-            </strong>
-          </Label>
-        </div>
+        <CardTitle>Configuración de Usuario</CardTitle>
+        <CardDescription>Modifica los detalles del usuario.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
@@ -182,80 +163,23 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
           </div>
           <div className="mb-4">
             <Label
-              htmlFor="email"
+              htmlFor="role"
               className="block text-sm font-medium text-gray-700"
             >
-              Correo Electrónico
+              Rol
             </Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full"
-            />
-            {errors?.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email[0]}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <Label
-              htmlFor="phone_number"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Número de Teléfono
-            </Label>
-            <Input
-              id="phone_number"
-              name="phone_number"
-              type="text"
-              value={formData.phone_number}
-              onChange={handleChange}
-              className="mt-1 block w-full"
-            />
-            {errors?.phone_number && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phone_number[0]}
-              </p>
-            )}
-          </div>
-          <div className="mb-4">
-            <Label
-              htmlFor="RFC"
-              className="block text-sm font-medium text-gray-700"
-            >
-              RFC
-            </Label>
-            <Input
-              id="RFC"
-              name="RFC"
-              type="text"
-              value={formData.RFC}
-              onChange={handleChange}
-              className="mt-1 block w-full"
-            />
-            {errors?.RFC && (
-              <p className="text-red-500 text-sm mt-1">{errors.RFC[0]}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <Label
-              htmlFor="NSS"
-              className="block text-sm font-medium text-gray-700"
-            >
-              NSS
-            </Label>
-            <Input
-              id="NSS"
-              name="NSS"
-              type="text"
-              value={formData.NSS}
-              onChange={handleChange}
-              className="mt-1 block w-full"
-            />
-            {errors?.NSS && (
-              <p className="text-red-500 text-sm mt-1">{errors.NSS[0]}</p>
+            <Select value={formData.role} onValueChange={handleRoleChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione un rol" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ADMIN">Administrador</SelectItem>
+                <SelectItem value="EMPLOYEE">Empleado</SelectItem>
+                <SelectItem value="VIEWER">Vista</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors?.role && (
+              <p className="text-red-500 text-sm mt-1">{errors.role[0]}</p>
             )}
           </div>
           <div className="flex justify-between">
@@ -278,7 +202,7 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción no se puede deshacer. Esto eliminará
-                      permanentemente al proveedor y sus datos asociados.
+                      permanentemente al usuario y sus datos asociados.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -300,4 +224,4 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
   )
 }
 
-export default UpdateDeleteProviderForm
+export default UpdateDeleteUserForm
