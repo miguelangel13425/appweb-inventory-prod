@@ -10,12 +10,16 @@ import {
   Bookmark,
 } from '@geist-ui/icons'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 import TecNMLogo from '@/assets/TecNM2021.png'
 
 const Sidebar: React.FC<{
   sidebarOpen: boolean
 }> = ({ sidebarOpen }) => {
   const navigate = useNavigate()
+  const { user } = useSelector((state: RootState) => state.auth)
+  const isAdmin = user?.role === 'ADMIN'
 
   const handleWarehouse = () => {
     navigate('/campus')
@@ -114,13 +118,15 @@ const Sidebar: React.FC<{
             <Truck className="h-6 w-6 mr-2" />{' '}
             {sidebarOpen && <span>Transacciones</span>}
           </li>
-          <li
-            className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
-            onClick={handleUser}
-          >
-            <Users className="h-6 w-6 mr-2" />{' '}
-            {sidebarOpen && <span>Usuarios</span>}
-          </li>
+          {isAdmin && (
+            <li
+              className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
+              onClick={handleUser}
+            >
+              <Users className="h-6 w-6 mr-2" />{' '}
+              {sidebarOpen && <span>Usuarios</span>}
+            </li>
+          )}
           <li
             className="hover:bg-gray-700 p-2 rounded flex items-center cursor-pointer"
             onClick={handlePerson}

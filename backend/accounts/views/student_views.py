@@ -7,7 +7,9 @@ from accounts.serializers import (
     StudentCreateUpdateSerializer,
 )
 from core.mixins import CustomResponseMixin
-from inventory.permissions import IsAdmin
+from inventory.permissions import (
+    IsAdmin, IsEmployee, IsViewer
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
@@ -15,7 +17,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 class StudentListView(CustomResponseMixin, generics.ListCreateAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -80,7 +82,7 @@ class StudentListView(CustomResponseMixin, generics.ListCreateAPIView):
             )
 
 class StudentDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee]
 
     def get_queryset(self):
         return StudentModel.objects.all()

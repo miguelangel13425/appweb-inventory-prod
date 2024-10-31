@@ -57,18 +57,6 @@ const CreateUserModal: React.FC = () => {
 
   useEffect(() => {
     setIsDialogOpen(false)
-    if (message) {
-      toast({
-        title: '¡Listo!',
-        description: message,
-      })
-    }
-    if (error) {
-      toast({
-        title: '¡Lo siento!',
-        description: message,
-      })
-    }
   }, [navigate])
 
   useEffect(() => {

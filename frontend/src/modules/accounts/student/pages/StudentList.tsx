@@ -30,6 +30,7 @@ import {
 import { Edit } from '@geist-ui/icons'
 import CreateStudentModal from '../components/CreateStudentModal'
 import { Student } from '@/redux/models/accounts'
+import { hasPermission } from '@/utils/permissions'
 
 const StudentList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -37,6 +38,7 @@ const StudentList: React.FC = () => {
   const { students, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.student,
   )
+  const { user } = useSelector((state: RootState) => state.auth)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handlePageChange = (page: number) => {
@@ -91,7 +93,9 @@ const StudentList: React.FC = () => {
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Estudiantes</h2>
-        <CreateStudentModal />
+        {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+          <CreateStudentModal />
+        )}
       </div>
       <Input
         type="text"
@@ -150,13 +154,15 @@ const StudentList: React.FC = () => {
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {student.degree_display}
                   </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
-                    <Edit
-                      size={20}
-                      className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(student.id)}
-                    />
-                  </TableCell>
+                  {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+                    <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
+                      <Edit
+                        size={20}
+                        className="text-impactBlue cursor-pointer"
+                        onClick={() => handleSettings(student.id)}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

@@ -1,7 +1,9 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError, NotFound
 from django.core.exceptions import ObjectDoesNotExist
-from inventory.permissions import IsAdmin
+from inventory.permissions import (
+    IsAdmin, IsEmployee, IsViewer
+)
 from core.mixins import CustomResponseMixin
 from inventory.models import (
     WarehouseModel, LocationModel, CategoryModel,
@@ -51,12 +53,13 @@ class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
             )
 
 class ProductListView(CustomResponseMixin, generics.ListCreateAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = ProductModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
+        is_single_use = self.request.query_params.get('is_single_use', None)
         if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |
@@ -64,6 +67,11 @@ class ProductListView(CustomResponseMixin, generics.ListCreateAPIView):
                 Q(category__code__icontains=search_term) |
                 Q(unit__icontains=search_term)
             )
+        if is_single_use is not None:
+            if is_single_use.lower() == 'true':
+                queryset = queryset.filter(is_single_use=True)
+            elif is_single_use.lower() == 'false':
+                queryset = queryset.filter(is_single_use=False)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -116,7 +124,7 @@ class ProductListView(CustomResponseMixin, generics.ListCreateAPIView):
 
 
 class ProductDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee]
 
     def get_queryset(self):
         return ProductModel.objects.filter(is_active=True)

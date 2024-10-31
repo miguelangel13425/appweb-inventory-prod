@@ -30,6 +30,7 @@ import {
 import { Edit } from '@geist-ui/icons'
 import CreateWarehouseModal from '../components/CreateWarehouseModal'
 import { Warehouse } from '@/redux/models/inventory'
+import { hasPermission } from '@/utils/permissions'
 
 const WarehouseList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -37,6 +38,7 @@ const WarehouseList: React.FC = () => {
   const { warehouses, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.warehouse,
   )
+  const { user } = useSelector((state: RootState) => state.auth)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handlePageChange = (page: number) => {
@@ -91,7 +93,9 @@ const WarehouseList: React.FC = () => {
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Campus</h2>
-        <CreateWarehouseModal />
+        {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+          <CreateWarehouseModal />
+        )}
       </div>
       <Input
         type="text"
@@ -130,13 +134,15 @@ const WarehouseList: React.FC = () => {
                   <TableCell className="px-4 py-2 border-b border-gray-200">
                     {warehouse.description}
                   </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
-                    <Edit
-                      size={20}
-                      className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(warehouse.id)}
-                    />
-                  </TableCell>
+                  {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+                    <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
+                      <Edit
+                        size={20}
+                        className="text-impactBlue cursor-pointer"
+                        onClick={() => handleSettings(warehouse.id)}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

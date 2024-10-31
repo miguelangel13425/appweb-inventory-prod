@@ -5,6 +5,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import Login from '@/modules/accounts/auth/pages/Signin'
 import ResetPassword from '@/modules/accounts/auth/pages/ResetPassword'
 import ResetPasswordConfirm from '@/modules/accounts/auth/pages/ResetPasswordConfirm'
+import ActivateAccount from '@/modules/accounts/auth/pages/ActivateAccount'
 import Dashboard from '@/modules/accounts/auth/pages/Dashboard'
 import UserList from '@/modules/accounts/user/pages/UserList'
 import UserDetail from './modules/accounts/user/pages/UserDetail'
@@ -60,6 +61,7 @@ function App() {
               path="/password/reset/confirm/:uid/:token"
               element={<ResetPasswordConfirm />}
             />
+            <Route path="/activate/:uid/:token" element={<ActivateAccount />} />
             {routes.map(({ path, element }) => (
               <Route
                 key={path}

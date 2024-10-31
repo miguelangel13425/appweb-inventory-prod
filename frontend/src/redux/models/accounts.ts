@@ -1,15 +1,11 @@
 import { Base } from './base'
 
-export interface Role extends Base {
-  name: string
-  description?: string
-}
-
 export interface User extends Base {
   email: string
   first_name: string
   last_name: string
-  role: Role[]
+  role: string
+  role_display?: string
   is_staff: boolean
   date_joined: string
   profile: Profile

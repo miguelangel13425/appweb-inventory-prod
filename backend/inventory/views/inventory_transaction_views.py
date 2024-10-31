@@ -1,6 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
-from inventory.permissions import IsAdmin
+from inventory.permissions import (
+    IsAdmin, IsEmployee, IsViewer
+)
 from core.mixins import CustomResponseMixin
 from inventory.models import (
     InventoryTransactionModel
@@ -17,7 +19,7 @@ from django.db.models import Q
 
 # Create your views here.
 class InventoryTransactionListView(CustomResponseMixin, generics.ListCreateAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -76,7 +78,7 @@ class InventoryTransactionListView(CustomResponseMixin, generics.ListCreateAPIVi
             )
 
 class InventoryTransactionDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee]
 
     def get_queryset(self):
         return InventoryTransactionModel.objects.all()

@@ -49,7 +49,7 @@ const ResetPasswordForm: React.FC = () => {
         {error && <p className="text-red-500">{error.detail}</p>}
         <div className="flex justify-between items-center">
           <Button type="submit" variant="ghost">
-            Enviar correo
+            Enviar correo de recuperación
           </Button>
           <Button variant="ghost" onClick={goToLogin}>
             Volver

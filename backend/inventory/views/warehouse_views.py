@@ -1,6 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
-from inventory.permissions import IsAdmin
+from inventory.permissions import (
+    IsAdmin, IsEmployee, IsViewer
+)
 from core.mixins import CustomResponseMixin
 from inventory.models import (
     WarehouseModel
@@ -46,7 +48,7 @@ class WarehouseCustomView(CustomResponseMixin, generics.ListAPIView):
             )
 
 class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -105,7 +107,7 @@ class WarehouseListView(CustomResponseMixin, generics.ListCreateAPIView):
             )
 
 class WarehouseDetailView(CustomResponseMixin, generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin | IsEmployee]
 
     def get_queryset(self):
         return WarehouseModel.objects.filter(is_active=True)

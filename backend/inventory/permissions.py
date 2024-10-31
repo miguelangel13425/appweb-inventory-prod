@@ -10,7 +10,7 @@ class IsAdmin(BasePermission):
         user = request.user
         if user.is_anonymous:
             return False
-        return any(role.name == RoleChoices.ADMIN for role in user.role.all())
+        return user.role == RoleChoices.ADMIN
     
 class IsEmployee(BasePermission):
     """
@@ -21,7 +21,7 @@ class IsEmployee(BasePermission):
         user = request.user
         if user.is_anonymous:
             return False
-        return any(role.name == RoleChoices.EMPLOYEE for role in user.role.all())
+        return user.role == RoleChoices.EMPLOYEE
     
 class IsViewer(BasePermission):
     """
@@ -32,4 +32,4 @@ class IsViewer(BasePermission):
         user = request.user
         if user.is_anonymous:
             return False
-        return any(role.name == RoleChoices.VIEWER for role in user.role.all())
+        return user.role == RoleChoices.VIEWER

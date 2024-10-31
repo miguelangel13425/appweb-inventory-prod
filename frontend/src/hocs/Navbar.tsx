@@ -20,7 +20,7 @@ const GuestNavbar: React.FC = () => {
   return (
     <nav className="w-full bg-impactBlue text-white flex flex-col md:flex-row justify-between items-center shadow-lg py-4">
       <div className="flex items-center space-x-4 ml-4">
-        <span className="font-bold text-lg">Inventario</span>
+        <span className="font-bold text-lg">Inventario ITT</span>
       </div>
       <div className="flex items-center space-x-4 mr-4">
         <span
@@ -55,7 +55,7 @@ const AuthenticatedNavbar: React.FC<{
         >
           <Menu className="h-6 w-6" />
         </span>
-        <span className="font-bold text-lg">Inventario</span>
+        <span className="font-bold text-lg">Inventario ITT</span>
       </div>
       <div className="flex items-center space-x-4 mr-4">
         <span

@@ -1,17 +1,10 @@
 import factory
 from faker import Faker
 from django.utils import timezone
-from .models import RoleModel, UserModel, ProfileModel, PersonModel, StudentModel, ProviderModel
-from .choices import GenderChoices, DegreeChoices
+from .models import UserModel, ProfileModel, PersonModel, StudentModel, ProviderModel
+from .choices import GenderChoices, DegreeChoices, RoleChoices
 
 fake = Faker()
-
-class RoleFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = RoleModel
-
-    name = factory.LazyAttribute(lambda _: fake.job())
-    description = factory.LazyAttribute(lambda _: fake.text(max_nb_chars=128))
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -23,14 +16,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_staff = False
     is_active = True
     date_joined = factory.LazyFunction(timezone.now)
+    gender = factory.LazyAttribute(lambda _: fake.random_element(elements=[choice[0] for choice in RoleChoices.choices]))
 
-    @factory.post_generation
-    def role(self, create, extracted, **kwargs):
-        if not create:
-            return
-        if extracted:
-            for role in extracted:
-                self.role.add(role)
 
 class ProfileFactory(factory.django.DjangoModelFactory):
     class Meta:

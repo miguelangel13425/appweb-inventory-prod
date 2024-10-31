@@ -30,6 +30,7 @@ import {
 import { Edit } from '@geist-ui/icons'
 import CreateUserModal from '../../auth/components/CreateUserModal'
 import { User } from '@/redux/models/accounts'
+import { hasPermission } from '@/utils/permissions'
 
 const UserList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -37,6 +38,7 @@ const UserList: React.FC = () => {
   const { users, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.user,
   )
+  const { user } = useSelector((state: RootState) => state.auth)
   const [searchTerm, setSearchTerm] = useState('')
 
   const handlePageChange = (page: number) => {
@@ -91,7 +93,7 @@ const UserList: React.FC = () => {
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Usuarios</h2>
-        <CreateUserModal />
+        {hasPermission(user?.role, ['ADMIN']) && <CreateUserModal />}
       </div>
       <Input
         type="text"
@@ -146,7 +148,7 @@ const UserList: React.FC = () => {
                     {user.profile.age !== null ? user.profile.age : 'No'}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {user.role.map((r) => r.name).join(', ')}
+                    {user.role_display}
                   </TableCell>
                   <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
                     <Edit

@@ -118,6 +118,34 @@ const UpdateDeleteUserForm: React.FC<UpdateDeleteUserFormProps> = ({
       <CardHeader>
         <CardTitle>Configuración de Usuario</CardTitle>
         <CardDescription>Modifica los detalles del usuario.</CardDescription>
+        <div className="mb-4">
+          <Label
+            htmlFor="date_joined"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Última conexión el {user.date_joined}
+          </Label>
+        </div>
+        <div className="mb-4">
+          <Label
+            htmlFor="created_at"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Correo electrônico{' '}
+            <strong className="text-gray-900">{user.email}</strong>
+          </Label>
+        </div>
+        <div className="mb-4">
+          <Label
+            htmlFor="is_active"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Este usuario está{' '}
+            <strong className="text-gray-900">
+              {user.is_active ? 'activo' : 'desactivado'}
+            </strong>
+          </Label>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>

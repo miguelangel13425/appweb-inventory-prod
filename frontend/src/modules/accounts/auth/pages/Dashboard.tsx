@@ -26,11 +26,7 @@ const Dashboard: React.FC = () => {
           <div className="col-span-2">
             <h3 className="text-xl font-bold mt-4 mb-2">Roles</h3>
             <div className="flex flex-wrap gap-2">
-              {user?.role.map((role: string) => (
-                <Badge key={role.id} className="bg-blue-600 text-white">
-                  {role.name}
-                </Badge>
-              ))}
+              <Badge className="bg-blue-600 text-white">{user?.role}</Badge>
             </div>
           </div>
         </div>

@@ -30,7 +30,7 @@ type ProductForm = Omit<
 
 
 export const fetchProducts =
-  (page: number, searchTerm: string = '') =>
+  (page: number, searchTerm: string = '', isSingleUse?: boolean) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchProductsStart())
     try {
@@ -38,6 +38,7 @@ export const fetchProducts =
         params: {
           page,
           search: searchTerm,
+          is_single_use: isSingleUse,
         },
         ...getConfig(),
       })

@@ -27,9 +27,11 @@ import {
   Forbidden,
   ServerError,
 } from '@/modules/base/index'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Edit, CheckInCircle } from '@geist-ui/icons'
 import CreateProductModal from '../components/CreateProductModal'
 import { Product } from '@/redux/models/inventory'
+import { hasPermission } from '@/utils/permissions'
 
 const ProductList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -37,17 +39,33 @@ const ProductList: React.FC = () => {
   const { products, loading, status, error, pagination } = useSelector(
     (state: RootState) => state.product,
   )
+  const { user } = useSelector((state: RootState) => state.auth)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTab, setSelectedTab] = useState<
+    'all' | 'single-use' | 'multi-use'
+  >('all')
 
   const handlePageChange = (page: number) => {
+    const isSingleUse =
+      selectedTab === 'single-use'
+        ? true
+        : selectedTab === 'multi-use'
+          ? false
+          : undefined
     if (page >= 1 && page <= (pagination?.totalPages || 1)) {
-      dispatch(fetchProducts(page, searchTerm))
+      dispatch(fetchProducts(page, searchTerm, isSingleUse))
     }
   }
 
   useEffect(() => {
-    dispatch(fetchProducts(1, searchTerm))
-  }, [dispatch, searchTerm])
+    const isSingleUse =
+      selectedTab === 'single-use'
+        ? true
+        : selectedTab === 'multi-use'
+          ? false
+          : undefined
+    dispatch(fetchProducts(1, searchTerm, isSingleUse))
+  }, [dispatch, searchTerm, selectedTab])
 
   const createPageLinks = () => {
     const pages = []
@@ -91,7 +109,27 @@ const ProductList: React.FC = () => {
     <Card className="p-6 bg-gray-100">
       <div className="mb-4 flex justify-between">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Productos</h2>
-        <CreateProductModal />
+        <Tabs
+          value={selectedTab}
+          onValueChange={(value) =>
+            setSelectedTab(value as 'all' | 'single-use' | 'multi-use')
+          }
+        >
+          <TabsList>
+            <TabsTrigger value="all" className="px-4 py-2">
+              Todos
+            </TabsTrigger>
+            <TabsTrigger value="single-use" className="px-4 py-2">
+              Consumibles
+            </TabsTrigger>
+            <TabsTrigger value="multi-use" className="px-4 py-2">
+              Herramientas
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+          <CreateProductModal />
+        )}
       </div>
       <Input
         type="text"
@@ -144,13 +182,15 @@ const ProductList: React.FC = () => {
                       <CheckInCircle size={20} className="text-impactBlue" />
                     ) : null}
                   </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
-                    <Edit
-                      size={20}
-                      className="text-impactBlue cursor-pointer"
-                      onClick={() => handleSettings(product.id)}
-                    />
-                  </TableCell>
+                  {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+                    <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
+                      <Edit
+                        size={20}
+                        className="text-impactBlue cursor-pointer"
+                        onClick={() => handleSettings(product.id)}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

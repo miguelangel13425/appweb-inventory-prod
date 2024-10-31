@@ -5,25 +5,15 @@ from .managers import (
     UserAPIManager, StudentManager, ProviderManager
 )
 from .models import (
-    UserModel, RoleModel, ProfileModel,
+    UserModel, ProfileModel,
     PersonModel, StudentModel, ProviderModel
 )
 
-class RoleDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RoleModel
-        fields = ['id', 'name']
-
-class UserCreateSerializer(UserCreateSerializer):
-    role = serializers.SerializerMethodField()
-    
+class UserCreateSerializer(UserCreateSerializer):    
     class Meta(UserCreateSerializer.Meta):
         model = UserModel
         fields = ('id', 'email', 'first_name', 'last_name', 'role', 'password')
-    
-    def get_role(self, obj):
-        roles = obj.role.all()
-        return RoleDetailSerializer(roles, many=True).data
+
 
 class UserUpdateSerializer(UserAPIManager):
     class Meta:
@@ -57,26 +47,28 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         fields = ['gender', 'birthdate', 'bio']
 
 class UserListSerializer(serializers.ModelSerializer):
-    role = RoleDetailSerializer(many=True)
     profile = ProfileCustomSerializer(read_only=True)
+    role_display = serializers.SerializerMethodField()
     
     class Meta:
         model = UserModel
-        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'role', 'profile']
+        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'role_display', 'profile']
         extra_kwargs = {'password': {'write_only': True}}
+
+    def get_role_display(self, obj):
+        return obj.get_role_display()
     
 class UserDetailSerializer(serializers.ModelSerializer):
-    role = serializers.SerializerMethodField()
+    role_display = serializers.SerializerMethodField()
 
     class Meta:
         model = UserModel
         exclude = ['password']
         read_only_fields = ['created_at', 'updated_at']
     
-    def get_role(self, obj):
-        roles = obj.role.all()
-        return RoleDetailSerializer(roles, many=True).data
-    
+    def get_role_display(self, obj):
+        return obj.get_role_display()
+        
 class PersonCustomSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonModel

@@ -7,24 +7,12 @@ from datetime import date
 import uuid
 
 # Create your models here.
-
-class RoleModel(BaseModel):
-    name = models.CharField(max_length=64, unique=True, choices=RoleChoices.choices, default=RoleChoices.EMPLOYEE)
-    description = models.TextField(max_length=128, null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Role'
-        verbose_name_plural = 'Roles'
-
-    def __str__(self):
-        return self.name
-
 class UserModel(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
-    role = models.ManyToManyField(RoleModel, related_name='users')
+    role = models.CharField(max_length=8, choices=RoleChoices.choices, default=RoleChoices.VIEWER)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -49,7 +37,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
 class ProfileModel(BaseModel):
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')
-    gender = models.CharField(max_length=8, choices=GenderChoices.choices, default=GenderChoices.MALE)
+    gender = models.CharField(max_length=1, choices=GenderChoices.choices, default=GenderChoices.MALE)
     birthdate = models.DateField(null=True, blank=True)
     bio = models.TextField(max_length=128, null=True, blank=True)
 
