@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from accounts.models import RoleModel
+from accounts.choices import RoleChoices
 
 User = get_user_model()
 
@@ -17,14 +17,14 @@ class AuthTests(APITestCase):
         """
         self.email = "XKtP3@example.com"
         self.password = "password123"
-        self.role = RoleModel.objects.create(name='Administrator', description='Admin role')
+        self.role = RoleChoices.ADMIN
         self.user = User.objects.create_user(
             email=self.email,
             password=self.password,
             first_name="Test",
-            last_name="User"
+            last_name="User",
+            role=self.role
         )
-        self.user.role.set([self.role])  # Use set() method to assign many-to-many field
 
     def test_create_user_with_valid_data(self):
         """
@@ -35,7 +35,7 @@ class AuthTests(APITestCase):
             'email': 'newuser@example.com',
             'first_name': 'New',
             'last_name': 'User',
-            'role': [self.role.id],
+            'role': "ADMIN",
             'password': 'newpassword123',
             're_password': 'newpassword123'
         }
@@ -53,7 +53,7 @@ class AuthTests(APITestCase):
             'email': 'invalidemail',  # invalid email
             'first_name': '',  # empty first name
             'last_name': '',  # empty last name
-            'role': [self.role.id],
+            'role': '',
             'password': 'short',  # too short password
             're_password': 'different'  # passwords do not match
         }

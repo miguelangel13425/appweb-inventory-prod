@@ -44,6 +44,7 @@ const CreateUserModal: React.FC = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log(formData)
     dispatch(
       signup(
         formData.email,
@@ -51,6 +52,7 @@ const CreateUserModal: React.FC = () => {
         formData.last_name,
         formData.password,
         formData.re_password,
+        formData.role,
       ),
     )
   }

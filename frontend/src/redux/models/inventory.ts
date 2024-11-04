@@ -43,6 +43,15 @@ export interface InventoryTransaction extends Base {
   description?: string
 }
 
+export interface Dashboard {
+  total_products: number
+  total_locations: number
+  total_warehouses: number
+  total_inventories: number
+  latest_transactions: InventoryTransaction[]
+  top_inventories: Inventory[]
+}
+
 export const DegreeChoices = [
   { value: 'Architecture', label: 'Arquitectura' },
   { value: 'B.A. in Administration', label: 'Licenciatura en Administración' },

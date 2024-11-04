@@ -12,6 +12,7 @@ import categoryReducer from './inventory/categorySlice'
 import productReducer from './inventory/productSlice'
 import inventoryReducer from './inventory/inventorySlice'
 import inventoryTransactionReducer from './inventory/inventoryTransactionSlice'
+import dashboardReducer from './inventory/dashboardSlice'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   inventory: inventoryReducer,
   inventoryTransaction: inventoryTransactionReducer,
+  dashboard: dashboardReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

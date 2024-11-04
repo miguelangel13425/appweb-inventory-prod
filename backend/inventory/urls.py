@@ -5,7 +5,7 @@ from .views.category_views import CategoryListView, CategoryDetailView, Category
 from .views.product_views import ProductListView, ProductDetailView, ProductCustomView
 from .views.inventory_views import InventoryListView, InventoryDetailView
 from .views.inventory_transaction_views import InventoryTransactionListView, InventoryTransactionDetailView
-
+from .views.dashboard_views import DashboardSummaryView
 
 urlpatterns = [
     path('warehouses/', WarehouseListView.as_view(), name='warehouse-list'),
@@ -28,4 +28,6 @@ urlpatterns = [
 
     path('transactions/', InventoryTransactionListView.as_view(), name='inventory-transaction-list'),
     path('transactions/<uuid:pk>/', InventoryTransactionDetailView.as_view(), name='inventory-transaction-detail'),
+
+    path('dashboard/', DashboardSummaryView.as_view(), name='dashboard-list'),
 ]

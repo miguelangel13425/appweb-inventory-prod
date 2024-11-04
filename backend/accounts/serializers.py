@@ -1,19 +1,23 @@
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerializer
 from rest_framework import serializers
 from core.managers import DateFormatManager
 from .managers import (
     UserAPIManager, StudentManager, ProviderManager
 )
 from .models import (
-    UserModel, ProfileModel,
+    ProfileModel, UserModel,
     PersonModel, StudentModel, ProviderModel
 )
 
-class UserCreateSerializer(UserCreateSerializer):    
-    class Meta(UserCreateSerializer.Meta):
-        model = UserModel
-        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'password')
+class UserCreateSerializer(DjoserUserCreateSerializer):    
+    role_display = serializers.SerializerMethodField()
 
+    class Meta(DjoserUserCreateSerializer.Meta):
+        model = UserModel
+        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'role_display', 'password')
+
+    def get_role_display(self, obj):
+        return obj.get_role_display()
 
 class UserUpdateSerializer(UserAPIManager):
     class Meta:

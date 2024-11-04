@@ -131,6 +131,7 @@ export const signup =
     last_name: string,
     password: string,
     re_password: string,
+    role: string,
   ) =>
   async (dispatch: AppDispatch) => {
     const config = {
@@ -144,6 +145,7 @@ export const signup =
       last_name,
       password,
       re_password,
+      role,
     })
 
     try {

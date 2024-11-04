@@ -11,6 +11,8 @@ from .managers import (
 from accounts.serializers import (
     PersonCustomSerializer,
 )
+from django.db.models import F
+from operator import attrgetter
 
 # Warehouse's serializers
 
@@ -216,3 +218,39 @@ class InventoryTransactionDetailSerializer(InventoryTransactionManager, DateForm
 
     def get_type_display(self, obj):
         return obj.get_type_display()
+
+
+# Dashboard serializer
+class DashboardSummarySerializer(serializers.Serializer):
+    total_products = serializers.IntegerField()
+    total_locations = serializers.IntegerField()
+    total_warehouses = serializers.IntegerField()
+    total_inventories = serializers.IntegerField()
+    latest_transactions = serializers.ListField(child=serializers.DictField())
+    top_inventories = serializers.ListField(child=serializers.DictField())
+
+    @classmethod
+    def get_dashboard_data(cls):
+        # Count totals
+        total_products = ProductModel.objects.filter(is_active=True).count()
+        total_locations = LocationModel.objects.filter(is_active=True).count()
+        total_warehouses = WarehouseModel.objects.filter(is_active=True).count()
+        total_inventories = InventoryModel.objects.filter(is_active=True).count()
+
+        # Retrieve the latest 5 transactions
+        latest_transactions_qs = InventoryTransactionModel.objects.filter(is_active=True).order_by('-created_at')[:5]
+        latest_transactions = InventoryTransactionListSerializer(latest_transactions_qs, many=True).data
+
+        # Retrieve the top 3 inventories with the most quantity
+        top_inventories_qs = list(InventoryModel.objects.filter(is_active=True))
+        top_inventories_qs.sort(key=attrgetter('quantity'), reverse=True)
+        top_inventories = InventoryListSerializer(top_inventories_qs[:3], many=True).data
+
+        return {
+            'total_products': total_products,
+            'total_locations': total_locations,
+            'total_warehouses': total_warehouses,
+            'total_inventories': total_inventories,
+            'latest_transactions': latest_transactions,
+            'top_inventories': top_inventories
+        }

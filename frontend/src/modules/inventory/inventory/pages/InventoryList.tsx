@@ -105,124 +105,128 @@ const InventoryList: React.FC = () => {
   }
 
   return (
-    <Card className="p-6 bg-gray-100">
-      <div className="mb-4 flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Inventarios</h2>
-        {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
-          <CreateInventoryModal />
-        )}
-      </div>
-      <Input
-        type="text"
-        placeholder="Buscar por nombre o campus"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="mb-4"
-      />
-      {loading ? (
-        <Spinner />
-      ) : inventories.length === 0 ? (
-        <div className="text-gray-500">No hay inventarios.</div>
-      ) : (
-        <>
-          <Table className="min-w-full bg-white rounded-lg shadow-md">
-            <TableCaption className="text-gray-500">
-              {pagination?.totalItems} inventario(s) encontrado(s).
-            </TableCaption>
-            <TableHeader>
-              <TableRow className="bg-gray-200">
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Partida
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Nombre
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Unidad
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Ubicación
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Campus
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Existencia
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left text-gray-600">
-                  Disponibilidad
-                </TableHead>
-                <TableHead className="px-4 py-2 text-left"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {inventories.map((inventory: Inventory) => (
-                <TableRow key={inventory.id} className="hover:bg-gray-100">
-                  <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {inventory.product.category.code} -{' '}
-                    {inventory.product.category.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {inventory.product.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {inventory.product.unit_display}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {inventory.location.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200">
-                    {inventory.location.warehouse.name}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
-                    {inventory.quantity}
-                  </TableCell>
-                  <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
-                    <Badge
-                      className={getBadgeColor(inventory.availability_display)}
-                    >
-                      {inventory.availability_display}
-                    </Badge>
-                  </TableCell>
-                  {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
-                    <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
-                      <Edit
-                        size={20}
-                        className="text-impactBlue cursor-pointer"
-                        onClick={() => handleSettings(inventory.id)}
-                      />
-                    </TableCell>
-                  )}
+    <div className="container mx-auto px-4 py-6">
+      <Card className="p-6 bg-gray-100">
+        <div className="mb-4 flex justify-between">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Inventarios</h2>
+          {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+            <CreateInventoryModal />
+          )}
+        </div>
+        <Input
+          type="text"
+          placeholder="Buscar por nombre o campus"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="mb-4"
+        />
+        {loading ? (
+          <Spinner />
+        ) : inventories.length === 0 ? (
+          <div className="text-gray-500">No hay inventarios.</div>
+        ) : (
+          <>
+            <Table className="min-w-full bg-white rounded-lg shadow-md">
+              <TableCaption className="text-gray-500">
+                {pagination?.totalItems} inventario(s) encontrado(s).
+              </TableCaption>
+              <TableHeader>
+                <TableRow className="bg-gray-200">
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Partida
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Nombre
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Unidad
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Ubicación
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Campus
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Existencia
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left text-gray-600">
+                    Disponibilidad
+                  </TableHead>
+                  <TableHead className="px-4 py-2 text-left"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div className="flex justify-between items-center mt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    className="cursor-pointer"
-                    onClick={() =>
-                      handlePageChange(pagination!.currentPage - 1)
-                    }
-                  />
-                </PaginationItem>
-                {createPageLinks()}
-                <PaginationItem>
-                  <PaginationNext
-                    className="cursor-pointer"
-                    onClick={() =>
-                      handlePageChange(pagination!.currentPage + 1)
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </>
-      )}
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {inventories.map((inventory: Inventory) => (
+                  <TableRow key={inventory.id} className="hover:bg-gray-100">
+                    <TableCell className="px-4 py-2 border-b border-gray-200">
+                      {inventory.product.category.code} -{' '}
+                      {inventory.product.category.name}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200">
+                      {inventory.product.name}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200">
+                      {inventory.product.unit_display}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200">
+                      {inventory.location.name}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200">
+                      {inventory.location.warehouse.name}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
+                      {inventory.quantity}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 border-b border-gray-200 text-center">
+                      <Badge
+                        className={getBadgeColor(
+                          inventory.availability_display,
+                        )}
+                      >
+                        {inventory.availability_display}
+                      </Badge>
+                    </TableCell>
+                    {hasPermission(user?.role, ['ADMIN', 'EMPLOYEE']) && (
+                      <TableCell className="px-4 py-2 border-b border-gray-200 text-right">
+                        <Edit
+                          size={20}
+                          className="text-impactBlue cursor-pointer"
+                          onClick={() => handleSettings(inventory.id)}
+                        />
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="flex justify-between items-center mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handlePageChange(pagination!.currentPage - 1)
+                      }
+                    />
+                  </PaginationItem>
+                  {createPageLinks()}
+                  <PaginationItem>
+                    <PaginationNext
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handlePageChange(pagination!.currentPage + 1)
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
+        )}
+      </Card>
+    </div>
   )
 }
 

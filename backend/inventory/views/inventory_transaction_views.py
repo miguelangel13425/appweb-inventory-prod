@@ -23,7 +23,7 @@ class InventoryTransactionListView(CustomResponseMixin, generics.ListCreateAPIVi
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = InventoryTransactionModel.objects.all()
+        queryset = InventoryTransactionModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = queryset.filter(Q(description__icontains=search_term))
