@@ -22,7 +22,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 class UserUpdateSerializer(UserAPIManager):
     class Meta:
         model = UserModel
-        fields = ['first_name', 'last_name']
+        fields = ['id', 'first_name', 'last_name', 'role']
 
 class ProfileCustomSerializer(serializers.ModelSerializer):
     gender_display = serializers.SerializerMethodField()

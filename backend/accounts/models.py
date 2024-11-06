@@ -18,13 +18,14 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
 
     objects = UserManager()
 
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+        ordering = ['date_joined']
 
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'

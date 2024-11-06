@@ -6,6 +6,7 @@ from core.validations import (
     validate_phone_number, validate_control_number, validate_digits,
     validate_rfc
 )
+from .choices import RoleChoices
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -17,6 +18,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+
     
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
