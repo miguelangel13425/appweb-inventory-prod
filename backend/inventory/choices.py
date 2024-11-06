@@ -22,9 +22,10 @@ class MovementChoices(models.TextChoices):
 class TypeChoices(models.TextChoices):
     # IN
     PURCHASE = 'PURCHASE', 'Compra' 
+    RETURN = 'RETURN', 'Devolución'
     # OUT
     SALE = 'SALE', 'Venta' 
     LOST = 'LOST', 'Perdido' 
-    DAMAGED = 'DAMAGED', 'Dañado' 
+    DAMAGED = 'DAMAGED', 'Dañado'
+    LOAN = 'LOAN', 'Préstamo' 
     # BOTH
-    LOAN = 'LOAN', 'Préstamo'

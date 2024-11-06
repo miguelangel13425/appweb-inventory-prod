@@ -13,6 +13,7 @@ from accounts.serializers import (
 )
 from django.db.models import F
 from operator import attrgetter
+import locale
 
 # Warehouse's serializers
 
@@ -193,8 +194,9 @@ class InventoryTransactionListSerializer(InventoryTransactionManager, DateFormat
         representation = super().to_representation(instance)
         created_at = instance.created_at
         if created_at:
-            # Formatear la fecha en el formato "Día mes año"
+            locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
             representation['created_at'] = created_at.strftime('%d %B %Y')
+            locale.setlocale(locale.LC_TIME, '')
         return representation
     
 class InventoryTransactionCreateUpdateSerializer(InventoryTransactionManager):
@@ -237,14 +239,14 @@ class DashboardSummarySerializer(serializers.Serializer):
         total_warehouses = WarehouseModel.objects.filter(is_active=True).count()
         total_inventories = InventoryModel.objects.filter(is_active=True).count()
 
-        # Retrieve the latest 5 transactions
-        latest_transactions_qs = InventoryTransactionModel.objects.filter(is_active=True).order_by('-created_at')[:5]
+        # Retrieve the latest 6 transactions
+        latest_transactions_qs = InventoryTransactionModel.objects.filter(is_active=True).order_by('-created_at')[:6]
         latest_transactions = InventoryTransactionListSerializer(latest_transactions_qs, many=True).data
 
-        # Retrieve the top 3 inventories with the most quantity
+        # Retrieve the top 9 inventories with the most quantity
         top_inventories_qs = list(InventoryModel.objects.filter(is_active=True))
         top_inventories_qs.sort(key=attrgetter('quantity'), reverse=True)
-        top_inventories = InventoryListSerializer(top_inventories_qs[:3], many=True).data
+        top_inventories = InventoryListSerializer(top_inventories_qs[:9], many=True).data
 
         return {
             'total_products': total_products,
