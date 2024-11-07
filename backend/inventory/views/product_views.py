@@ -18,10 +18,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 from django.db.models import Q
+from core.pagination import SmallPageNumberPagination
 
 # Create your views here.
-class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
-    pagination_class = None
+class ProductCustomView(CustomResponseMixin, generics.ListAPIView):
+    permission_classes = [ IsAdmin | IsEmployee ]
+    pagination_class = SmallPageNumberPagination
 
     def get_queryset(self):
         queryset = ProductModel.objects.filter(is_active=True)
@@ -29,6 +31,8 @@ class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
         if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |
+                Q(category__name__icontains=search_term) |
+                Q(category__code__icontains=search_term) |
                 Q(unit__icontains=search_term)
             )
         return queryset
@@ -36,11 +40,13 @@ class ProductCustomView(CustomResponseMixin, generics.ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
-            serializer = ProductCustomSerializer(queryset, many=True)
+            page = self.paginate_queryset(queryset)
+            serializer = ProductCustomSerializer(page, many=True)
             return self.custom_paginated_response(
                 data_key='products',
                 data=serializer.data,
                 message='¡Productos encontrados con éxito!',
+                paginator=self.paginator,
                 detail_code='FETCH_PRODUCTS_SUCCESS',
                 status_code=status.HTTP_200_OK
             )

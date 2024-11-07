@@ -26,7 +26,15 @@ class InventoryTransactionListView(CustomResponseMixin, generics.ListCreateAPIVi
         queryset = InventoryTransactionModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
         if search_term:
-            queryset = queryset.filter(Q(description__icontains=search_term))
+            queryset = queryset.filter(
+                Q(person__first_name__icontains=search_term) | 
+                Q(person__last_name__icontains=search_term) |
+                Q(inventory__product__name__icontains=search_term) |
+                Q(inventory__location__name__icontains=search_term) |
+                Q(inventory__location__warehouse__name__icontains=search_term) |
+                Q(type__icontains=search_term) |
+                Q(movement__icontains=search_term)
+            )
         return queryset
 
     def list(self, request, *args, **kwargs):

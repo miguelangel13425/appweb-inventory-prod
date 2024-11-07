@@ -20,7 +20,7 @@ class UserListView(CustomResponseMixin, generics.ListAPIView):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = UserModel.objects.filter(is_active=True)
+        queryset = UserModel.objects.filter(is_active=True, is_superuser=False, is_staff=False)
         search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = queryset.filter(

@@ -5,6 +5,9 @@ import {
   fetchInventoriesStart,
   fetchInventoriesSuccess,
   fetchInventoriesFailure,
+  fetchSimplifiedInventoriesStart,
+  fetchSimplifiedInventoriesSuccess,
+  fetchSimplifiedInventoriesFailure,
   fetchInventorySuccess,
   fetchInventoryFailure,
   createInventoryStart,
@@ -22,8 +25,11 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type InventoryForm = Omit<
   Inventory,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
->
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'quantity' | 'availability_display' | 'location' | 'product'
+> & {
+  location: string
+  product: string
+}
 
 
 export const fetchInventories =
@@ -49,6 +55,7 @@ export const fetchInventories =
             totalItems: response.data.meta.total_items,
             pageSize: response.data.meta.page_size,
           },
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
@@ -56,6 +63,37 @@ export const fetchInventories =
         fetchInventoriesFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'FETCH_INVENTORIES_ERROR',
+        }),
+      )
+    }
+  }
+
+  export const fetchSimplifiedInventories =
+  (searchTerm: string = '') =>
+  async (dispatch: AppDispatch) => {
+    dispatch(fetchSimplifiedInventoriesStart())
+    try {
+      const response = await axios.get(`${INVENTORY_URL}/inventory/options/`, {
+        params: { search: searchTerm },
+        ...getConfig(),
+      })
+      dispatch(
+        fetchSimplifiedInventoriesSuccess({
+          message: response.data.message,
+          data: response.data.inventories,
+          status: response.status,
+          detailCode: response.data.detail_code,
+        }),
+      )
+    } catch (error: any) {
+      dispatch(
+        fetchSimplifiedInventoriesFailure({
+          error: error.response?.data.message || error.message,
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code ||
+            'FETCH_SIMPLIFIED_INVENTORIES_ERROR',
         }),
       )
     }
@@ -63,12 +101,15 @@ export const fetchInventories =
 
 export const fetchInventory = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${INVENTORY_URL}/inventories/${id}`)
+    const response = await axios.get(`${INVENTORY_URL}/inventories/${id}`,
+      getConfig(),
+    )
     dispatch(
       fetchInventorySuccess({
         message: response.data.message,
         data: response.data.inventory,
         status: response.status,
+        detailCode: response.data.detail_code,
       }),
     )
   } catch (error: any) {
@@ -76,6 +117,7 @@ export const fetchInventory = (id: string) => async (dispatch: AppDispatch) => {
       fetchInventoryFailure({
         error: error.response?.data.message || error.message,
         status: error.response?.status || 500,
+        detailCode: error.response?.data.detail_code || 'FETCH_INVENTORY_ERROR',
       }),
     )
   }
@@ -86,21 +128,26 @@ export const createInventory =
     dispatch(createInventoryStart())
     try {
       const response = await axios.post(
-        `${INVENTORY_URL}/inventories`,
+        `${INVENTORY_URL}/inventories/`,
         newInventory,
+        getConfig(),
       )
       dispatch(
         createInventorySuccess({
           message: response.data.message,
           data: response.data.inventory,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
       dispatch(
         createInventoryFailure({
           error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code || 'CREATE_INVENTORY_ERROR',
         }),
       )
     }
@@ -112,14 +159,16 @@ export const updateInventory =
     dispatch(updateInventoryStart())
     try {
       const response = await axios.put(
-        `${INVENTORY_URL}/inventories/${id}`,
+        `${INVENTORY_URL}/inventories/${id}/`,
         updatedInventory,
+        getConfig(),
       )
       dispatch(
         updateInventorySuccess({
           message: response.data.message,
           data: response.data.inventory,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
       dispatch(fetchInventory(id))
@@ -127,7 +176,10 @@ export const updateInventory =
       dispatch(
         updateInventoryFailure({
           error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code || 'UPDATE_INVENTORY_ERROR',
         }),
       )
     }
@@ -137,11 +189,14 @@ export const deleteInventory =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteInventoryStart())
     try {
-      const response = await axios.delete(`${INVENTORY_URL}/inventories/${id}`)
+      const response = await axios.delete(`${INVENTORY_URL}/inventories/${id}/`,
+        getConfig(),
+      )
       dispatch(
         deleteInventorySuccess({
           message: response.data.message,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
@@ -149,6 +204,7 @@ export const deleteInventory =
         deleteInventoryFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'DELETE_INVENTORY_ERROR',
         }),
       )
     }

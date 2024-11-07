@@ -16,10 +16,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 from django.db.models import Q
+from core.pagination import SmallPageNumberPagination
 
 # Create your views here.
 class WarehouseCustomView(CustomResponseMixin, generics.ListAPIView):
-    pagination_class = None 
+    permission_classes = [ IsAdmin | IsEmployee ]
+    pagination_class = SmallPageNumberPagination
 
     def get_queryset(self):
         queryset = WarehouseModel.objects.filter(is_active=True)
@@ -31,11 +33,13 @@ class WarehouseCustomView(CustomResponseMixin, generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
-            serializer = WarehouseCustomSerializer(queryset, many=True)
-            return self.custom_response(
+            page = self.paginate_queryset(queryset)
+            serializer = WarehouseCustomSerializer(page, many=True)
+            return self.custom_paginated_response(
                 data_key='warehouses',
                 data=serializer.data,
                 message='¡Campus encontrados con éxito!',
+                paginator=self.paginator,
                 detail_code='FETCH_WAREHOUSES_SUCCESS',
                 status_code=status.HTTP_200_OK
             )

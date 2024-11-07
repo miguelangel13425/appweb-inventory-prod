@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Location } from '../../models/inventory'
+import { Location, Warehouse } from '../../models/inventory'
 import { Pagination } from '../../models/pagination'
 
 interface SimplifiedLocation {
   id: string
   name: string
+  warehouse: Warehouse
 }
 
 interface LocationState {

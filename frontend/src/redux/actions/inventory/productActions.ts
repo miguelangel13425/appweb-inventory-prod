@@ -25,8 +25,10 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type ProductForm = Omit<
   Product,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
->
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'category'
+> & {
+  category: string
+}
 
 
 export const fetchProducts =

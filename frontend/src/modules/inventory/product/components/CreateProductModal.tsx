@@ -28,13 +28,13 @@ const CreateProductModal: React.FC = () => {
   const [form, setForm] = useState({
     name: '',
     description: '',
-    unit: 'PC', // Default unit
-    category: '', // Category ID
+    unit: 'PC',
+    category: '',
     is_single_use: false,
   })
   const [searchTerm, setSearchTerm] = useState('')
   const { toast } = useToast()
-  const { status, detailCode, message, errors } = useSelector(
+  const { detailCode, message, errors } = useSelector(
     (state: RootState) => state.product,
   )
   const { simplifiedCategories } = useSelector(

@@ -9,15 +9,51 @@ from inventory.models import (
 )
 from inventory.serializers import (
     LocationListSerializer, LocationDetailSerializer,
-    LocationCreateUpdateSerializer,
+    LocationCreateUpdateSerializer, LocationCustomSerializer,
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 from django.db.models import Q
+from core.pagination import SmallPageNumberPagination
 
 # Create your views here.
+class LocationCustomView(CustomResponseMixin, generics.ListAPIView):
+    permission_classes = [ IsAdmin | IsEmployee ]
+    pagination_class = SmallPageNumberPagination
+
+    def get_queryset(self):
+        queryset = LocationModel.objects.filter(is_active=True)
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(
+                Q(name__icontains=search_term) |
+                Q(warehouse__name__icontains=search_term)
+            )
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            page = self.paginate_queryset(queryset)
+            serializer = LocationCustomSerializer(page, many=True)
+            return self.custom_paginated_response(
+                data_key='locations',
+                data=serializer.data,
+                message='¡Ubicaciones encontradas con éxito!',
+                paginator=self.paginator,
+                detail_code='FETCH_LOCATIONS_SUCCESS',
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return self.custom_error(
+                message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
+                detail_code='FETCH_LOCATIONS_ERROR',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=str(e)
+            )
+
 class LocationListView(CustomResponseMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination

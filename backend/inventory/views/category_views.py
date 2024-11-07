@@ -16,10 +16,12 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 from django.db.models import Q
+from core.pagination import SmallPageNumberPagination
 
 # Create your views here.
 class CategoryCustomView(CustomResponseMixin, generics.ListAPIView):
-    pagination_class = None
+    permission_classes = [ IsAdmin | IsEmployee ]
+    pagination_class = SmallPageNumberPagination
 
     def get_queryset(self):
         queryset = CategoryModel.objects.filter(is_active=True)
@@ -34,11 +36,13 @@ class CategoryCustomView(CustomResponseMixin, generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
-            serializer = CategoryCustomSerializer(queryset, many=True)
-            return self.custom_response(
+            page = self.paginate_queryset(queryset)
+            serializer = CategoryCustomSerializer(page, many=True)
+            return self.custom_paginated_response(
                 data_key='categories',
                 data=serializer.data,
                 message='¡Partidas encontradas con éxito!',
+                paginator=self.paginator,
                 detail_code='FETCH_CATEGORIES_SUCCESS',
                 status_code=status.HTTP_200_OK
             )

@@ -30,8 +30,8 @@ export interface Product extends Base {
 export interface Inventory extends Base {
   product: Product
   location: Location
-  quantity?: number
-  availability_display?: string
+  quantity: number
+  availability_display: string
 }
 
 export interface InventoryTransaction extends Base {
