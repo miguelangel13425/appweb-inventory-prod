@@ -22,8 +22,11 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type InventoryTransactionForm = Omit<
   InventoryTransaction,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
->
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'inventory' | 'person' | 'movement_display' | 'type_display'
+> & {
+  inventory: string
+  person: string
+}
 
 
 export const fetchTransactions =
@@ -49,6 +52,7 @@ export const fetchTransactions =
             totalItems: response.data.meta.total_items,
             pageSize: response.data.meta.page_size,
           },
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
@@ -56,6 +60,7 @@ export const fetchTransactions =
         fetchTransactionsFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'FETCH_TRANSACTIONS_ERROR',
         }),
       )
     }
@@ -70,6 +75,7 @@ export const fetchTransaction =
           message: response.data.message,
           data: response.data.inventory_transaction,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
@@ -77,6 +83,7 @@ export const fetchTransaction =
         fetchTransactionFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'FETCH_TRANSACTION_ERROR',
         }),
       )
     }
@@ -95,13 +102,16 @@ export const createTransaction =
           message: response.data.message,
           data: response.data.inventory_transaction,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
       dispatch(
         createTransactionFailure({
           error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'CREATE_TRANSACTION_ERROR',
         }),
       )
     }
@@ -121,6 +131,7 @@ export const updateTransaction =
           message: response.data.message,
           data: response.data.inventory_transaction,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
       dispatch(fetchTransaction(id))
@@ -128,7 +139,9 @@ export const updateTransaction =
       dispatch(
         updateTransactionFailure({
           error: error.response?.data.message || error.message,
+          errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'UPDATE_TRANSACTION_ERROR',
         }),
       )
     }
@@ -143,6 +156,7 @@ export const deleteTransaction =
         deleteTransactionSuccess({
           message: response.data.message,
           status: response.status,
+          detailCode: response.data.detail_code,
         }),
       )
     } catch (error: any) {
@@ -150,6 +164,7 @@ export const deleteTransaction =
         deleteTransactionFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
+          detailCode: error.response?.data.detail_code || 'DELETE_TRANSACTION_ERROR',
         }),
       )
     }

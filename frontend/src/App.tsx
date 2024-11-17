@@ -23,6 +23,7 @@ import CategoryList from '@/modules/inventory/category/pages/CategoryList'
 import CategoryDetail from '@/modules/inventory/category/pages/CategoryDetail'
 import WarehouseDetail from '@/modules/inventory/warehouse/pages/WarehouseDetail'
 import InventoryList from '@/modules/inventory/inventory/pages/InventoryList'
+import InventoryDetail from '@/modules/inventory/inventory/pages/InventoryDetail'
 import TransactionList from '@/modules/inventory/transaction/pages/TransactionList'
 import NotFound from '@/modules/base/pages/NotFound'
 import store from './redux/store'
@@ -46,6 +47,7 @@ const routes = [
   { path: '/partidas', element: <CategoryList /> },
   { path: '/partidas/:id', element: <CategoryDetail /> },
   { path: '/inventarios', element: <InventoryList /> },
+  { path: '/inventarios/:id', element: <InventoryDetail /> },
   { path: '/transacciones', element: <TransactionList /> },
 ]
 

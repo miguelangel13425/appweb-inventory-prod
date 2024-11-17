@@ -72,7 +72,21 @@ class UserDetailSerializer(serializers.ModelSerializer):
     
     def get_role_display(self, obj):
         return obj.get_role_display()
-        
+
+
+class PersonOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        abstract = True
+        fields = ['id', 'first_name', 'last_name']
+
+class StudentOptionSerializer(PersonOptionSerializer):
+    class Meta(PersonOptionSerializer.Meta):
+        model = StudentModel
+
+class ProviderOptionSerializer(PersonOptionSerializer):
+    class Meta(PersonOptionSerializer.Meta):
+        model = ProviderModel
+
 class PersonCustomSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonModel

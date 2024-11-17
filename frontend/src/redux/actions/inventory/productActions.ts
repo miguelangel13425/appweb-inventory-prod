@@ -70,13 +70,15 @@ export const fetchProducts =
     }
   }
 
-export const fetchSimplifiedProducts =
-  (searchTerm: string = '') =>
+export const fetchSimplifiedProducts = (
+  searchTerm: string = '',
+  initialProductId: string | null = null
+) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedProductsStart())
     try {
       const response = await axios.get(`${INVENTORY_URL}/products/options/`, {
-        params: { search: searchTerm },
+        params: { search: searchTerm, id: initialProductId },
         ...getConfig(),
       })
       dispatch(

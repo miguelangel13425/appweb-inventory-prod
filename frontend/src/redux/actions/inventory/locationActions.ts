@@ -67,13 +67,15 @@ export const fetchLocations =
     }
   }
 
-export const fetchSimplifiedLocations =
-  (searchTerm: string = '') =>
+export const fetchSimplifiedLocations = (
+  searchTerm: string = '',
+  initialLocationId: string | null = null
+) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedLocationsStart())
     try {
       const response = await axios.get(`${INVENTORY_URL}/locations/options/`, {
-        params: { search: searchTerm },
+        params: { search: searchTerm, id: initialLocationId },
         ...getConfig(),
       })
       dispatch(

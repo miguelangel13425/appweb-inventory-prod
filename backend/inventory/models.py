@@ -62,8 +62,8 @@ class ProductModel(BaseModel):
         return self.name
     
 class InventoryModel(BaseModel):
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='inventories')
-    location = models.ForeignKey(LocationModel, on_delete=models.CASCADE, related_name='inventories')
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='inventories', verbose_name='producto')
+    location = models.ForeignKey(LocationModel, on_delete=models.CASCADE, related_name='inventories', verbose_name='ubicación')
 
     class Meta:
         verbose_name = 'Inventario'

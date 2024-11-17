@@ -1,6 +1,6 @@
 from django.urls import path, include
-from accounts.views.student_views import StudentListView, StudentDetailView
-from accounts.views.provider_views import ProviderListView, ProviderDetailView
+from accounts.views.student_views import StudentListView, StudentDetailView, StudentOptionView
+from accounts.views.provider_views import ProviderListView, ProviderDetailView, ProviderOptionView
 from accounts.views.user_views import UserListView, UserDetailView, CurrentUserView
 from accounts.views.profile_views import ProfileListView, ProfileDetailView
 
@@ -18,7 +18,9 @@ urlpatterns = [
 
     path('students/', StudentListView.as_view(), name='student-list'),
     path('students/<uuid:pk>/', StudentDetailView.as_view(), name='student-detail'),
+    path('students/options/', StudentOptionView.as_view(), name='student-options'),
 
     path('providers/', ProviderListView.as_view(), name='provider-list'),
     path('providers/<uuid:pk>/', ProviderDetailView.as_view(), name='provider-detail'),
+    path('providers/options/', ProviderOptionView.as_view(), name='provider-options'),
 ]

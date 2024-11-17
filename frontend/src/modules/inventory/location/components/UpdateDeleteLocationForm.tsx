@@ -6,6 +6,7 @@ import {
   updateLocation,
   deleteLocation,
 } from '@/redux/actions/inventory/locationActions'
+import { fetchSimplifiedWarehouses } from '@/redux/actions/inventory/warehouseActions'
 import { Location } from '@/redux/models/inventory'
 import {
   Card,
@@ -27,6 +28,13 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface UpdateDeleteLocationFormProps {
   location: Location
@@ -40,11 +48,15 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
   const { status, detailCode, message, errors } = useSelector(
     (state: RootState) => state.location,
   )
+  const { simplifiedWarehouses } = useSelector(
+    (state: RootState) => state.warehouse,
+  )
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
     name: location.name,
     description: location.description,
+    warehouse: location.warehouse.id,
   })
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
@@ -53,8 +65,10 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
     setFormData({
       name: location.name,
       description: location.description,
+      warehouse: location.warehouse.id,
     })
-  }, [location])
+    dispatch(fetchSimplifiedWarehouses(''))
+  }, [location, dispatch])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -64,6 +78,10 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
       ...formData,
       [name]: value,
     })
+  }
+
+  const handleWarehouseChange = (value: string) => {
+    setFormData({ ...formData, warehouse: value })
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -126,7 +144,21 @@ const UpdateDeleteLocationForm: React.FC<UpdateDeleteLocationFormProps> = ({
             className="block text-sm font-medium text-gray-700"
           >
             Campus{' '}
-            <strong className="text-gray-900">{location.warehouse.name}</strong>
+            <Select
+              value={formData.warehouse}
+              onValueChange={handleWarehouseChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione un campus" />
+              </SelectTrigger>
+              <SelectContent>
+                {simplifiedWarehouses.map((wh) => (
+                  <SelectItem key={wh.id} value={wh.id}>
+                    {wh.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Label>
         </div>
         <div className="mb-4">

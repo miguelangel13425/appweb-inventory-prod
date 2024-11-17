@@ -2,8 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Provider } from '../../models/accounts'
 import { Pagination } from '../../models/pagination'
 
+interface SimplifiedProvider {
+  id: string
+  first_name: string
+  last_name: string
+}
+
 interface ProviderState {
   providers: Provider[]
+  simplifiedProviders: SimplifiedProvider[]
   provider: Provider | null
   loading: boolean
   error: string | null
@@ -16,6 +23,7 @@ interface ProviderState {
 
 const initialState: ProviderState = {
   providers: [],
+  simplifiedProviders: [],
   provider: null,
   loading: false,
   error: null,
@@ -227,6 +235,45 @@ const providerSlice = createSlice({
       state.status = action.payload.status
       state.detailCode = action.payload.detailCode
     },
+    fetchSimplifiedProvidersStart: (state) => {
+      state.loading = true
+      state.error = null
+      state.errors = null
+      state.message = null
+      state.status = null
+      state.detailCode = null
+    },
+    fetchSimplifiedProvidersSuccess: (
+      state,
+      action: PayloadAction<{
+        message: string
+        data: SimplifiedProvider[]
+        status: number
+        detailCode: string
+      }>,
+    ) => {
+      state.simplifiedProviders = action.payload.data
+      state.loading = false
+      state.error = null
+      state.errors = null
+      state.message = action.payload.message
+      state.status = action.payload.status
+      state.detailCode = action.payload.detailCode
+    },
+    fetchSimplifiedProvidersFailure: (
+      state,
+      action: PayloadAction<{
+        error: string
+        status: number
+        detailCode: string
+      }>,
+    ) => {
+      state.loading = false
+      state.error = action.payload.error
+      state.errors = null
+      state.status = action.payload.status
+      state.detailCode = action.payload.detailCode
+    },
   },
 })
 
@@ -245,6 +292,9 @@ export const {
   deleteProviderStart,
   deleteProviderSuccess,
   deleteProviderFailure,
+  fetchSimplifiedProvidersStart,
+  fetchSimplifiedProvidersSuccess,
+  fetchSimplifiedProvidersFailure,
 } = providerSlice.actions
 
 export default providerSlice.reducer

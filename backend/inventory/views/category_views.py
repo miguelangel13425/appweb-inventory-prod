@@ -26,7 +26,12 @@ class CategoryCustomView(CustomResponseMixin, generics.ListAPIView):
     def get_queryset(self):
         queryset = CategoryModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
-        if (search_term):
+        specific_id = self.request.query_params.get('id', None)
+        
+        if specific_id:
+            queryset = queryset.filter(id=specific_id)
+
+        if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |
                 Q(code__icontains=search_term)

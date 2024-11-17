@@ -180,11 +180,11 @@ const CreateInventoryModal: React.FC = () => {
                 <SelectContent>
                   {simplifiedProducts.map((product: any) => (
                     <SelectItem key={product.id} value={product.id}>
-                      {product.name} {'['}
+                      {product.name} {'('}
                       {product.category.name}
-                      {'-'}
+                      {' - '}
                       {product.category.code}
-                      {']'}
+                      {')'}
                     </SelectItem>
                   ))}
                 </SelectContent>

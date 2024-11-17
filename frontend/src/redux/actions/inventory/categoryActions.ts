@@ -177,13 +177,15 @@ export const deleteCategory = (id: string) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const fetchSimplifiedCategories =
-  (searchTerm: string = '') =>
+export const fetchSimplifiedCategories = (
+  searchTerm: string = '',
+  initialCategoryId: string | null = null
+) => 
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedCategoriesStart())
     try {
       const response = await axios.get(`${INVENTORY_URL}/categories/options/`, {
-        params: { search: searchTerm },
+        params: { search: searchTerm, id: initialCategoryId },
         ...getConfig(),
       })
       dispatch(

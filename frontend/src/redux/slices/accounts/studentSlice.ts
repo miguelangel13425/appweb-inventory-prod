@@ -2,8 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Student } from '../../models/accounts'
 import { Pagination } from '../../models/pagination'
 
+interface SimplifiedStudent {
+  id: string
+  first_name: string
+  last_name: string
+}
+
 interface StudentState {
   students: Student[]
+  simplifiedStudents: SimplifiedStudent[]
   student: Student | null
   loading: boolean
   error: string | null
@@ -16,6 +23,7 @@ interface StudentState {
 
 const initialState: StudentState = {
   students: [],
+  simplifiedStudents: [],
   student: null,
   loading: false,
   error: null,
@@ -227,6 +235,45 @@ const studentSlice = createSlice({
       state.status = action.payload.status
       state.detailCode = action.payload.detailCode
     },
+    fetchSimplifiedStudentsStart: (state) => {
+      state.loading = true
+      state.error = null
+      state.errors = null
+      state.message = null
+      state.status = null
+      state.detailCode = null
+    },
+    fetchSimplifiedStudentsSuccess: (
+      state,
+      action: PayloadAction<{
+        message: string
+        data: SimplifiedStudent[]
+        status: number
+        detailCode: string
+      }>,
+    ) => {
+      state.simplifiedStudents = action.payload.data
+      state.loading = false
+      state.error = null
+      state.errors = null
+      state.message = action.payload.message
+      state.status = action.payload.status
+      state.detailCode = action.payload.detailCode
+    },
+    fetchSimplifiedStudentsFailure: (
+      state,
+      action: PayloadAction<{
+        error: string
+        status: number
+        detailCode: string
+      }>,
+    ) => {
+      state.loading = false
+      state.error = action.payload.error
+      state.errors = null
+      state.status = action.payload.status
+      state.detailCode = action.payload.detailCode
+    }
   },
 })
 
@@ -245,6 +292,9 @@ export const {
   deleteStudentStart,
   deleteStudentSuccess,
   deleteStudentFailure,
+  fetchSimplifiedStudentsStart,
+  fetchSimplifiedStudentsSuccess,
+  fetchSimplifiedStudentsFailure
 } = studentSlice.actions
 
 export default studentSlice.reducer

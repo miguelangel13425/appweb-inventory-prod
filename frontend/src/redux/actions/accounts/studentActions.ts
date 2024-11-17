@@ -16,6 +16,9 @@ import {
   deleteStudentStart,
   deleteStudentSuccess,
   deleteStudentFailure,
+  fetchSimplifiedStudentsStart,
+  fetchSimplifiedStudentsSuccess,
+  fetchSimplifiedStudentsFailure
 } from '../../slices/accounts/studentSlice'
 
 import { ACCOUNTS_URL } from '@/constants/urls'
@@ -170,6 +173,36 @@ export const deleteStudent = (id: string) => async (dispatch: AppDispatch) => {
         error: error.response?.data.message || error.message,
         status: error.response?.status || 500,
         detailCode: error.response?.data.detail_code || 'DELETE_STUDENT_ERROR',
+      }),
+    )
+  }
+}
+
+export const fetchSimplifiedStudents = (
+  searchTerm: string = '',
+  initialStudentId: string | null = null
+) => async (dispatch: AppDispatch) => {
+  dispatch(fetchSimplifiedStudentsStart())
+  try {
+    const response = await axios.get(`${ACCOUNTS_URL}/students/options/`, {
+      params: { search: searchTerm, id: initialStudentId },
+      ...getConfig(),
+    })
+    dispatch(
+      fetchSimplifiedStudentsSuccess({
+        message: response.data.message,
+        data: response.data.students,
+        status: response.status,
+        detailCode: response.data.detail_code,
+      }),
+    )
+  } catch (error: any) {
+    dispatch(
+      fetchSimplifiedStudentsFailure({
+        error: error.response?.data.message || error.message,
+        status: error.response?.status || 500,
+        detailCode:
+          error.response?.data.detail_code || 'FETCH_SIMPLIFIED_STUDENTS_ERROR',
       }),
     )
   }

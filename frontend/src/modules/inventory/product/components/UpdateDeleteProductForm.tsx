@@ -6,6 +6,7 @@ import {
   updateProduct,
   deleteProduct,
 } from '@/redux/actions/inventory/productActions'
+import { fetchSimplifiedCategories } from '@/redux/actions/inventory/categoryActions'
 import { Product } from '@/redux/models/inventory'
 import {
   Card,
@@ -47,6 +48,9 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
   const { status, detailCode, message, errors } = useSelector(
     (state: RootState) => state.product,
   )
+  const { simplifiedCategories } = useSelector(
+    (state: RootState) => state.category,
+  )
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
@@ -54,9 +58,10 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
     description: product.description,
     unit: product.unit,
     is_single_use: product.is_single_use,
-    category: product.category,
+    category: product.category.id,
   })
 
+  const [searchTerm, setSearchTerm] = useState('')
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -65,9 +70,10 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
       description: product.description,
       unit: product.unit,
       is_single_use: product.is_single_use,
-      category: product.category,
+      category: product.category.id,
     })
-  }, [product])
+    dispatch(fetchSimplifiedCategories('', product.category.id))
+  }, [product, dispatch])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -85,6 +91,18 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
 
   const handleSingleUseChange = (value: boolean) => {
     setFormData({ ...formData, is_single_use: value })
+  }
+
+  const handleCategoryChange = (value: string) => {
+    setFormData({ ...formData, category: value })
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleSearchClick = () => {
+    dispatch(fetchSimplifiedCategories(searchTerm))
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -141,17 +159,6 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
         </div>
         <div className="mb-4">
           <Label
-            htmlFor="created_at"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Partida{' '}
-            <strong className="text-gray-900">{product.category.code}</strong>
-            {' - '}
-            <strong className="text-gray-900">{product.category.name}</strong>
-          </Label>
-        </div>
-        <div className="mb-4">
-          <Label
             htmlFor="is_active"
             className="block text-sm font-medium text-gray-700"
           >
@@ -159,6 +166,43 @@ const UpdateDeleteProductForm: React.FC<UpdateDeleteProductFormProps> = ({
             <strong className="text-gray-900">
               {product.is_active ? 'vigente' : 'descontinuada'}
             </strong>
+          </Label>
+        </div>
+        <div className="mb-4">
+          <Label
+            htmlFor="created_at"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Partida{' '}
+            <div className="flex items-center space-x-2">
+              <Input
+                placeholder="Buscar categoría"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              <Button
+                className="ml-2"
+                type="button"
+                onClick={handleSearchClick}
+              >
+                Buscar
+              </Button>
+            </div>
+            <Select
+              value={formData.category}
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccione una categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                {simplifiedCategories.map((cat: any) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.code} - {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Label>
         </div>
       </CardHeader>

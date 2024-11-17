@@ -26,6 +26,10 @@ class LocationCustomView(CustomResponseMixin, generics.ListAPIView):
     def get_queryset(self):
         queryset = LocationModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
+        specific_id = self.request.query_params.get('id', None)
+
+        if specific_id:
+            queryset = queryset.filter(id=specific_id)
         if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |

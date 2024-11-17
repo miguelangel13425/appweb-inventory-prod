@@ -16,6 +16,9 @@ import {
   deleteProviderStart,
   deleteProviderSuccess,
   deleteProviderFailure,
+  fetchSimplifiedProvidersStart,
+  fetchSimplifiedProvidersSuccess,
+  fetchSimplifiedProvidersFailure,
 } from '../../slices/accounts/providerSlice'
 
 import { ACCOUNTS_URL } from '@/constants/urls'
@@ -169,6 +172,36 @@ export const deleteProvider = (id: string) => async (dispatch: AppDispatch) => {
         error: error.response?.data.message || error.message,
         status: error.response?.status || 500,
         detailCode: error.response?.data.detail_code || 'DELETE_PROVIDER_ERROR',
+      }),
+    )
+  }
+}
+
+export const fetchSimplifiedProviders = (
+  searchTerm: string = '',
+  initialProviderId: string | null = null
+) => async (dispatch: AppDispatch) => {
+  dispatch(fetchSimplifiedProvidersStart())
+  try {
+    const response = await axios.get(`${ACCOUNTS_URL}/providers/options/`, {
+      params: { search: searchTerm, id: initialProviderId },
+      ...getConfig(),
+    })
+    dispatch(
+      fetchSimplifiedProvidersSuccess({
+        message: response.data.message,
+        data: response.data.providers,
+        status: response.status,
+        detailCode: response.data.detail_code,
+      }),
+    )
+  } catch (error: any) {
+    dispatch(
+      fetchSimplifiedProvidersFailure({
+        error: error.response?.data.message || error.message,
+        status: error.response?.status || 500,
+        detailCode:
+          error.response?.data.detail_code || 'FETCH_SIMPLIFIED_PROVIDERS_ERROR',
       }),
     )
   }

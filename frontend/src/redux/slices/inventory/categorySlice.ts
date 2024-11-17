@@ -5,6 +5,7 @@ import { Pagination } from '../../models/pagination'
 interface SimplifiedCategory {
   id: string
   name: string
+  code: number
 }
 
 interface CategoryState {

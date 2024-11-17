@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import ProviderModel
 from accounts.serializers import (
     ProviderListSerializer, ProviderDetailSerializer,
-    ProviderCreateUpdateSerializer
+    ProviderCreateUpdateSerializer, ProviderOptionSerializer
 )
 from core.mixins import CustomResponseMixin
 from inventory.permissions import (
@@ -15,13 +15,57 @@ from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from core.pagination import SmallPageNumberPagination
+
+class ProviderOptionView(CustomResponseMixin, generics.ListAPIView):
+    permission_classes = [IsAdmin | IsEmployee]
+    pagination_class = SmallPageNumberPagination
+
+    def get_queryset(self):
+        queryset = ProviderModel.objects.filter(is_active=True)
+        search_term = self.request.query_params.get('search', None)
+        specific_id = self.request.query_params.get('id', None)
+        
+        if specific_id:
+            queryset = queryset.filter(id=specific_id)
+
+        if search_term:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_term) |
+                Q(last_name__icontains=search_term) |
+                Q(email__icontains=search_term) |
+                Q(RFC__icontains=search_term) |
+                Q(NSS__icontains=search_term)
+            )
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            page = self.paginate_queryset(queryset)
+            serializer = ProviderOptionSerializer(page, many=True)
+            return self.custom_paginated_response(
+                data_key='providers',
+                data=serializer.data,
+                message='¡Proveedores encontrados con éxito!',
+                paginator=self.paginator,
+                detail_code='FETCH_PROVIDERS_SUCCESS',
+                status_code=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return self.custom_error(
+                message='Se ha producido un error inesperado. Póngase en contacto con el servicio de asistencia técnica.',
+                detail_code='FETCH_PROVIDERS_ERROR',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=str(e)
+            )
 
 class ProviderListView(CustomResponseMixin, generics.ListCreateAPIView):
     permission_classes = [IsAdmin | IsEmployee | IsViewer]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = ProviderModel.objects.all()
+        queryset = ProviderModel.objects.filter(is_active=True)
         search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = queryset.filter(

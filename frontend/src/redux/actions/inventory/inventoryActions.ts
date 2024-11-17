@@ -69,13 +69,15 @@ export const fetchInventories =
     }
   }
 
-  export const fetchSimplifiedInventories =
-  (searchTerm: string = '') =>
+  export const fetchSimplifiedInventories = (
+    searchTerm: string = '', 
+    initialInventoryId: string | null = null
+) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedInventoriesStart())
     try {
-      const response = await axios.get(`${INVENTORY_URL}/inventory/options/`, {
-        params: { search: searchTerm },
+      const response = await axios.get(`${INVENTORY_URL}/inventories/options/`, {
+        params: { search: searchTerm, id: initialInventoryId },
         ...getConfig(),
       })
       dispatch(
@@ -101,7 +103,7 @@ export const fetchInventories =
 
 export const fetchInventory = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${INVENTORY_URL}/inventories/${id}`,
+    const response = await axios.get(`${INVENTORY_URL}/inventories/${id}/`,
       getConfig(),
     )
     dispatch(
