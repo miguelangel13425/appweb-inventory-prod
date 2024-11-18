@@ -95,7 +95,7 @@ const UpdateDeleteProviderForm: React.FC<UpdateDeleteProviderFormProps> = ({
   }
 
   const handleBack = () => {
-    navigate('/proveedores')
+    navigate('/personas')
   }
 
   useEffect(() => {

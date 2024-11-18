@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Profile } from '../../models/profile'
+import { Profile } from '../../models/accounts'
 import { AppDispatch } from '../../store'
 import {
   fetchProfilesStart,
@@ -16,7 +16,7 @@ import {
   deleteProfileStart,
   deleteProfileSuccess,
   deleteProfileFailure,
-} from '../../slices/profile/profileSlice'
+} from '../../slices/accounts/profileSlice'
 
 import { ACCOUNTS_URL } from '@/constants/urls'
 
@@ -45,7 +45,7 @@ export const fetchProfiles =
 
 export const fetchProfile = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${ACCOUNTS_URL}/profiles/${id}`)
+    const response = await axios.get(`${ACCOUNTS_URL}/profiles/${id}/`)
     dispatch(
       fetchProfileSuccess({
         message: response.data.message,
@@ -90,7 +90,7 @@ export const updateProfile =
     dispatch(updateProfileStart())
     try {
       const response = await axios.put(
-        `${ACCOUNTS_URL}/profiles/${id}`,
+        `${ACCOUNTS_URL}/profiles/${id}/`,
         updatedProfile,
       )
       dispatch(
@@ -113,7 +113,7 @@ export const updateProfile =
 export const deleteProfile = (id: string) => async (dispatch: AppDispatch) => {
   dispatch(deleteProfileStart())
   try {
-    const response = await axios.delete(`${ACCOUNTS_URL}/profiles/${id}`)
+    const response = await axios.delete(`${ACCOUNTS_URL}/profiles/${id}/`)
     dispatch(
       deleteProfileSuccess({
         message: response.data.message,

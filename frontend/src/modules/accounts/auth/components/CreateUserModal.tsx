@@ -29,7 +29,7 @@ const CreateUserModal: React.FC = () => {
     email: '',
     password: '',
     re_password: '',
-    role: '',
+    role: 'VIEWER',
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { error, message } = useSelector((state: RootState) => state.auth)
@@ -44,7 +44,6 @@ const CreateUserModal: React.FC = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(formData)
     dispatch(
       signup(
         formData.email,

@@ -161,8 +161,9 @@ const TransactionList: React.FC = () => {
                 {transactions.map((transaction: InventoryTransaction) => (
                   <TableRow key={transaction.id} className="hover:bg-gray-100">
                     <TableCell className="px-4 py-2 border-b border-gray-200">
-                      {transaction.person?.first_name}{' '}
-                      {transaction.person?.last_name}
+                      {transaction.person
+                        ? `${transaction.person.first_name} ${transaction.person.last_name}`
+                        : 'Sin persona'}
                     </TableCell>
                     <TableCell className="px-4 py-2 border-b border-gray-200">
                       {transaction.inventory.product.name}

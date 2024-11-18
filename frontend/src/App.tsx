@@ -25,6 +25,7 @@ import WarehouseDetail from '@/modules/inventory/warehouse/pages/WarehouseDetail
 import InventoryList from '@/modules/inventory/inventory/pages/InventoryList'
 import InventoryDetail from '@/modules/inventory/inventory/pages/InventoryDetail'
 import TransactionList from '@/modules/inventory/transaction/pages/TransactionList'
+import TransactionDetail from '@/modules/inventory/transaction/pages/TransactionDetail'
 import NotFound from '@/modules/base/pages/NotFound'
 import store from './redux/store'
 import './App.css'
@@ -49,6 +50,7 @@ const routes = [
   { path: '/inventarios', element: <InventoryList /> },
   { path: '/inventarios/:id', element: <InventoryDetail /> },
   { path: '/transacciones', element: <TransactionList /> },
+  { path: '/transacciones/:id', element: <TransactionDetail /> },
 ]
 
 function App() {

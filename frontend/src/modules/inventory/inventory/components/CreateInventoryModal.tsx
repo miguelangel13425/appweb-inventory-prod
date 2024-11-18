@@ -201,7 +201,11 @@ const CreateInventoryModal: React.FC = () => {
               )}
             </div>
             <div className="flex justify-end">
-              <Button type="submit" className="mr-2">
+              <Button
+                type="submit"
+                className="mr-2"
+                disabled={!form.location || !form.product}
+              >
                 Crear
               </Button>
               <DialogTrigger asChild>

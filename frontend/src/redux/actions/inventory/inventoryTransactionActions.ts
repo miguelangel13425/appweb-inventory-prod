@@ -69,7 +69,9 @@ export const fetchTransactions =
 export const fetchTransaction =
   (id: string) => async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get(`${INVENTORY_URL}/transactions/${id}`)
+      const response = await axios.get(`${INVENTORY_URL}/transactions/${id}/`,
+        getConfig(),
+      )
       dispatch(
         fetchTransactionSuccess({
           message: response.data.message,
@@ -94,8 +96,9 @@ export const createTransaction =
     dispatch(createTransactionStart())
     try {
       const response = await axios.post(
-        `${INVENTORY_URL}/transactions`,
+        `${INVENTORY_URL}/transactions/`,
         newTransaction,
+        getConfig(),
       )
       dispatch(
         createTransactionSuccess({
@@ -123,8 +126,9 @@ export const updateTransaction =
     dispatch(updateTransactionStart())
     try {
       const response = await axios.put(
-        `${INVENTORY_URL}/transactions/${id}`,
+        `${INVENTORY_URL}/transactions/${id}/`,
         updatedTransaction,
+        getConfig(),
       )
       dispatch(
         updateTransactionSuccess({
@@ -151,7 +155,9 @@ export const deleteTransaction =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteTransactionStart())
     try {
-      const response = await axios.delete(`${INVENTORY_URL}/transactions/${id}`)
+      const response = await axios.delete(`${INVENTORY_URL}/transactions/${id}/`,
+        getConfig(),
+      )
       dispatch(
         deleteTransactionSuccess({
           message: response.data.message,

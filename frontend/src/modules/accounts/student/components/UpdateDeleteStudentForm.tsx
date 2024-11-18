@@ -95,7 +95,7 @@ const UpdateDeleteStudentForm: React.FC<UpdateDeleteStudentFormProps> = ({
   }
 
   const handleBack = () => {
-    navigate('/estudiantes')
+    navigate('/personas')
   }
 
   useEffect(() => {

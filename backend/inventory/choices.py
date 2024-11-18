@@ -28,4 +28,3 @@ class TypeChoices(models.TextChoices):
     LOST = 'LOST', 'Perdido' 
     DAMAGED = 'DAMAGED', 'Dañado'
     LOAN = 'LOAN', 'Préstamo' 
-    # BOTH

@@ -44,7 +44,7 @@ export const fetchRoles = (page: number) => async (dispatch: AppDispatch) => {
 
 export const fetchRole = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${ACCOUNTS_URL}/roles/${id}`)
+    const response = await axios.get(`${ACCOUNTS_URL}/roles/${id}/`)
     dispatch(
       fetchRoleSuccess({
         message: response.data.message,
@@ -111,7 +111,7 @@ export const updateRole =
 export const deleteRole = (id: string) => async (dispatch: AppDispatch) => {
   dispatch(deleteRoleStart())
   try {
-    const response = await axios.delete(`${ACCOUNTS_URL}/roles/${id}`)
+    const response = await axios.delete(`${ACCOUNTS_URL}/roles/${id}/`)
     dispatch(
       deleteRoleSuccess({
         message: response.data.message,

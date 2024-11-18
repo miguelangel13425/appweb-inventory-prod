@@ -48,3 +48,14 @@ def validate_rfc(value):
     if not re.match(r'^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$', value, re.IGNORECASE):
         raise serializers.ValidationError('El RFC no es válido. Debe seguir el formato estándar.')
     return value
+
+def validate_stock(value, stock):
+    if value > stock:
+        raise serializers.ValidationError(f'La cantidad rebasa las existencias ({stock}) del inventario.')
+    return value
+
+def validate_choice(value, choices):
+    choice_dict = dict(choices)
+    if value not in choice_dict:
+        raise serializers.ValidationError(f'El campo debe ser uno de los siguientes: {", ".join(choice_dict.values())}')
+    return value

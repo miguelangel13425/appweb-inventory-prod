@@ -110,13 +110,3 @@ class InventoryTransactionModel(BaseModel):
 
     def __str__(self):
         return f"{self.movement} - {self.type} - {self.inventory.product.name} - {self.inventory.location.name}: {self.quantity}"
-
-    def save(self, *args, **kwargs):
-        if self.movement == MovementChoices.OUT:
-            if self.inventory.quantity < self.quantity:
-                raise ValueError("Inventario insuficiente")
-        if self.movement == MovementChoices.IN and self.type in [TypeChoices.LOST, TypeChoices.DAMAGED]:
-            raise ValueError("El tipo de transacción no puede ser 'Perdido' o 'Dañado' para una entrada")
-        if self.movement == MovementChoices.OUT and self.type == TypeChoices.PURCHASE:
-            raise ValueError("El tipo de transacción no puede ser 'Compra' para una salida")
-        super().save(*args, **kwargs)

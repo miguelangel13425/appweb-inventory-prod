@@ -38,6 +38,8 @@ export interface InventoryTransaction extends Base {
   inventory: Inventory
   person?: Person
   quantity: number
+  movement: string
+  type: string
   movement_display: string
   type_display: string
   description?: string
