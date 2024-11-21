@@ -273,7 +273,7 @@ const studentSlice = createSlice({
       state.errors = null
       state.status = action.payload.status
       state.detailCode = action.payload.detailCode
-    }
+    },
   },
 })
 
@@ -294,7 +294,7 @@ export const {
   deleteStudentFailure,
   fetchSimplifiedStudentsStart,
   fetchSimplifiedStudentsSuccess,
-  fetchSimplifiedStudentsFailure
+  fetchSimplifiedStudentsFailure,
 } = studentSlice.actions
 
 export default studentSlice.reducer

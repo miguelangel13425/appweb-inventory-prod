@@ -69,13 +69,27 @@ export const DegreeChoices = [
   { value: 'Chemical Engineering', label: 'Ingeniería Química' },
   { value: 'Aeronautical Engineering', label: 'Ingeniería Aeronaúutica' },
   { value: 'Biochemical Engineering', label: 'Ingeniería Bioquímica' },
-  { value: 'Electromechanical Engineering', label: 'Ingeniería Electromecánica' },
+  {
+    value: 'Electromechanical Engineering',
+    label: 'Ingeniería Electromecánica',
+  },
   { value: 'Computer Engineering', label: 'Ingeniería de Computación' },
-  { value: 'Computer Systems Engineering', label: 'Ingeniería de Sistemas de Computación' },
-  { value: 'Information Technology and Communications Engineering', label: 'Ingeniería de Telecomunicaciones y de la Información' },
-  { value: 'Cybersecurity Engineering', label: 'Ingeniería de Seguridad Informática' },
-  { value: 'Artificial Intelligence Engineering', label: 'Ingeniería de la Inteligencia Artificial' },
+  {
+    value: 'Computer Systems Engineering',
+    label: 'Ingeniería de Sistemas de Computación',
+  },
+  {
+    value: 'Information Technology and Communications Engineering',
+    label: 'Ingeniería de Telecomunicaciones y de la Información',
+  },
+  {
+    value: 'Cybersecurity Engineering',
+    label: 'Ingeniería de Seguridad Informática',
+  },
+  {
+    value: 'Artificial Intelligence Engineering',
+    label: 'Ingeniería de la Inteligencia Artificial',
+  },
   { value: 'Industrial Engineering', label: 'Ingeniería Industrial' },
   { value: 'Mechanical Engineering', label: 'Ingeniería Mecánica' },
 ]
-

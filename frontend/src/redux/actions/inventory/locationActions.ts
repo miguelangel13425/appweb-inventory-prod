@@ -28,7 +28,6 @@ type LocationForm = Omit<
   'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
 >
 
-
 export const fetchLocations =
   (page: number, searchTerm: string = '') =>
   async (dispatch: AppDispatch) => {
@@ -67,10 +66,8 @@ export const fetchLocations =
     }
   }
 
-export const fetchSimplifiedLocations = (
-  searchTerm: string = '',
-  initialLocationId: string | null = null
-) =>
+export const fetchSimplifiedLocations =
+  (searchTerm: string = '', initialLocationId: string | null = null) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedLocationsStart())
     try {
@@ -155,7 +152,8 @@ export const createLocation =
   }
 
 export const updateLocation =
-  (id: string, updatedLocation: LocationForm) => async (dispatch: AppDispatch) => {
+  (id: string, updatedLocation: LocationForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(updateLocationStart())
     try {
       const response = await axios.put(

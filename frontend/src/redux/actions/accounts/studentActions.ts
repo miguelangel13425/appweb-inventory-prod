@@ -18,7 +18,7 @@ import {
   deleteStudentFailure,
   fetchSimplifiedStudentsStart,
   fetchSimplifiedStudentsSuccess,
-  fetchSimplifiedStudentsFailure
+  fetchSimplifiedStudentsFailure,
 } from '../../slices/accounts/studentSlice'
 
 import { ACCOUNTS_URL } from '@/constants/urls'
@@ -27,7 +27,6 @@ type StudentForm = Omit<
   Student,
   'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
 >
-
 
 export const fetchStudents =
   (page: number, searchTerm: string = '') =>
@@ -123,7 +122,8 @@ export const createStudent =
   }
 
 export const updateStudent =
-  (id: string, updatedStudent: StudentForm) => async (dispatch: AppDispatch) => {
+  (id: string, updatedStudent: StudentForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(updateStudentStart())
     try {
       const response = await axios.put(
@@ -178,32 +178,32 @@ export const deleteStudent = (id: string) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const fetchSimplifiedStudents = (
-  searchTerm: string = '',
-  initialStudentId: string | null = null
-) => async (dispatch: AppDispatch) => {
-  dispatch(fetchSimplifiedStudentsStart())
-  try {
-    const response = await axios.get(`${ACCOUNTS_URL}/students/options/`, {
-      params: { search: searchTerm, id: initialStudentId },
-      ...getConfig(),
-    })
-    dispatch(
-      fetchSimplifiedStudentsSuccess({
-        message: response.data.message,
-        data: response.data.students,
-        status: response.status,
-        detailCode: response.data.detail_code,
-      }),
-    )
-  } catch (error: any) {
-    dispatch(
-      fetchSimplifiedStudentsFailure({
-        error: error.response?.data.message || error.message,
-        status: error.response?.status || 500,
-        detailCode:
-          error.response?.data.detail_code || 'FETCH_SIMPLIFIED_STUDENTS_ERROR',
-      }),
-    )
+export const fetchSimplifiedStudents =
+  (searchTerm: string = '', initialStudentId: string | null = null) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(fetchSimplifiedStudentsStart())
+    try {
+      const response = await axios.get(`${ACCOUNTS_URL}/students/options/`, {
+        params: { search: searchTerm, id: initialStudentId },
+        ...getConfig(),
+      })
+      dispatch(
+        fetchSimplifiedStudentsSuccess({
+          message: response.data.message,
+          data: response.data.students,
+          status: response.status,
+          detailCode: response.data.detail_code,
+        }),
+      )
+    } catch (error: any) {
+      dispatch(
+        fetchSimplifiedStudentsFailure({
+          error: error.response?.data.message || error.message,
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code ||
+            'FETCH_SIMPLIFIED_STUDENTS_ERROR',
+        }),
+      )
+    }
   }
-}

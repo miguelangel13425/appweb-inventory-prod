@@ -64,7 +64,11 @@ const inventoryTransactionSlice = createSlice({
     },
     fetchTransactionsFailure: (
       state,
-      action: PayloadAction<{ error: string; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        error: string
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error
@@ -92,7 +96,11 @@ const inventoryTransactionSlice = createSlice({
     },
     fetchTransactionFailure: (
       state,
-      action: PayloadAction<{ error: string; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        error: string
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error
@@ -127,7 +135,12 @@ const inventoryTransactionSlice = createSlice({
     },
     createTransactionFailure: (
       state,
-      action: PayloadAction<{ error: string; errors: Record<string, string[]>; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        error: string
+        errors: Record<string, string[]>
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error
@@ -163,7 +176,12 @@ const inventoryTransactionSlice = createSlice({
     },
     updateTransactionFailure: (
       state,
-      action: PayloadAction<{ error: string; errors: Record<string, string[]>; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        error: string
+        errors: Record<string, string[]>
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error
@@ -182,7 +200,11 @@ const inventoryTransactionSlice = createSlice({
     },
     deleteTransactionSuccess: (
       state,
-      action: PayloadAction<{ message: string; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        message: string
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.transaction = null
       state.loading = false
@@ -194,7 +216,11 @@ const inventoryTransactionSlice = createSlice({
     },
     deleteTransactionFailure: (
       state,
-      action: PayloadAction<{ error: string; status: number; detailCode: string }>,
+      action: PayloadAction<{
+        error: string
+        status: number
+        detailCode: string
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error

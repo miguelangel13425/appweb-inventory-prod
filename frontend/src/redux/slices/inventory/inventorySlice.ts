@@ -228,7 +228,7 @@ const inventorySlice = createSlice({
         errors: Record<string, string[]>
         status: number
         detailCode: string
-    }>,
+      }>,
     ) => {
       state.loading = false
       state.error = action.payload.error
@@ -251,7 +251,7 @@ const inventorySlice = createSlice({
         message: string
         status: number
         detailCode: string
-    }>,
+      }>,
     ) => {
       state.inventory = null
       state.loading = false

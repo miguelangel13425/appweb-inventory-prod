@@ -16,9 +16,9 @@ export const fetchDashboard = () => async (dispatch: AppDispatch) => {
     dispatch(
       fetchDashboardSuccess({
         message: response.data.message,
-          data: response.data.dashboard,
-          status: response.status,
-          detailCode: response.data.detail_code,
+        data: response.data.dashboard,
+        status: response.status,
+        detailCode: response.data.detail_code,
       }),
     )
   } catch (error: any) {

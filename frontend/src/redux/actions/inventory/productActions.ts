@@ -30,7 +30,6 @@ type ProductForm = Omit<
   category: string
 }
 
-
 export const fetchProducts =
   (page: number, searchTerm: string = '', isSingleUse?: boolean) =>
   async (dispatch: AppDispatch) => {
@@ -70,10 +69,8 @@ export const fetchProducts =
     }
   }
 
-export const fetchSimplifiedProducts = (
-  searchTerm: string = '',
-  initialProductId: string | null = null
-) =>
+export const fetchSimplifiedProducts =
+  (searchTerm: string = '', initialProductId: string | null = null) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedProductsStart())
     try {
@@ -158,7 +155,8 @@ export const createProduct =
   }
 
 export const updateProduct =
-  (id: string, updatedProduct: ProductForm) => async (dispatch: AppDispatch) => {
+  (id: string, updatedProduct: ProductForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(updateProductStart())
     try {
       const response = await axios.put(

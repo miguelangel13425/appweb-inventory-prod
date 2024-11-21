@@ -25,12 +25,19 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type InventoryForm = Omit<
   Inventory,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'quantity' | 'availability_display' | 'location' | 'product'
+  | 'id'
+  | 'is_active'
+  | 'created_at'
+  | 'updated_at'
+  | 'deleted_at'
+  | 'quantity'
+  | 'availability_display'
+  | 'location'
+  | 'product'
 > & {
   location: string
   product: string
 }
-
 
 export const fetchInventories =
   (page: number, searchTerm: string = '') =>
@@ -63,23 +70,25 @@ export const fetchInventories =
         fetchInventoriesFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'FETCH_INVENTORIES_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'FETCH_INVENTORIES_ERROR',
         }),
       )
     }
   }
 
-  export const fetchSimplifiedInventories = (
-    searchTerm: string = '', 
-    initialInventoryId: string | null = null
-) =>
+export const fetchSimplifiedInventories =
+  (searchTerm: string = '', initialInventoryId: string | null = null) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedInventoriesStart())
     try {
-      const response = await axios.get(`${INVENTORY_URL}/inventories/options/`, {
-        params: { search: searchTerm, id: initialInventoryId },
-        ...getConfig(),
-      })
+      const response = await axios.get(
+        `${INVENTORY_URL}/inventories/options/`,
+        {
+          params: { search: searchTerm, id: initialInventoryId },
+          ...getConfig(),
+        },
+      )
       dispatch(
         fetchSimplifiedInventoriesSuccess({
           message: response.data.message,
@@ -103,7 +112,8 @@ export const fetchInventories =
 
 export const fetchInventory = (id: string) => async (dispatch: AppDispatch) => {
   try {
-    const response = await axios.get(`${INVENTORY_URL}/inventories/${id}/`,
+    const response = await axios.get(
+      `${INVENTORY_URL}/inventories/${id}/`,
       getConfig(),
     )
     dispatch(
@@ -191,7 +201,8 @@ export const deleteInventory =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteInventoryStart())
     try {
-      const response = await axios.delete(`${INVENTORY_URL}/inventories/${id}/`,
+      const response = await axios.delete(
+        `${INVENTORY_URL}/inventories/${id}/`,
         getConfig(),
       )
       dispatch(
@@ -206,7 +217,8 @@ export const deleteInventory =
         deleteInventoryFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'DELETE_INVENTORY_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'DELETE_INVENTORY_ERROR',
         }),
       )
     }

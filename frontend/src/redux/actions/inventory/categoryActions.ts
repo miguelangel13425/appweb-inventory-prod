@@ -122,7 +122,8 @@ export const createCategory =
   }
 
 export const updateCategory =
-  (id: string, updatedCategory: CategoryForm) => async (dispatch: AppDispatch) => {
+  (id: string, updatedCategory: CategoryForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(updateCategoryStart())
     try {
       const response = await axios.put(
@@ -177,10 +178,8 @@ export const deleteCategory = (id: string) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const fetchSimplifiedCategories = (
-  searchTerm: string = '',
-  initialCategoryId: string | null = null
-) => 
+export const fetchSimplifiedCategories =
+  (searchTerm: string = '', initialCategoryId: string | null = null) =>
   async (dispatch: AppDispatch) => {
     dispatch(fetchSimplifiedCategoriesStart())
     try {

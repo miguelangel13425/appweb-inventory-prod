@@ -26,7 +26,7 @@ import { ACCOUNTS_URL } from '@/constants/urls'
 type ProviderForm = Omit<
   Provider,
   'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
->  
+>
 
 export const fetchProviders =
   (page: number, searchTerm: string = '') =>
@@ -122,7 +122,8 @@ export const createProvider =
   }
 
 export const updateProvider =
-  (id: string, updatedProvider: ProviderForm) => async (dispatch: AppDispatch) => {
+  (id: string, updatedProvider: ProviderForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(updateProviderStart())
     try {
       const response = await axios.put(
@@ -177,32 +178,32 @@ export const deleteProvider = (id: string) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const fetchSimplifiedProviders = (
-  searchTerm: string = '',
-  initialProviderId: string | null = null
-) => async (dispatch: AppDispatch) => {
-  dispatch(fetchSimplifiedProvidersStart())
-  try {
-    const response = await axios.get(`${ACCOUNTS_URL}/providers/options/`, {
-      params: { search: searchTerm, id: initialProviderId },
-      ...getConfig(),
-    })
-    dispatch(
-      fetchSimplifiedProvidersSuccess({
-        message: response.data.message,
-        data: response.data.providers,
-        status: response.status,
-        detailCode: response.data.detail_code,
-      }),
-    )
-  } catch (error: any) {
-    dispatch(
-      fetchSimplifiedProvidersFailure({
-        error: error.response?.data.message || error.message,
-        status: error.response?.status || 500,
-        detailCode:
-          error.response?.data.detail_code || 'FETCH_SIMPLIFIED_PROVIDERS_ERROR',
-      }),
-    )
+export const fetchSimplifiedProviders =
+  (searchTerm: string = '', initialProviderId: string | null = null) =>
+  async (dispatch: AppDispatch) => {
+    dispatch(fetchSimplifiedProvidersStart())
+    try {
+      const response = await axios.get(`${ACCOUNTS_URL}/providers/options/`, {
+        params: { search: searchTerm, id: initialProviderId },
+        ...getConfig(),
+      })
+      dispatch(
+        fetchSimplifiedProvidersSuccess({
+          message: response.data.message,
+          data: response.data.providers,
+          status: response.status,
+          detailCode: response.data.detail_code,
+        }),
+      )
+    } catch (error: any) {
+      dispatch(
+        fetchSimplifiedProvidersFailure({
+          error: error.response?.data.message || error.message,
+          status: error.response?.status || 500,
+          detailCode:
+            error.response?.data.detail_code ||
+            'FETCH_SIMPLIFIED_PROVIDERS_ERROR',
+        }),
+      )
+    }
   }
-}

@@ -22,12 +22,19 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type InventoryTransactionForm = Omit<
   InventoryTransaction,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'inventory' | 'person' | 'movement_display' | 'type_display'
+  | 'id'
+  | 'is_active'
+  | 'created_at'
+  | 'updated_at'
+  | 'deleted_at'
+  | 'inventory'
+  | 'person'
+  | 'movement_display'
+  | 'type_display'
 > & {
   inventory: string
   person: string
 }
-
 
 export const fetchTransactions =
   (page: number, searchTerm: string = '') =>
@@ -60,7 +67,8 @@ export const fetchTransactions =
         fetchTransactionsFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'FETCH_TRANSACTIONS_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'FETCH_TRANSACTIONS_ERROR',
         }),
       )
     }
@@ -69,7 +77,8 @@ export const fetchTransactions =
 export const fetchTransaction =
   (id: string) => async (dispatch: AppDispatch) => {
     try {
-      const response = await axios.get(`${INVENTORY_URL}/transactions/${id}/`,
+      const response = await axios.get(
+        `${INVENTORY_URL}/transactions/${id}/`,
         getConfig(),
       )
       dispatch(
@@ -85,14 +94,16 @@ export const fetchTransaction =
         fetchTransactionFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'FETCH_TRANSACTION_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'FETCH_TRANSACTION_ERROR',
         }),
       )
     }
   }
 
 export const createTransaction =
-  (newTransaction: InventoryTransactionForm) => async (dispatch: AppDispatch) => {
+  (newTransaction: InventoryTransactionForm) =>
+  async (dispatch: AppDispatch) => {
     dispatch(createTransactionStart())
     try {
       const response = await axios.post(
@@ -114,7 +125,8 @@ export const createTransaction =
           error: error.response?.data.message || error.message,
           errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'CREATE_TRANSACTION_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'CREATE_TRANSACTION_ERROR',
         }),
       )
     }
@@ -145,7 +157,8 @@ export const updateTransaction =
           error: error.response?.data.message || error.message,
           errors: error.response?.data.errors || {},
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'UPDATE_TRANSACTION_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'UPDATE_TRANSACTION_ERROR',
         }),
       )
     }
@@ -155,7 +168,8 @@ export const deleteTransaction =
   (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteTransactionStart())
     try {
-      const response = await axios.delete(`${INVENTORY_URL}/transactions/${id}/`,
+      const response = await axios.delete(
+        `${INVENTORY_URL}/transactions/${id}/`,
         getConfig(),
       )
       dispatch(
@@ -170,7 +184,8 @@ export const deleteTransaction =
         deleteTransactionFailure({
           error: error.response?.data.message || error.message,
           status: error.response?.status || 500,
-          detailCode: error.response?.data.detail_code || 'DELETE_TRANSACTION_ERROR',
+          detailCode:
+            error.response?.data.detail_code || 'DELETE_TRANSACTION_ERROR',
         }),
       )
     }
