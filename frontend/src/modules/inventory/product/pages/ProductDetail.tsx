@@ -20,7 +20,7 @@ const ProductDetail: React.FC = () => {
   )
 
   useEffect(() => {
-    dispatch(fetchProduct(id))
+    dispatch(fetchProduct(id as string))
   }, [dispatch, id])
 
   if (loading)

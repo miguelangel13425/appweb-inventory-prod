@@ -2,7 +2,6 @@ import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from './accounts/authSlice'
 import userReducer from './accounts/userSlice'
 import profileReducer from './accounts/profileSlice'
-import roleReducer from './accounts/roleSlice'
 import studentReducer from './accounts/studentSlice'
 import providerReducer from './accounts/providerSlice'
 
@@ -18,7 +17,6 @@ const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   profile: profileReducer,
-  role: roleReducer,
   student: studentReducer,
   provider: providerReducer,
 
