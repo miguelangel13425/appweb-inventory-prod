@@ -25,8 +25,10 @@ import { INVENTORY_URL } from '@/constants/urls'
 
 type LocationForm = Omit<
   Location,
-  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at'
->
+  'id' | 'is_active' | 'created_at' | 'updated_at' | 'deleted_at' | 'warehouse'
+> & {
+  warehouse: string
+}
 
 export const fetchLocations =
   (page: number, searchTerm: string = '') =>

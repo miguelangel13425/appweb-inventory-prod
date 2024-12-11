@@ -49,7 +49,7 @@ const CreateLocationModal: React.FC = () => {
 
   const handleCreateLocation = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(createLocation({ ...form })) // Enviar warehouse como string
+    dispatch(createLocation(form)) // Enviar warehouse como string
   }
 
   useEffect(() => {
@@ -75,9 +75,6 @@ const CreateLocationModal: React.FC = () => {
         description: '',
         warehouse: '', // Reset warehouse ID
       })
-      dispatch(
-        createLocationFailure({ error: null, errors: null, status: null }),
-      )
     }
   }, [isDialogOpen, dispatch])
 
